@@ -1,0 +1,14 @@
+{
+  "name": "kyomatcha",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run start --prefix front-end\" \"npm run start --prefix back-end\""
+  },
+  "keywords": [],
+  "author": "DuongDuy",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
