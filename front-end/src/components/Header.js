@@ -5,7 +5,6 @@ import styled, { css } from "styled-components";
 import logoImg from '../assets/logo/logo.jpg';
 import logoImg2 from '../assets/logo/logo2.jpg';
 
-// Styled Components
 const HeaderWrapper = styled.header`
   font-family: 'Montserrat', sans-serif;
   position: fixed;
