@@ -4,10 +4,12 @@ import Register from "../pages/Register";
 import Profile from '../pages/Profile';
 import EditProfile from '../pages/EditProfile';
 
+
 export const routes = [
     {
         path: "/",
         page: Home,
+        isShowHeader: true
     },
     {
         path: "/login",

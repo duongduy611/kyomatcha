@@ -1,23 +1,30 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { routes } from './routers';
-import Header from './components/Header';
+import React, { Fragment } from "react";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import Default from "./components/Default";
+import { routes } from "./routers/index";
 
-function App() {
+const App = () => {
   return (
-    <Router>
-      <div className="App">
-        <Header />
+    <div className="App">
+      <Router>
         <Routes>
-          {routes.map((route, index) => (
-            <Route
-              key={index}
-              path={route.path}
-              element={<route.page />}
-            />
-          ))}
+          {routes.map((route) => {
+            const Layout = route.isShowHeader ? Default : Fragment;
+            return (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={
+                  <Layout>
+                    <route.page />
+                  </Layout>
+                }
+              />
+            );
+          })}
         </Routes>
-      </div>
-    </Router>
+      </Router>
+    </div>
   );
 }
 
