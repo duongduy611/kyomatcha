@@ -1,18 +1,17 @@
 const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
 require('dotenv').config();
 const app = express();
-const connectDB = require('./config/db');
-
 app.use(express.json());
-connectDB();
+app.use(cors());
 
-app.get('/', async (req, res) => {
-    try {
-        res.send({ message: 'Welcome to Practical Exam!' });
-    } catch (error) {
-        res.send({ error: error.message });
-    }
-});
+// Kết nối MongoDB
+mongoose.connect('mongodb://localhost:27017/KyoMatcha');
 
-const PORT = process.env.PORT || 9999;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Import router
+const authRouter = require('./routes/authRoutes');
+app.use('/api', authRouter);
+
+const PORT = 9999;
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
