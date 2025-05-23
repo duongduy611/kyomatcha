@@ -128,7 +128,7 @@ const DropdownMenu = styled.div`
   border-radius: 0 0 12px 12px;
   padding: 10px 0 6px 0;
   font-size: 16px;
-  margin-top: 12px;
+  margin-top: 6px;
   display: ${({ show }) => (show ? 'block' : 'none')};
   z-index: 1000;
 `;
@@ -235,11 +235,11 @@ const Header = () => {
             onMouseEnter={() => handleDropdown('blog')}
             onMouseLeave={closeDropdown}
           >
-            <NavSpan active={shouldApplyHoverStyle}>Blog</NavSpan>
+            <NavLink to="/blog" active={shouldApplyHoverStyle}>Blog</NavLink>
             <DropdownMenu show={isMenuActive('blog')}>
               <DropdownLink to="/discover-matcha">Khám phá về Matcha</DropdownLink>
               <DropdownLink to="/beauty">Làm đẹp</DropdownLink>
-              <DropdownLink to="/recipes">Pha chế</DropdownLink>
+              <DropdownLink to="/recipe">Pha chế</DropdownLink>
             </DropdownMenu>
           </NavItem>
           <NavItem onMouseEnter={() => closeDropdown()}>
