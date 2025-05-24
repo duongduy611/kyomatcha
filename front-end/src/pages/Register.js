@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import GlobalStyle from '../components/GlobalStyle';
 
 function Register() {
   const [username, setUsername] = useState('');
@@ -55,59 +56,62 @@ function Register() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, rgb(181, 248, 193) 0%, #cfdef3 100%)' }}>
-      <form
-        onSubmit={handleRegister}
-        style={{
-          width: 400,
-          background: '#fff',
-          borderRadius: 16,
-          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
-          padding: '32px 28px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 18,
-          marginTop: 130,
-        }}
-      >
-        <h2 style={{ textAlign: 'center', marginBottom: 8, color: '#2ecc40', letterSpacing: 1 }}>Đăng ký</h2>
-        <input type="text" placeholder="Tên đăng nhập" value={username} onChange={e => setUsername(e.target.value)} required style={inputStyle} />
-        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required style={inputStyle} />
-        <input type="text" placeholder="Họ và tên" value={fullName} onChange={e => setFullName(e.target.value)} required style={inputStyle} />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
-          <label htmlFor="password" style={{ fontWeight: 500, color: '#222' }}>Mật khẩu</label>
-          <input
-            id="password"
-            type={showPassword ? 'text' : 'password'}
-            placeholder="Mật khẩu"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            required
-            style={{ ...inputStyle, paddingRight: 38 }}
-          />
-          <span onClick={() => setShowPassword(v => !v)} style={{ position: 'absolute', right: 12, top: 36, cursor: 'pointer', color: '#888' }}>
-            {!showPassword ? <FaEyeSlash /> : <FaEye />}
-          </span>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
-          <label htmlFor="confirmPassword" style={{ fontWeight: 500, color: '#222' }}>Xác nhận mật khẩu</label>
-          <input
-            id="confirmPassword"
-            type={showConfirmPassword ? 'text' : 'password'}
-            placeholder="Xác nhận mật khẩu"
-            value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
-            required
-            style={{ ...inputStyle, paddingRight: 38 }}
-          />
-          <span onClick={() => setShowConfirmPassword(v => !v)} style={{ position: 'absolute', right: 12, top: 36, cursor: 'pointer', color: '#888' }}>
-            {!showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-          </span>
-        </div>
-        <button type="submit" style={buttonStyle}>Đăng ký</button>
-        <div style={{ color: message === 'Đăng ký thành công! Bạn có thể đăng nhập.' ? '#27ae60' : 'red', minHeight: 24, textAlign: 'center', fontWeight: 500 }}>{message}</div>
-      </form>
-    </div>
+    <>
+      <GlobalStyle />
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, rgb(181, 248, 193) 0%, #cfdef3 100%)' }}>
+        <form
+          onSubmit={handleRegister}
+          style={{
+            width: 400,
+            background: '#fff',
+            borderRadius: 16,
+            boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+            padding: '32px 28px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 18,
+            marginTop: 130,
+          }}
+        >
+          <h2 style={{ textAlign: 'center', marginBottom: 8, color: '#2ecc40', letterSpacing: 1 }}>Đăng ký</h2>
+          <input type="text" placeholder="Tên đăng nhập" value={username} onChange={e => setUsername(e.target.value)} required style={inputStyle} />
+          <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required style={inputStyle} />
+          <input type="text" placeholder="Họ và tên" value={fullName} onChange={e => setFullName(e.target.value)} required style={inputStyle} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
+            <label htmlFor="password" style={{ fontWeight: 500, color: '#222' }}>Mật khẩu</label>
+            <input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Mật khẩu"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+              style={{ ...inputStyle, paddingRight: 38 }}
+            />
+            <span onClick={() => setShowPassword(v => !v)} style={{ position: 'absolute', right: 12, top: 36, cursor: 'pointer', color: '#888' }}>
+              {!showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
+            <label htmlFor="confirmPassword" style={{ fontWeight: 500, color: '#222' }}>Xác nhận mật khẩu</label>
+            <input
+              id="confirmPassword"
+              type={showConfirmPassword ? 'text' : 'password'}
+              placeholder="Xác nhận mật khẩu"
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
+              required
+              style={{ ...inputStyle, paddingRight: 38 }}
+            />
+            <span onClick={() => setShowConfirmPassword(v => !v)} style={{ position: 'absolute', right: 12, top: 36, cursor: 'pointer', color: '#888' }}>
+              {!showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
+          <button type="submit" style={buttonStyle}>Đăng ký</button>
+          <div style={{ color: message === 'Đăng ký thành công! Bạn có thể đăng nhập.' ? '#27ae60' : 'red', minHeight: 24, textAlign: 'center', fontWeight: 500 }}>{message}</div>
+        </form>
+      </div>
+    </>
   );
 }
 
@@ -135,4 +139,4 @@ const buttonStyle = {
   transition: 'background 0.2s',
 };
 
-export default Register; 
+export default Register;

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import styled, { createGlobalStyle } from 'styled-components';
+import styled from 'styled-components';
 import bannerWeb from "../assets/images/banner_web.jpg";
+import GlobalStyle from '../components/GlobalStyle';
 
 const tabs = [
   { label: "All" },
@@ -66,18 +67,6 @@ const products = [
     oldPrice: 48,
   },
 ];
-
-// Xóa margin/padding mặc định của body/html
-const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
-  html, body, #root {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    font-family: 'Montserrat', sans-serif;
-  }
-`;
 
 const PageWrapper = styled.div`
   background: #f4f4f4;

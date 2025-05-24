@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import GlobalStyle from '../components/GlobalStyle';
 
 function EditProfile() {
   const [fullName, setFullName] = useState('');
@@ -120,160 +121,163 @@ function EditProfile() {
   });
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #e0ffe8 0%, #cfdef3 100%)', padding: 16, marginTop: 80 }}>
-      <div style={{ display: 'flex', gap: 20, maxWidth: 900, width: '100%' }}>
-        {/* Form đổi mật khẩu (bên trái) */}
-        <form onSubmit={handleChangePassword} style={{ flex: 1, background: '#fff', borderRadius: 18, boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.10)', padding: 36, display: 'flex', flexDirection: 'column', gap: 18 }}>
-          <h2 style={{ textAlign: 'center', marginBottom: 8, color: '#2ecc40', letterSpacing: 1 }}>Đổi mật khẩu</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
-            <label htmlFor="oldPassword" style={{ fontWeight: 500, color: '#222' }}>Mật khẩu cũ</label>
-            <input
-              id="oldPassword"
-              type={showOldPassword ? 'text' : 'password'}
-              placeholder="Nhập mật khẩu cũ"
-              value={oldPassword}
-              onChange={e => setOldPassword(e.target.value)}
-              required
-              style={passwordInputStyle}
-            />
-            <span onClick={() => setShowOldPassword(v => !v)} style={eyeIconStyle}>
-              {!showOldPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
-            <label htmlFor="newPassword" style={{ fontWeight: 500, color: '#222' }}>Mật khẩu mới</label>
-            <input
-              id="newPassword"
-              type={showNewPassword ? 'text' : 'password'}
-              placeholder="Nhập mật khẩu mới"
-              value={newPassword}
-              onChange={e => setNewPassword(e.target.value)}
-              required
-              style={passwordInputStyle}
-            />
-            <span onClick={() => setShowNewPassword(v => !v)} style={eyeIconStyle}>
-              {!showNewPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
-            <label htmlFor="confirmPassword" style={{ fontWeight: 500, color: '#222' }}>Xác nhận mật khẩu mới</label>
-            <input
-              id="confirmPassword"
-              type={showConfirmPassword ? 'text' : 'password'}
-              placeholder="Nhập lại mật khẩu mới"
-              value={confirmPassword}
-              onChange={e => setConfirmPassword(e.target.value)}
-              required
-              style={passwordInputStyle}
-            />
-            <span onClick={() => setShowConfirmPassword(v => !v)} style={eyeIconStyle}>
-              {!showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>
-          <button
-            type="submit"
-            style={{
-              marginTop: 8,
-              padding: '12px 0',
-              borderRadius: 8,
-              border: 'none',
-              background: 'linear-gradient(90deg, #2ecc40 0%, #27ae60 100%)',
-              color: '#fff',
-              fontWeight: 600,
-              fontSize: 18,
-              letterSpacing: 1,
-              cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(46,204,64,0.10)',
-              transition: 'background 0.2s',
-            }}
-          >Đổi mật khẩu</button>
-          {messagePassword && (
-            <div style={getMessageBoxStyle(messagePassword.includes('thành công'))}>{messagePassword}</div>
-          )}
-        </form>
+    <>
+      <GlobalStyle />
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #e0ffe8 0%, #cfdef3 100%)', padding: 16, marginTop: 80 }}>
+        <div style={{ display: 'flex', gap: 20, maxWidth: 900, width: '100%' }}>
+          {/* Form đổi mật khẩu (bên trái) */}
+          <form onSubmit={handleChangePassword} style={{ flex: 1, background: '#fff', borderRadius: 18, boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.10)', padding: 36, display: 'flex', flexDirection: 'column', gap: 18 }}>
+            <h2 style={{ textAlign: 'center', marginBottom: 8, color: '#2ecc40', letterSpacing: 1 }}>Đổi mật khẩu</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
+              <label htmlFor="oldPassword" style={{ fontWeight: 500, color: '#222' }}>Mật khẩu cũ</label>
+              <input
+                id="oldPassword"
+                type={showOldPassword ? 'text' : 'password'}
+                placeholder="Nhập mật khẩu cũ"
+                value={oldPassword}
+                onChange={e => setOldPassword(e.target.value)}
+                required
+                style={passwordInputStyle}
+              />
+              <span onClick={() => setShowOldPassword(v => !v)} style={eyeIconStyle}>
+                {!showOldPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
+              <label htmlFor="newPassword" style={{ fontWeight: 500, color: '#222' }}>Mật khẩu mới</label>
+              <input
+                id="newPassword"
+                type={showNewPassword ? 'text' : 'password'}
+                placeholder="Nhập mật khẩu mới"
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+                required
+                style={passwordInputStyle}
+              />
+              <span onClick={() => setShowNewPassword(v => !v)} style={eyeIconStyle}>
+                {!showNewPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, position: 'relative' }}>
+              <label htmlFor="confirmPassword" style={{ fontWeight: 500, color: '#222' }}>Xác nhận mật khẩu mới</label>
+              <input
+                id="confirmPassword"
+                type={showConfirmPassword ? 'text' : 'password'}
+                placeholder="Nhập lại mật khẩu mới"
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                required
+                style={passwordInputStyle}
+              />
+              <span onClick={() => setShowConfirmPassword(v => !v)} style={eyeIconStyle}>
+                {!showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+            <button
+              type="submit"
+              style={{
+                marginTop: 8,
+                padding: '12px 0',
+                borderRadius: 8,
+                border: 'none',
+                background: 'linear-gradient(90deg, #2ecc40 0%, #27ae60 100%)',
+                color: '#fff',
+                fontWeight: 600,
+                fontSize: 18,
+                letterSpacing: 1,
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(46,204,64,0.10)',
+                transition: 'background 0.2s',
+              }}
+            >Đổi mật khẩu</button>
+            {messagePassword && (
+              <div style={getMessageBoxStyle(messagePassword.includes('thành công'))}>{messagePassword}</div>
+            )}
+          </form>
 
-        {/* Form sửa thông tin cá nhân (bên phải) */}
-        <form onSubmit={handleUpdateProfile} style={{ flex: 1, background: '#fff', borderRadius: 18, boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.10)', padding: 36, display: 'flex', flexDirection: 'column', gap: 18 }}>
-          <h2 style={{ textAlign: 'center', marginBottom: 8, color: '#2ecc40', letterSpacing: 1 }}>Sửa thông tin cá nhân</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <label htmlFor="fullName" style={{ fontWeight: 500, color: '#222' }}>Họ và tên</label>
-            <input
-              id="fullName"
-              type="text"
-              placeholder="Nhập họ và tên"
-              value={fullName}
-              onChange={e => setFullName(e.target.value)}
-              required
+          {/* Form sửa thông tin cá nhân (bên phải) */}
+          <form onSubmit={handleUpdateProfile} style={{ flex: 1, background: '#fff', borderRadius: 18, boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.10)', padding: 36, display: 'flex', flexDirection: 'column', gap: 18 }}>
+            <h2 style={{ textAlign: 'center', marginBottom: 8, color: '#2ecc40', letterSpacing: 1 }}>Sửa thông tin cá nhân</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label htmlFor="fullName" style={{ fontWeight: 500, color: '#222' }}>Họ và tên</label>
+              <input
+                id="fullName"
+                type="text"
+                placeholder="Nhập họ và tên"
+                value={fullName}
+                onChange={e => setFullName(e.target.value)}
+                required
+                style={{
+                  padding: '10px 12px',
+                  borderRadius: 8,
+                  border: '1px solid #d0d7de',
+                  fontSize: 16,
+                  outline: 'none',
+                  transition: 'border 0.2s',
+                }}
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label htmlFor="phone" style={{ fontWeight: 500, color: '#222' }}>Số điện thoại</label>
+              <input
+                id="phone"
+                type="text"
+                placeholder="Nhập số điện thoại"
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+                style={{
+                  padding: '10px 12px',
+                  borderRadius: 8,
+                  border: '1px solid #d0d7de',
+                  fontSize: 16,
+                  outline: 'none',
+                  transition: 'border 0.2s',
+                }}
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label htmlFor="address" style={{ fontWeight: 500, color: '#222' }}>Địa chỉ</label>
+              <input
+                id="address"
+                type="text"
+                placeholder="Nhập địa chỉ"
+                value={address}
+                onChange={e => setAddress(e.target.value)}
+                style={{
+                  padding: '10px 12px',
+                  borderRadius: 8,
+                  border: '1px solid #d0d7de',
+                  fontSize: 16,
+                  outline: 'none',
+                  transition: 'border 0.2s',
+                }}
+              />
+            </div>
+            <button
+              type="submit"
               style={{
-                padding: '10px 12px',
+                marginTop: 8,
+                padding: '12px 0',
                 borderRadius: 8,
-                border: '1px solid #d0d7de',
-                fontSize: 16,
-                outline: 'none',
-                transition: 'border 0.2s',
+                border: 'none',
+                background: 'linear-gradient(90deg, #2ecc40 0%, #27ae60 100%)',
+                color: '#fff',
+                fontWeight: 600,
+                fontSize: 18,
+                letterSpacing: 1,
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(46,204,64,0.10)',
+                transition: 'background 0.2s',
               }}
-            />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <label htmlFor="phone" style={{ fontWeight: 500, color: '#222' }}>Số điện thoại</label>
-            <input
-              id="phone"
-              type="text"
-              placeholder="Nhập số điện thoại"
-              value={phone}
-              onChange={e => setPhone(e.target.value)}
-              style={{
-                padding: '10px 12px',
-                borderRadius: 8,
-                border: '1px solid #d0d7de',
-                fontSize: 16,
-                outline: 'none',
-                transition: 'border 0.2s',
-              }}
-            />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <label htmlFor="address" style={{ fontWeight: 500, color: '#222' }}>Địa chỉ</label>
-            <input
-              id="address"
-              type="text"
-              placeholder="Nhập địa chỉ"
-              value={address}
-              onChange={e => setAddress(e.target.value)}
-              style={{
-                padding: '10px 12px',
-                borderRadius: 8,
-                border: '1px solid #d0d7de',
-                fontSize: 16,
-                outline: 'none',
-                transition: 'border 0.2s',
-              }}
-            />
-          </div>
-          <button
-            type="submit"
-            style={{
-              marginTop: 8,
-              padding: '12px 0',
-              borderRadius: 8,
-              border: 'none',
-              background: 'linear-gradient(90deg, #2ecc40 0%, #27ae60 100%)',
-              color: '#fff',
-              fontWeight: 600,
-              fontSize: 18,
-              letterSpacing: 1,
-              cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(46,204,64,0.10)',
-              transition: 'background 0.2s',
-            }}
-          >Lưu thông tin</button>
-          {messageProfile && (
-            <div style={getMessageBoxStyle(messageProfile.includes('thành công'))}>{messageProfile}</div>
-          )}
-        </form>
+            >Lưu thông tin</button>
+            {messageProfile && (
+              <div style={getMessageBoxStyle(messageProfile.includes('thành công'))}>{messageProfile}</div>
+            )}
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
-export default EditProfile; 
+export default EditProfile;

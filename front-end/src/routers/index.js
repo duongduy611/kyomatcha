@@ -4,7 +4,7 @@ import Register from "../pages/Register";
 import Profile from '../pages/Profile';
 import EditProfile from '../pages/EditProfile';
 import Blog from '../pages/Blog';
-
+import Contact from '../pages/Contact';
 export const routes = [
     {
         path: "/",
@@ -36,4 +36,9 @@ export const routes = [
         page: Blog,
         isShowHeader: true
     },
+    {
+        path: '/contact',
+        page: Contact,
+        isShowHeader: true
+    }
 ]
