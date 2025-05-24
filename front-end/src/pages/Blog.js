@@ -277,8 +277,6 @@ const SliderWrapper = styled.div`
   max-width: 1300px;
   margin: 48px auto 0 auto;
   background: #f4f4f4;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
   position: relative;
   padding: 48px 0 32px 0;
   display: flex;

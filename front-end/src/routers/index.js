@@ -4,6 +4,7 @@ import Register from "../pages/Register";
 import Profile from '../pages/Profile';
 import EditProfile from '../pages/EditProfile';
 import Blog from '../pages/Blog';
+import BlogDetail from '../pages/BlogDetail';
 import Contact from '../pages/Contact';
 export const routes = [
     {
@@ -34,6 +35,11 @@ export const routes = [
     {
         path: '/blog',
         page: Blog,
+        isShowHeader: true
+    },
+    {
+        path: '/blog-detail',
+        page: BlogDetail,
         isShowHeader: true
     },
     {
