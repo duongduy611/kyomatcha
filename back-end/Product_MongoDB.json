@@ -1,0 +1,527 @@
+[
+	{
+		"name": "Matcha Natsu",
+		"slug": "matcha-natsu",
+		"category": "Matcha",
+		"subCategory": [],
+		"price": 99000,
+		"subPrice": [],
+		"images": [
+			"/assets/images/matcha/matcha_natsu.jpg",
+			"/assets/images/matcha/matcha_natsu_02.jpg",
+			"/assets/images/matcha/matcha_natsu_03.jpg"
+		],
+		"description": "Khám phá Matcha Natsu – bột trà xanh Nhật Bản chính gốc, mang đến trải nghiệm ẩm thực đỉnh cao! Với hương vị đậm đà, matcha cấp trung này lý tưởng cho trà sữa, bánh ngọt hoặc mặt nạ dưỡng da. Sản xuất bởi Maruyama Tea Products Corporation, hòa tan mịn màng, chất lượng chuẩn Nhật. Phù hợp cho quán cà phê, tiệm bánh hoặc sáng tạo tại nhà, Matcha Natsu nâng tầm mọi món ăn, thức uống!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Matcha Aki",
+		"slug": "matcha-aki",
+		"category": "Matcha",
+		"subCategory": [],
+		"price": 119000,
+		"subPrice": [],
+		"images": [
+			"/assets/images/matcha/matcha_aki.jpg",
+			"/assets/images/matcha/matcha_aki_02.jpg",
+			"/assets/images/matcha/matcha_aki_03.jpg"
+		],
+		"description": "Biến mỗi khoảnh khắc thành nghệ thuật với Matcha Aki – bột trà xanh Nhật Bản cao cấp! Làm từ búp trà non vụ xuân, Matcha Aki mang màu xanh tươi, hương thơm dịu và vị ngọt hậu. Hoàn hảo cho trà sữa, bánh, kem hoặc mặt nạ dưỡng da. Hòa tan dễ dàng, tạo món ăn, thức uống đẹp mắt. Matcha Aki là lựa chọn lý tưởng cho quán cà phê hoặc chăm sóc bản thân!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Matcha Haru",
+		"slug": "matcha-haru",
+		"category": "Matcha",
+		"subCategory": [],
+		"price": 209000,
+		"subPrice": [],
+		"images": [
+			"/assets/images/matcha/matcha_haru.jpg",
+			"/assets/images/matcha/matcha_haru_02.jpg",
+			"/assets/images/matcha/matcha_haru_03.jpg"
+		],
+		"description": "Trải nghiệm đỉnh cao trà đạo với Matcha Haru – bột trà xanh Nhật Bản thượng hạng! Với độ mịn hoàn hảo, màu xanh đậm và hương vị tinh tế, Matcha Haru lý tưởng cho trà đạo, trà sữa cao cấp hoặc món tráng miệng sang trọng. Sản xuất bởi Maruyama Tea Products Corporation, chỉ cần chút bột với nước nóng, bạn sẽ có ly matcha bọt mịn, thơm lừng!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Matcha Fuji 01",
+		"slug": "matcha-fuji-01",
+		"category": "Matcha",
+		"subCategory": [],
+		"price": 180000,
+		"subPrice": [],
+		"images": [
+			"/assets/images/matcha/matcha_fuji_01.jpg",
+			"/assets/images/matcha/matcha_fuji_01_02.jpg",
+			"/assets/images/matcha/matcha_fuji_01_03.jpg"
+		],
+		"description": "Bắt đầu hành trình matcha với Matcha Fuji 01 – bột trà xanh Nhật Bản chất lượng trung bình cao! Với hương vị cân bằng và màu sắc tươi sáng, sản phẩm này lý tưởng cho trà sữa, bánh ngọt hoặc món ăn sáng tạo. Dễ sử dụng, chất lượng vượt trội, Matcha Fuji 01 là lựa chọn hoàn hảo để nâng cấp thực đơn quán hoặc gian bếp tại nhà!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Matcha Fuji 02",
+		"slug": "matcha-fuji-02",
+		"category": "Matcha",
+		"subCategory": [],
+		"price": 260000,
+		"subPrice": [],
+		"images": [
+			"/assets/images/matcha/matcha_fuji_02.jpg",
+			"/assets/images/matcha/matcha_fuji_02_02.jpg",
+			"/assets/images/matcha/matcha_fuji_02_03.jpg"
+		],
+		"description": "Nâng tầm trải nghiệm với Matcha Fuji 02 – bột trà xanh Nhật Bản chất lượng trung bình cao! Hương vị đậm đà, màu sắc rực rỡ, sản phẩm này lý tưởng cho trà sữa, bánh ngọt hoặc đồ uống cao cấp. Hoàn hảo cho các quán muốn tạo ấn tượng mạnh, Matcha Fuji 02 giúp món ăn, thức uống luôn nổi bật!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Matcha Fuji 03",
+		"slug": "matcha-fuji-03",
+		"category": "Matcha",
+		"subCategory": [],
+		"price": 370000,
+		"subPrice": [],
+		"images": [
+			"/assets/images/matcha/matcha_fuji_03.jpg",
+			"/assets/images/matcha/matcha_fuji_03_02.jpg",
+			"/assets/images/matcha/matcha_fuji_03_03.jpg"
+		],
+		"description": "Chinh phục mọi thực khách với Matcha Fuji 03 – bột trà xanh Nhật Bản cao cấp! Với màu xanh ngọc bích, hương vị đậm đà, sản phẩm này hoàn hảo cho trà đạo, barista_tools cao cấp hoặc món tráng miệng tinh xảo. Thêm Matcha Fuji 03 vào thực đơn để tạo sự khác biệt và đẳng cấp!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Matcha Fuji 04",
+		"slug": "matcha-fuji-04",
+		"category": "Matcha",
+		"subCategory": [],
+		"price": 430000,
+		"subPrice": [],
+		"images": [
+			"/assets/images/matcha/matcha_fuji_04.jpg",
+			"/assets/images/matcha/matcha_fuji_04_02.jpg",
+			"/assets/images/matcha/matcha_fuji_04_03.jpg"
+		],
+		"description": "Tận hưởng sự hoàn hảo với Matcha Fuji 04 – bột trà xanh Nhật Bản cao cấp! Độ mịn tuyệt đối và hương vị tinh tế khiến sản phẩm này lý tưởng cho trà đạo, đồ uống cao cấp hoặc bánh ngọt sang trọng. Được yêu thích bởi các quán cà phê, tiệm bánh, Matcha Fuji 04 mang đến trải nghiệm khó quên!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Matcha Fuji 05",
+		"slug": "matcha-fuji-05",
+		"category": "Matcha",
+		"subCategory": [],
+		"price": 580000,
+		"subPrice": [],
+		"images": [
+			"/assets/images/matcha/matcha_fuji_05.jpg",
+			"/assets/images/matcha/matcha_fuji_05_02.jpg",
+			"/assets/images/matcha/matcha_fuji_05_03.jpg"
+		],
+		"description": "Chạm đến đỉnh cao trà xanh với Matcha Fuji 05 – bột trà xanh Nhật Bản siêu cao cấp! Màu xanh rực rỡ, hương vị đậm đà và độ mịn hoàn hảo, sản phẩm này lý tưởng cho trà đạo hoặc món ăn, thức uống sang trọng. Dành cho các quán muốn tạo dấu ấn hoặc tín đồ matcha, Matcha Fuji 05 khẳng định đẳng cấp!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Ca Ly Đo Lường",
+		"slug": "ca-ly-do-luong",
+		"category": "barista_tools",
+		"subCategory": [
+			{ "size": "250ml", "images": "/assets/images/barista_tools/ca_ly_03.jpg" },
+			{ "size": "500ml", "images": "/assets/images/barista_tools/ca_ly_04.jpg" },
+			{ "size": "1L", "images": "/assets/images/barista_tools/ca_ly_05.jpg" },
+			{ "size": "2L", "images": "/assets/images/barista_tools/ca_ly_06.jpg" },
+			{ "size": "3.5L", "images": "/assets/images/barista_tools/ca_ly_07.jpg" },
+			{ "size": "5L", "images": "/assets/images/barista_tools/ca_ly_09.jpg" }
+		],
+		"price": 25000,
+		"subPrice": [
+			{ "size": "250ml", "price": 25000 },
+			{ "size": "500ml", "price": 30000 },
+			{ "size": "1L", "price": 35000 },
+			{ "size": "2L", "price": 40000 },
+			{ "size": "3.5L", "price": 60000 },
+			{ "size": "5L", "price": 75000 }
+		],
+		"images": ["/assets/images/barista_tools/ca_ly_01.jpg"],
+		"description": "Định lượng chính xác với bộ ca ly đo lường từ 250ml đến 5L! Bền bỉ, tiện dụng, bộ ca này là trợ thủ đắc lực cho quán cà phê, tiệm bánh hoặc bếp nhà. Từ tea_tools sữa đến làm bánh, mọi công thức đều trở nên hoàn hảo và chuyên nghiệp!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Ly Đo Zigger 2 Đầu",
+		"slug": "ly-do-zigger-2-dau",
+		"category": "barista_tools",
+		"subCategory": [
+			{ "size": "10-20cc", "images": "/assets/images/barista_tools/ca_ly_2dau_02.jpg" },
+			{ "size": "20-40cc", "images": "/assets/images/barista_tools/ca_ly_2dau_03.jpg" }
+		],
+		"price": 15000,
+		"subPrice": [
+			{ "size": "10-20cc", "price": 15000 },
+			{ "size": "20-40cc", "price": 40000 }
+		],
+		"images": ["/assets/images/barista_tools/ca_ly_2dau_01.jpg"],
+		"description": "Đơn giản hóa barista_tools với ly đo Zigger 2 đầu! Thiết kế đo lường chính xác, chất liệu nhựa cao cấp, dễ vệ sinh, sản phẩm này lý tưởng cho cà phê, trà sữa hoặc làm bánh. Nhỏ gọn, tiện lợi, ly đo Zigger là công cụ không thể thiếu cho barista và đầu bếp tại gia!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Cân Tiểu Ly KT10000",
+		"slug": "can-tieu-ly-kt10000",
+		"category": "barista_tools",
+		"subCategory": [
+			{ "size": "1g-10kg", "images": "/assets/images/barista_tools/can_tieu_ly_dien_tu_02.jpg" },
+			{ "size": "Unibar 3kg", "images": "/assets/images/barista_tools/can_tieu_ly_dien_tu_01.jpg" }
+		],
+		"price": 150000,
+		"subPrice": [
+			{ "size": "1g-10kg", "price": 150000 },
+			{ "size": "Unibar 3kg", "price": 375000 }
+		],
+		"images": ["/assets/images/barista_tools/can_tieu_ly_dien_tu_01.jpg"],
+		"description": "Đạt độ chính xác tuyệt đối với cân tiểu ly KT10000, đo từ 1g đến 10kg! Lý tưởng cho việc cân bột matcha, đường hoặc nguyên liệu làm bánh, thiết kế hiện đại, dễ sử dụng, phù hợp cho quán cà phê, tiệm bánh hoặc bếp gia đình. Nâng tầm chuyên nghiệp với KT10000!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Thảm BAR Lót Quầy",
+		"slug": "tham-bar-lot-quay",
+		"category": "barista_tools",
+		"subCategory": [
+			{ "size": "15x30cm", "images": "/assets/images/barista_tools/tham_02.jpg" },
+			{ "size": "8x60cm", "images": "/assets/images/barista_tools/tham_03.jpg" },
+			{ "size": "30x45cm", "images": "/assets/images/barista_tools/tham_04.jpg" },
+			{ "size": "30x60cm", "images": "/assets/images/barista_tools/tham_05.jpg" }
+		],
+		"price": 4000,
+		"subPrice": [
+			{ "size": "15x30cm", "price": 60000 },
+			{ "size": "8x60cm", "price": 80000 },
+			{ "size": "30x45cm", "price": 90000 },
+			{ "size": "30x60cm", "price": 150000 }
+		],
+		"images": ["/assets/images/barista_tools/tham_01.jpg"],
+		"description": "Nâng cấp quầy barista_tools với thảm BAR chống trượt, dễ vệ sinh! Chất liệu cao cấp, bền bỉ, thảm này giữ quầy sạch sẽ, chuyên nghiệp, phù hợp cho quán cà phê, bar hoặc góc barista_tools tại nhà. Thêm phong cách và tiện ích với thảm BAR ngay hôm nay!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Lọ Đựng Siro",
+		"slug": "lo-dung-siro",
+		"category": "barista_tools",
+		"subCategory": [
+			{ "size": "250ml", "images": "/assets/images/barista_tools/lo_dung_siro_02.jpg" },
+			{ "size": "500ml", "images": "/assets/images/barista_tools/lo_dung_siro_03.jpg" }
+		],
+		"price": 25000,
+		"subPrice": [
+			{ "size": "250ml", "price": 25000 },
+			{ "size": "500ml", "price": 35000 }
+		],
+		"images": ["/assets/images/barista_tools/lo_dung_siro_01.jpg"],
+		"description": "Tối ưu không gian barista_tools với lọ đựng siro chuyên dụng! Thiết kế trong suốt, nắp kín, dễ rót, lọ này giúp bảo quản và sử dụng siro hiệu quả. Có hai kích thước 250ml và 500ml, phù hợp cho quán cà phê, trà sữa hoặc bar tại gia. Tăng tính chuyên nghiệp cho quầy barista_tools của bạn!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Cân Uniblend DC-5000",
+		"slug": "can-uniblend-dc-5000",
+		"category": "barista_tools",
+		"subCategory": [],
+		"price": 300000,
+		"subPrice": [],
+		"images": [
+			"/assets/images/barista_tools/can_dien_tu_01.jpg",
+			"/assets/images/barista_tools/can_dien_tu_02.jpg",
+			"/assets/images/barista_tools/can_dien_tu_03.jpg"
+		],
+		"description": "Hoàn hảo mọi công thức với cân Uniblend DC-5000, tích hợp đồng hồ hẹn giờ! Với độ chính xác cao, sản phẩm này hỗ trợ barista_tools và nấu nướng chính xác. Thiết kế hiện đại, dễ sử dụng, lý tưởng cho quán cà phê, tiệm bánh hoặc bếp gia đình. Tạo nên món ngon chuẩn vị!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Ray Lọc Inox",
+		"slug": "ray-loc-inox",
+		"category": "barista_tools",
+		"subCategory": [
+			{ "size": "8cm", "images": "/assets/images/barista_tools/ray_loc_02.jpg" },
+			{ "size": "10cm", "images": "/assets/images/barista_tools/ray_loc_03.jpg" }
+		],
+		"price": 25000,
+		"subPrice": [
+			{ "size": "8cm", "price": 25000 },
+			{ "size": "10cm", "price": 30000 }
+		],
+		"images": ["/assets/images/barista_tools/ray_loc_01.jpg"],
+		"description": "Tạo nên ly trà, cà phê mịn màng với ray lọc inox 8-10cm! Chất liệu thép không gỉ cao cấp giúp loại bỏ bã, bọt, dầu thừa, mang đến thức uống hoàn hảo. Nhỏ gọn, dễ vệ sinh, sản phẩm này phù hợp cho quán cà phê, trà sữa hoặc bếp gia đình!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Máy Tạo Bọt Cà Phê USB",
+		"slug": "may-tao-bot-ca-phe-usb",
+		"category": "barista_tools",
+		"subCategory": [
+			{ "color": "hồng", "images": "/assets/images/barista_tools/may_tao_bong_02.jpg" },
+			{ "color": "trắng", "images": "/assets/images/barista_tools/may_tao_bong_03.jpg" },
+			{ "color": "đen", "images": "/assets/images/barista_tools/may_tao_bong_04.jpg" }
+		],
+		"price": 130000,
+		"subPrice": [
+			{ "color": "hồng", "price": 130000 },
+			{ "color": "trắng", "price": 130000 },
+			{ "color": "đen", "price": 130000 }
+		],
+		"images": ["/assets/images/barista_tools/may_tao_bong_01.jpg"],
+		"description": "Biến ly cà phê thành nghệ thuật với máy tạo bọt cà phê sạc USB! Tạo bọt mịn màng cho latte, cappuccino hoặc đánh trứng, sản phẩm này nhỏ gọn, tiện lợi, sạc USB. Phù hợp cho quán cà phê hoặc góc pha chế tại nhà, mang đến trải nghiệm chuyên nghiệp!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Máy Tạo Bọt Uniblend DC-201",
+		"slug": "may-tao-bot-uniblend-dc-201",
+		"category": "barista_tools",
+		"subCategory": [],
+		"price": 300000,
+		"subPrice": [],
+		"images": [
+			"/assets/images/barista_tools/may_danh_tao_bot_01.jpg",
+			"/assets/images/barista_tools/may_danh_tao_bot_02.jpg",
+			"/assets/images/barista_tools/may_danh_tao_bot_03.jpg"
+		],
+		"description": "Nâng tầm pha chế với máy tạo bọt Uniblend DC-201, có 2 đầu đánh linh hoạt! Tạo bọt cà phê, trà sữa mịn màng hoặc đánh trứng hoàn hảo, sản phẩm này dùng pin, nhỏ gọn, lý tưởng cho quán cà phê, tiệm bánh hoặc bếp gia đình. Tạo nên những ly đồ uống ấn tượng!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Thìa Đong 10g",
+		"slug": "thia-dong-10g",
+		"category": "barista_tools",
+		"subCategory": [],
+		"price": 7000,
+		"subPrice": [],
+		"images": [
+			"/assets/images/barista_tools/thia_nau_01.jpg",
+			"/assets/images/barista_tools/thia_nau_02.jpg",
+			"/assets/images/barista_tools/thia_nau_03.jpg"
+		],
+		"description": "Định lượng chính xác với thìa đong 10g, hoàn hảo cho bột matcha, sốt hoa quả hoặc nguyên liệu làm bánh! Thiết kế bền, dễ vệ sinh, sản phẩm này là công cụ thiết yếu cho quán cà phê, tiệm bánh hoặc bếp gia đình. Đảm bảo mọi công thức chuẩn vị, chuyên nghiệp!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Baibenli",
+		"slug": "baibenli",
+		"category": "tea_tools",
+		"subCategory": [
+			{ "color": "tre vàng", "images": "/assets/images/tea_tools/baibenli_02.jpg" },
+			{ "color": "tre tím", "images": "/assets/images/tea_tools/baibenli_03.jpg" }
+		],
+		"price": 300000,
+		"subPrice": [
+			{ "color": "tre vàng", "price": 300000 },
+			{ "color": "tre tím", "price": 300000 }
+		],
+		"images": ["/assets/images/tea_tools/baibenli_01.jpg"],
+		"description": "Tạo nên ly matcha hoàn hảo với chổi Baibenli, làm từ tre vàng hoặc tre tím! Được chế tác thủ công tại Nhật Bản, chổi này đánh matcha mịn màng, lý tưởng cho trà đạo hoặc pha chế tại nhà. Thêm sự tinh tế và chính xác vào nghi thức trà của bạn!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Changsui",
+		"slug": "changsui",
+		"category": "tea_tools",
+		"subCategory": [
+			{ "color": "tre vàng", "images": "/assets/images/tea_tools/changsui_02.jpg" },
+			{ "color": "tre tím", "images": "/assets/images/tea_tools/changsui_03.jpg" }
+		],
+		"price": 250000,
+		"subPrice": [
+			{ "color": "tre vàng", "price": 250000 },
+			{ "color": "tre tím", "price": 250000 }
+		],
+		"images": ["/assets/images/tea_tools/changsui_01.jpg"],
+		"description": "Làm chủ nghệ thuật matcha với chổi Changsui, làm từ tre vàng hoặc tre tím! Được chế tác tại Nhật Bản, chổi này tạo nên lớp bọt mịn, hoàn hảo cho trà đạo hoặc pha chế hàng ngày. Thiết kế thủ công mang đến sự tinh tế cho mọi khoảnh khắc thưởng trà!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Bát Matcha Kiểu Nhật",
+		"slug": "bat-matcha-kieu-nhat",
+		"category": "tea_tools",
+		"subCategory": [
+			{ "color": "trắng tinh khiết", "images": "/assets/images/tea_tools/bat_matcha_02.jpg" },
+			{ "color": "sao hồng đen", "images": "/assets/images/tea_tools/bat_matcha_03.jpg" },
+			{ "color": "đen trơn", "images": "/assets/images/tea_tools/bat_matcha_04.jpg" }
+		],
+		"price": 300000,
+		"subPrice": [
+			{ "color": "trắng tinh khiết", "price": 300000 },
+			{ "color": "sao hồng đen", "price": 300000 },
+			{ "color": "đen trơn", "price": 300000 }
+		],
+		"images": ["/assets/images/tea_tools/bat_matcha_01.jpg"],
+		"description": "Tôn vinh nghệ thuật trà đạo với bát matcha kiểu Nhật, có các màu trắng tinh khiết, đen sao hồng hoặc đen trơn! Làm từ gốm cao cấp, bát này lý tưởng cho trà đạo hoặc pha chế matcha hàng ngày. Mang nét đẹp Nhật Bản vào quán cà phê hoặc góc trà tại nhà!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Đế Sứ Cắm Chổi",
+		"slug": "de-su-cam-choi",
+		"category": "tea_tools",
+		"subCategory": [
+			{ "color": "trắng", "images": "/assets/images/tea_tools/de_su_cam_choi_02.jpg" },
+			{ "color": "xanh lá", "images": "/assets/images/tea_tools/de_su_cam_choi_03.jpg" },
+			{ "color": "đen", "images": "/assets/images/tea_tools/de_su_cam_choi_04.jpg" },
+			{ "color": "hồng", "images": "/assets/images/tea_tools/de_su_cam_choi_05.jpg" }
+		],
+		"price": 170000,
+		"subPrice": [
+			{ "color": "trắng", "price": 170000 },
+			{ "color": "xanh lá", "price": 170000 },
+			{ "color": "đen", "price": 170000 },
+			{ "color": "hồng", "price": 170000 }
+		],
+		"images": ["/assets/images/tea_tools/de_su_cam_choi_01.jpg"],
+		"description": "Tăng thêm sự tinh tế cho góc trà với bình trà đứng, kiêm đế sứ cắm chổi! Có các màu trắng, xanh lá, đen, hồng, sản phẩm này giữ chổi Chasen sạch sẽ và tô điểm cho không gian. Lý tưởng cho quán trà hoặc người yêu thích văn hóa Nhật Bản!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Bộ Ấm Chén Trà Matcha",
+		"slug": "bo-am-chen-tra-matcha",
+		"category": "tea_tools",
+		"subCategory": [
+			{ "color": "trắng", "images": "/assets/images/tea_tools/bat_matcha_co_mieng_02.jpg" },
+			{ "color": "xám", "images": "/assets/images/tea_tools/bat_matcha_co_mieng_03.jpg" },
+			{ "color": "xanh lá", "images": "/assets/images/tea_tools/bat_matcha_co_mieng_04.jpg" },
+			{ "color": "hồng xanh", "images": "/assets/images/tea_tools/bat_matcha_co_mieng_05.jpg" }
+		],
+		"price": 300000,
+		"subPrice": [
+			{ "color": "trắng", "price": 300000 },
+			{ "color": "xám", "price": 300000 },
+			{ "color": "xanh lá", "price": 300000 },
+			{ "color": "hồng xanh", "price": 300000 }
+		],
+		"images": ["/assets/images/tea_tools/bat_matcha_co_mieng_01.jpg"],
+		"description": "Trải nghiệm trà đạo trọn vẹn với bộ ấm chén trà Matcha, có các màu trắng, xám, xanh lá, hồng xanh! Bao gồm bát Chawan và phụ kiện tinh tế, bộ này mang đến sự chuyên nghiệp cho quán trà, nhà hàng hoặc tại nhà. Tạo nên ly matcha chuẩn vị với bộ dụng cụ này!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Muỗng Chashaku 01",
+		"slug": "muong-chashaku-01",
+		"category": "tea_tools",
+		"subCategory": [
+			{ "color": "trắng", "images": "/assets/images/tea_tools/muong1_01.jpg" },
+			{ "color": "nâu đen", "images": "/assets/images/tea_tools/muong1_02.jpg" }
+		],
+		"price": 250000,
+		"subPrice": [
+			{ "color": "trắng", "price": 250000 },
+			{ "color": "nâu đen", "price": 250000 }
+		],
+		"images": ["/assets/images/tea_tools/muong1_01.jpg"],
+		"description": "Hoàn thiện ly matcha với muỗng Chashaku 01, làm từ tre Nhật Bản! Thiết kế thủ công, màu trắng hoặc nâu đen, muỗng này định lượng bột matcha chính xác, mang đến trải nghiệm trà đạo đích thực. Phù hợp cho quán trà hoặc người yêu matcha!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Combo 2 Món Matcha",
+		"slug": "combo-2-mon-matcha",
+		"category": "tea_tools",
+		"subCategory": [],
+		"price": 450000,
+		"subPrice": [],
+		"images": [
+			"/assets/images/tea_tools/combo_2mon_01.jpg",
+			"/assets/images/tea_tools/combo_2mon_02.jpg",
+			"/assets/images/tea_tools/combo_2mon_03.jpg",
+			"/assets/images/tea_tools/combo_2mon_04.jpg",
+			"/assets/images/tea_tools/combo_2mon_05.jpg"
+		],
+		"description": "Bắt đầu hành trình trà đạo với combo 2 món Matcha, gồm bát Chawan và muỗng Chashaku! Làm từ gốm và tre cao cấp, bộ này giúp bạn pha matcha mịn màng, chuẩn vị. Phù hợp cho quán trà hoặc người mới khám phá văn hóa Nhật Bản!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Combo 4 Món Matcha",
+		"slug": "combo-4-mon-matcha",
+		"category": "tea_tools",
+		"subCategory": [
+			{ "color": "đen", "images": "/assets/images/tea_tools/combo_4_mon_02.jpg" },
+			{ "color": "đen trắng", "images": "/assets/images/tea_tools/combo_4_mon_03.jpg" },
+			{ "color": "xám", "images": "/assets/images/tea_tools/combo_4_mon_04.jpg" },
+			{ "color": "hồng", "images": "/assets/images/tea_tools/combo_4_mon_05.jpg" }
+		],
+		"price": 650000,
+		"subPrice": [
+			{ "color": "đen", "price": 650000 },
+			{ "color": "đen trắng", "price": 650000 },
+			{ "color": "xám", "price": 650000 },
+			{ "color": "hồng", "price": 650000 }
+		],
+		"images": ["/assets/images/tea_tools/combo_4_mon_01.jpg"],
+		"description": "Khám phá nghệ thuật trà đạo với combo 4 món Matcha, gồm bát Chawan, chổi Chasen, muỗng Chashaku và đế sứ! Làm từ chất liệu cao cấp, bộ này mang đến ly matcha hoàn hảo, lý tưởng cho quán trà hoặc tại nhà. Tạo nên trải nghiệm đẳng cấp!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	},
+	{
+		"name": "Bộ 7 Món Matcha",
+		"slug": "bo-7-mon-matcha",
+		"category": "tea_tools",
+		"subCategory": [
+			{ "color": "trắng", "images": "/assets/images/tea_tools/combo_7_mon_02.jpg" },
+			{ "color": "hồng", "images": "/assets/images/tea_tools/combo_7_mon_03.jpg" },
+			{ "color": "xám mờ", "images": "/assets/images/tea_tools/combo_7_mon_04.jpg" },
+			{ "color": "xám sáng", "images": "/assets/images/tea_tools/combo_7_mon_05.jpg" },
+			{ "color": "xanh lá cây", "images": "/assets/images/tea_tools/combo_7_mon_06.jpg" }
+		],
+		"price": 850000,
+		"subPrice": [
+			{ "color": "trắng", "price": 850000 },
+			{ "color": "hồng", "price": 850000 },
+			{ "color": "xám mờ", "price": 850000 },
+			{ "color": "xám sáng", "price": 850000 },
+			{ "color": "xanh lá cây", "price": 850000 }
+		],
+		"images": ["/assets/images/tea_tools/combo_7_mon_01.jpg"],
+		"description": "Trọn vẹn nghệ thuật trà đạo với bộ 7 món Matcha, gồm bát Chawan, chổi Chasen, muỗng Chashaku và nhiều phụ kiện cao cấp! Chất liệu bền đẹp, thiết kế tinh tế, bộ này giúp bạn tạo nên ly matcha chuẩn vị. Phù hợp cho quán trà, nhà hàng hoặc tín đồ matcha!",
+		"stock": 0,
+		"status": "ACTIVE",
+		"isDeleted": false
+	}
+]
