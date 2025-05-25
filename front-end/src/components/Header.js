@@ -4,14 +4,17 @@ import { FaUser, FaShoppingCart } from "react-icons/fa";
 import styled, { css } from "styled-components";
 import logoImg from '../assets/logo/logo.jpg';
 import logoImg2 from '../assets/logo/logo2.jpg';
+import { useAppContext } from '../context/AppContext';
 
 const HeaderWrapper = styled.header`
   font-family: 'Montserrat', sans-serif;
   position: fixed;
   top: 0;
-  width: 100%;
+  left: 0;
+  width: 100vw;
+  min-width: 0;
   height: 160px;
-  padding: 0 40px;
+  padding: 0 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,15 +22,16 @@ const HeaderWrapper = styled.header`
   z-index: 999;
   background-color: ${({ active }) => (active ? 'white' : 'transparent')};
   color: ${({ active }) => (active ? 'black' : 'white')};
+  box-sizing: border-box;
 `;
 
 const HeaderContainer = styled.div`
   width: 100%;
-  max-width: 1600px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   position: relative;
 `;
 
@@ -38,6 +42,14 @@ const TopRow = styled.div`
   justify-content: space-between;
   position: relative;
   margin: 12px 0;
+  box-sizing: border-box;
+`;
+
+const NavRow = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Logo = styled.img`
@@ -128,7 +140,7 @@ const DropdownMenu = styled.div`
   border-radius: 0 0 12px 12px;
   padding: 10px 0 6px 0;
   font-size: 16px;
-  margin-top: 12px;
+  margin-top: 6px;
   display: ${({ show }) => (show ? 'block' : 'none')};
   z-index: 1000;
 `;
@@ -155,6 +167,7 @@ const Header = () => {
   const isHome = location.pathname === '/';
   const shouldApplyHoverStyle = isScrolled || (!isHome || isHovered);
   const navigate = useNavigate();
+  const {selectedCategory, setSelectedCategory, categoryMapping } = useAppContext();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -167,6 +180,11 @@ const Header = () => {
   const handleDropdown = (name) => setOpenDropdown(name);
   const closeDropdown = () => setOpenDropdown(null);
   const isMenuActive = (name) => openDropdown === name;
+
+  const handleCategoryClick = (urlCategory) => {
+    setSelectedCategory(urlCategory || '');
+    closeDropdown();
+  };
 
   return (
     <HeaderWrapper
@@ -187,7 +205,7 @@ const Header = () => {
               e.target.src = 'https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg';
             }}
           />
-          <Link to="/">
+          <Link to="/" onClick={() => setSelectedCategory('')}>
             <Logo src={shouldApplyHoverStyle ? logoImg : logoImg2} alt="KyoMatcha Logo" />
           </Link>
           <IconGroup>
@@ -200,52 +218,85 @@ const Header = () => {
                 }
               }}
             />
-            <FaShoppingCart />
+            <FaShoppingCart 
+              onClick={() => navigate('/cart')}/>
           </IconGroup>
         </TopRow>
-        <Nav>
-          <NavItem onMouseEnter={() => closeDropdown()}>
-            <NavLink to="/" active={shouldApplyHoverStyle}>Trang chủ</NavLink>
-          </NavItem>
-          <NavItem
-            className={`nav-animated${isMenuActive('about') ? ' active' : ''}`}
-            onMouseEnter={() => handleDropdown('about')}
-            onMouseLeave={closeDropdown}
-          >
-            <NavSpan active={shouldApplyHoverStyle}>Giới thiệu</NavSpan>
-            <DropdownMenu show={isMenuActive('about')}>
-              <DropdownLink to="/about">Về chúng tôi</DropdownLink>
-              <DropdownLink to="/history">Lịch sử trà Nhật</DropdownLink>
-            </DropdownMenu>
-          </NavItem>
-          <NavItem
-            className={`nav-animated${isMenuActive('product') ? ' active' : ''}`}
-            onMouseEnter={() => handleDropdown('product')}
-            onMouseLeave={closeDropdown}
-          >
-            <NavSpan active={shouldApplyHoverStyle}>Sản phẩm</NavSpan>
-            <DropdownMenu show={isMenuActive('product')}>
-              <DropdownLink to="/matcha">Matcha</DropdownLink>
-              <DropdownLink to="/tools">Dụng cụ trà đạo</DropdownLink>
-              <DropdownLink to="/barista-tools">Dụng cụ pha chế</DropdownLink>
-            </DropdownMenu>
-          </NavItem>
-          <NavItem
-            className={`nav-animated${isMenuActive('blog') ? ' active' : ''}`}
-            onMouseEnter={() => handleDropdown('blog')}
-            onMouseLeave={closeDropdown}
-          >
-            <NavSpan active={shouldApplyHoverStyle}>Blog</NavSpan>
-            <DropdownMenu show={isMenuActive('blog')}>
-              <DropdownLink to="/discover-matcha">Khám phá về Matcha</DropdownLink>
-              <DropdownLink to="/beauty">Làm đẹp</DropdownLink>
-              <DropdownLink to="/recipes">Pha chế</DropdownLink>
-            </DropdownMenu>
-          </NavItem>
-          <NavItem onMouseEnter={() => closeDropdown()}>
-            <NavLink to="/contact" active={shouldApplyHoverStyle}>Liên hệ</NavLink>
-          </NavItem>
-        </Nav>
+        <NavRow>
+          <Nav>
+            <NavItem onMouseEnter={() => closeDropdown()}>
+              <NavLink to="/" active={shouldApplyHoverStyle} onClick={() => setSelectedCategory('')}>
+                Trang chủ
+              </NavLink>
+            </NavItem>
+            <NavItem
+              className={`nav-animated${isMenuActive('about') ? ' active' : ''}`}
+              onMouseEnter={() => handleDropdown('about')}
+              onMouseLeave={closeDropdown}
+            >
+              <NavSpan active={shouldApplyHoverStyle}>Giới thiệu</NavSpan>
+              <DropdownMenu show={isMenuActive('about')}>
+                <DropdownLink to="/about" onClick={() => setSelectedCategory('')}>
+                  Về chúng tôi
+                </DropdownLink>
+                <DropdownLink to="/history" onClick={() => setSelectedCategory('')}>
+                  Lịch sử trà Nhật
+                </DropdownLink>
+              </DropdownMenu>
+            </NavItem>
+            <NavItem
+              className={`nav-animated${isMenuActive('product') ? ' active' : ''}`}
+              onMouseEnter={() => handleDropdown('product')}
+              onMouseLeave={closeDropdown}
+            >
+              <NavSpan active={shouldApplyHoverStyle}>Sản phẩm</NavSpan>
+              <DropdownMenu show={isMenuActive('product')}>
+                <DropdownLink 
+                  to="/products" 
+                  onClick={() => {
+                    handleCategoryClick('Matcha');
+                    navigate('/products');
+                  }}
+                >
+                  Matcha
+                </DropdownLink>
+                <DropdownLink 
+                  to="/products" 
+                  onClick={() => {
+                    handleCategoryClick('tea_tools');
+                    navigate('/products');
+                  }}
+                >
+                  Dụng cụ trà đạo
+                </DropdownLink>
+                <DropdownLink 
+                  to="/products" 
+                  onClick={() => {
+                    handleCategoryClick('barista_tools');
+                    navigate('/products');
+                  }}
+                >
+                  Dụng cụ pha chế
+                </DropdownLink>
+              </DropdownMenu>
+            </NavItem>
+            <NavItem
+              className={`nav-animated${isMenuActive('blog') ? ' active' : ''}`}
+              onMouseEnter={() => handleDropdown('blog')}
+              onMouseLeave={closeDropdown}
+            >
+              <NavSpan active={shouldApplyHoverStyle}>Blog</NavSpan>
+              <DropdownMenu show={isMenuActive('blog')}>
+                <DropdownLink to="/blog" onClick={() => setSelectedCategory('')}>
+                  Tất cả bài viết
+                </DropdownLink>
+                <DropdownLink to="/blog/tips" onClick={() => setSelectedCategory('')}>
+                  Mẹo pha chế
+                </DropdownLink>
+              </DropdownMenu>
+            </NavItem>
+          </Nav>
+        </NavRow>
       </HeaderContainer>
     </HeaderWrapper>
   );

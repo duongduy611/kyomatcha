@@ -1,6 +1,5 @@
 const Cart = require('../models/CartModel');
 const Product = require('../models/ProductModel');
-const mongoose = require('mongoose');
 
 // GET /cart/:userId
 const getCartByUserId = async (req, res) => {
@@ -19,42 +18,53 @@ const getCartByUserId = async (req, res) => {
 // POST /cart/add
 const addToCart = async (req, res) => {
 	try {
-		const { userId, productId, quantity } = req.body;
+		const { userId, productId, quantity, color, size } = req.body;
 
-		// Lấy thông tin sản phẩm
 		const product = await Product.findById(productId);
 		if (!product)
 			return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
 
+		const subPrice = product.subPrice.find(
+			(item) => item.color === color && item.size === size
+		);
+		const price = subPrice ? subPrice.price : product.price;
+
 		let cart = await Cart.findOne({ userId, isDeleted: false });
 
 		if (!cart) {
-			// Tạo giỏ mới nếu chưa có
 			cart = new Cart({
 				userId,
 				items: [
 					{
 						productId,
 						name: product.name,
-						price: product.price,
+						price,
 						quantity,
+						color,
+						size,
+						image: product.images[0] || '',
 					},
 				],
 			});
 		} else {
 			const index = cart.items.findIndex(
-				(item) => item.productId.toString() === productId
+				(item) =>
+					item.productId.toString() === productId &&
+					item.color === color &&
+					item.size === size
 			);
+
 			if (index > -1) {
-				// Nếu sản phẩm đã có trong giỏ thì cập nhật số lượng
 				cart.items[index].quantity += quantity;
 			} else {
-				// Nếu chưa có thì thêm mới
 				cart.items.push({
 					productId,
 					name: product.name,
-					price: product.price,
+					price,
 					quantity,
+					color,
+					size,
+					image: product.images[0] || '',
 				});
 			}
 		}
@@ -69,15 +79,21 @@ const addToCart = async (req, res) => {
 // POST /cart/remove
 const removeFromCart = async (req, res) => {
 	try {
-		const { userId, productId } = req.body;
+		const { userId, productId, color, size } = req.body;
 
 		const cart = await Cart.findOne({ userId, isDeleted: false });
 		if (!cart)
 			return res.status(404).json({ message: 'Không tìm thấy giỏ hàng' });
 
 		cart.items = cart.items.filter(
-			(item) => item.productId.toString() !== productId
+			(item) =>
+				!(
+					item.productId.toString() === productId &&
+					item.color === color &&
+					item.size === size
+				)
 		);
+
 		const savedCart = await cart.save();
 		res.status(200).json(savedCart);
 	} catch (error) {
@@ -108,15 +124,19 @@ const clearCart = async (req, res) => {
 //giảm số lượng sản phẩm trong giỏ hàng /decrease
 const decreaseQuantityFromCart = async (req, res) => {
 	try {
-		const { userId, productId } = req.body;
+		const { userId, productId, color, size } = req.body;
 
 		const cart = await Cart.findOne({ userId, isDeleted: false });
 		if (!cart)
 			return res.status(404).json({ message: 'Không tìm thấy giỏ hàng' });
 
 		const index = cart.items.findIndex(
-			(item) => item.productId.toString() === productId
+			(item) =>
+				item.productId.toString() === productId &&
+				item.color === color &&
+				item.size === size
 		);
+
 		if (index === -1)
 			return res
 				.status(404)
@@ -125,7 +145,6 @@ const decreaseQuantityFromCart = async (req, res) => {
 		if (cart.items[index].quantity > 1) {
 			cart.items[index].quantity -= 1;
 		} else {
-			// Nếu còn 1 cái thì xóa luôn sản phẩm khỏi giỏ
 			cart.items.splice(index, 1);
 		}
 
@@ -139,15 +158,19 @@ const decreaseQuantityFromCart = async (req, res) => {
 //tăng số lượng sản phẩm trong giỏ hàng /increase
 const increaseQuantityFromCart = async (req, res) => {
 	try {
-		const { userId, productId } = req.body;
+		const { userId, productId, color, size } = req.body;
 
 		const cart = await Cart.findOne({ userId, isDeleted: false });
 		if (!cart)
 			return res.status(404).json({ message: 'Không tìm thấy giỏ hàng' });
 
 		const index = cart.items.findIndex(
-			(item) => item.productId.toString() === productId
+			(item) =>
+				item.productId.toString() === productId &&
+				item.color === color &&
+				item.size === size
 		);
+
 		if (index === -1)
 			return res
 				.status(404)
@@ -170,6 +193,3 @@ module.exports = {
 	decreaseQuantityFromCart,
 	increaseQuantityFromCart,
 };
-
-
-
