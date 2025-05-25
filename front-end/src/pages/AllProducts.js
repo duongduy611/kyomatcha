@@ -3,7 +3,6 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useAppContext } from '../context/AppContext';
-import { FaStar } from 'react-icons/fa';
 import bannerImage from '../assets/images/banner_product.jpg';
 
 const BACKEND_URL = 'http://localhost:9999'; // Add backend URL
@@ -81,7 +80,7 @@ const SearchBar = styled.div`
         font-size: 0.9rem;
         transition: all 0.3s ease;
         background-color: #f8f8f8;
-        
+
         &:focus {
             outline: none;
             border-color: #2ecc40;
@@ -114,7 +113,7 @@ const FilterSection = styled.div`
         background-size: 15px;
         min-width: 180px;
         transition: all 0.3s ease;
-        
+
         &:focus {
             outline: none;
             border-color: #2ecc40;
@@ -350,7 +349,7 @@ const AllProducts = () => {
                             <ProductCard key={product.slug}>
                                 <Link to={`/products/${product.slug}`}>
                                     <ProductImage>
-                                        <img 
+                                        <img
                                             src={`${BACKEND_URL}${product.images[0]}`}
                                             alt={product.name}
                                             onError={(e) => {
@@ -373,4 +372,4 @@ const AllProducts = () => {
     );
 };
 
-export default AllProducts; 
+export default AllProducts;

@@ -247,7 +247,7 @@ const Header = () => {
               <NavSpan active={shouldApplyHoverStyle}>Giới thiệu</NavSpan>
               <DropdownMenu show={isMenuActive("about")}>
                 <DropdownLink
-                  to="/about"
+                  to="/about-us"
                   onClick={() => setSelectedCategory("")}
                 >
                   Về chúng tôi
