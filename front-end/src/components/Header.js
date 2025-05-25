@@ -11,7 +11,6 @@ const HeaderWrapper = styled.header`
   top: 0;
   width: 100%;
   height: 160px;
-  padding: 0 40px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -41,7 +40,7 @@ const TopRow = styled.div`
 `;
 
 const Logo = styled.img`
-  height: 48px;
+  height: 80px;
   width: auto;
   display: block;
 `;
@@ -72,6 +71,7 @@ const Nav = styled.nav`
 const NavItem = styled.div`
   position: relative;
   display: inline-block;
+  font-family: 'Montserrat', sans-serif;
 
   &.nav-animated::after {
     content: '';
@@ -125,7 +125,6 @@ const DropdownMenu = styled.div`
   color: black;
   min-width: 180px;
   box-shadow: 0 4px 16px rgba(46,204,64,0.10);
-  border-radius: 0 0 12px 12px;
   padding: 10px 0 6px 0;
   font-size: 16px;
   margin-top: 6px;
@@ -208,13 +207,13 @@ const Header = () => {
             <NavLink to="/" active={shouldApplyHoverStyle}>Trang chủ</NavLink>
           </NavItem>
           <NavItem
-            className={`nav-animated${isMenuActive('about') ? ' active' : ''}`}
-            onMouseEnter={() => handleDropdown('about')}
+            className={`nav-animated${isMenuActive('about-us') ? ' active' : ''}`}
+            onMouseEnter={() => handleDropdown('about-us')}
             onMouseLeave={closeDropdown}
           >
-            <NavSpan active={shouldApplyHoverStyle}>Giới thiệu</NavSpan>
-            <DropdownMenu show={isMenuActive('about')}>
-              <DropdownLink to="/about">Về chúng tôi</DropdownLink>
+            <NavLink to="/about-us" active={shouldApplyHoverStyle}>Giới thiệu</NavLink>
+            <DropdownMenu show={isMenuActive('about-us')}>
+              <DropdownLink to="/about-us">Về chúng tôi</DropdownLink>
               <DropdownLink to="/history">Lịch sử trà Nhật</DropdownLink>
             </DropdownMenu>
           </NavItem>

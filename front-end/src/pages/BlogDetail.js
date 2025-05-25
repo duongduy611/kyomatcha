@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import GlobalStyle from '../components/GlobalStyle';
+import { useParams } from 'react-router-dom';
+import { blogs } from '../data/blogs';
 
 const Wrapper = styled.div`
   padding-top: 160px;
@@ -49,11 +51,7 @@ const MainContent = styled.div`
   padding: 40px 0 0 0;
   text-align: center;
 `;
-const MainImg = styled.img`
-  width: 60%;
-  border-radius: 8px;
-  margin-bottom: 24px;
-`;
+
 const MainDesc = styled.div`
   color: #7a7a3a;
   font-size: 16px;
@@ -195,91 +193,91 @@ const ProductOldPrice = styled.span`
 `;
 
 const BlogDetail = () => {
+  const { blogId } = useParams();
+  const blog = blogs.find(b => b.id === Number(blogId));
+  if (!blog) return <div style={{paddingTop: 180, textAlign: 'center'}}>Blog không tồn tại!</div>;
+
   return (
     <>
       <GlobalStyle />
       <Wrapper>
+        {/* Banner đầu trang */}
+        <Banner>
+          <BannerImg src={blog.image} alt={blog.title} />
+          <BannerOverlay>
+            <BannerDate>{blog.category}</BannerDate>
+            <BannerTitle>{blog.title}</BannerTitle>
+          </BannerOverlay>
+        </Banner>
 
-      {/* Banner đầu trang */}
-      <Banner>
-        <BannerImg src="//matchaya.sg/cdn/shop/articles/IMG_3773_1200x.jpg?v=1742391264" alt="Banner" />
-        <BannerOverlay>
-          <BannerDate>MARCH 19, 2025 &nbsp; • &nbsp; MOBILE TEA BAR</BannerDate>
-          <BannerTitle>KEYSIGHT X MATCHAYA | MOBILE TEA BAR</BannerTitle>
-        </BannerOverlay>
-      </Banner>
+        {/* Nội dung chính */}
+        <MainContent>
+          <MainDesc>{blog.desc}</MainDesc>
+        </MainContent>
 
-      {/* Nội dung chính */}
-      <MainContent>
-        <MainImg src="http://cdn.shopify.com/s/files/1/0081/8734/7026/files/IMG_3717.jpg?v=1742390812" alt="Mobile Tea Bar" />
-        <MainDesc>
-          After a great event at Keysight's carnival last year, we're excited to be back with another Mobile Tea Bar activation!
-        </MainDesc>
-      </MainContent>
+        {/* Ảnh cuối bài và cảm ơn */}
+        <EndContent>
+          <EndImg src="https://cdn.shopify.com/s/files/1/0081/8734/7026/files/IMG_3760.jpg?v=1742390813" alt="Banner End" />
+          <EndDesc>
+            Thank you for having us and wishing everyone an empowering International Women's Day!
+          </EndDesc>
+        </EndContent>
 
-      {/* Ảnh cuối bài và cảm ơn */}
-      <EndContent>
-        <EndImg src="https://cdn.shopify.com/s/files/1/0081/8734/7026/files/IMG_3760.jpg?v=1742390813" alt="Banner End" />
-        <EndDesc>
-          Thank you for having us and wishing everyone an empowering International Women's Day!
-        </EndDesc>
-      </EndContent>
+        {/* CTA */}
+        <CTA>
+          <CTALink href="#">
+            DISCOVER THE BENEFITS OF PARTNERING WITH US!
+          </CTALink>
+        </CTA>
 
-      {/* CTA */}
-      <CTA>
-        <CTALink href="#">
-          DISCOVER THE BENEFITS OF PARTNERING WITH US!
-        </CTALink>
-      </CTA>
+        {/* Thông tin tác giả */}
+        <Author>WRITTEN BY MATCHAYA ONLINE TEAM</Author>
 
-      {/* Thông tin tác giả */}
-      <Author>WRITTEN BY MATCHAYA ONLINE TEAM</Author>
+        {/* Chia sẻ mạng xã hội */}
+        <SocialShare>
+          <SocialBtn><SocialIcon className="fab fa-facebook-f" /></SocialBtn>
+          <SocialBtn><SocialIcon className="fab fa-twitter" /></SocialBtn>
+          <SocialBtn><SocialIcon className="fab fa-pinterest-p" /></SocialBtn>
+        </SocialShare>
 
-      {/* Chia sẻ mạng xã hội */}
-      <SocialShare>
-        <SocialBtn><SocialIcon className="fab fa-facebook-f" /></SocialBtn>
-        <SocialBtn><SocialIcon className="fab fa-twitter" /></SocialBtn>
-        <SocialBtn><SocialIcon className="fab fa-pinterest-p" /></SocialBtn>
-      </SocialShare>
+        {/* Các bài viết liên quan */}
+        <RelatedSection>
+          <RelatedWrapper>
+            <RelatedCard>
+              <RelatedImg src="https://matchaya.sg/cdn/shop/articles/Webpage-without-words__1800x1200_bd231296-8111-4a9c-a04f-f8509ab2ef6b_600x.png?v=1745214204" alt="Sakura Season" />
+              <RelatedTitle>NOSTALGIA AND TRANQUILITY - SAKURA SEASON 2025</RelatedTitle>
+            </RelatedCard>
+            <RelatedCard>
+              <RelatedImg src="https://matchaya.sg/cdn/shop/articles/Untitled_design_45_600x.png?v=1738899160" alt="Revamp Packaging" />
+              <RelatedTitle>A FRESH BEGINNING | REVAMP PACKAGING</RelatedTitle>
+            </RelatedCard>
+          </RelatedWrapper>
+        </RelatedSection>
 
-      {/* Các bài viết liên quan */}
-      <RelatedSection>
-        <RelatedWrapper>
-          <RelatedCard>
-            <RelatedImg src="https://matchaya.sg/cdn/shop/articles/Webpage-without-words__1800x1200_bd231296-8111-4a9c-a04f-f8509ab2ef6b_600x.png?v=1745214204" alt="Sakura Season" />
-            <RelatedTitle>NOSTALGIA AND TRANQUILITY - SAKURA SEASON 2025</RelatedTitle>
-          </RelatedCard>
-          <RelatedCard>
-            <RelatedImg src="https://matchaya.sg/cdn/shop/articles/Untitled_design_45_600x.png?v=1738899160" alt="Revamp Packaging" />
-            <RelatedTitle>A FRESH BEGINNING | REVAMP PACKAGING</RelatedTitle>
-          </RelatedCard>
-        </RelatedWrapper>
-      </RelatedSection>
-
-      {/* Carousel sản phẩm */}
-      <ProductSection>
-      <SliderTitle>SHOP NOW</SliderTitle>
-        <ProductWrapper>
-          <ProductCard>
-            <ProductImg src="https://matchaya.sg/cdn/shop/products/DualColdDrinks_400x.png?v=1629609658" alt="A Tea Gathering" />
-            <ProductName>A TEA GATHERING</ProductName>
-            <ProductRating>★ 4.9 <ProductReview>(56)</ProductReview></ProductRating>
-            <ProductPrice>$11 <ProductOldPrice>$12</ProductOldPrice></ProductPrice>
-          </ProductCard>
-          <ProductCard>
-            <ProductImg src="https://matchaya.sg/cdn/shop/products/DualColdDrinks_400x.png?v=1629609658" alt="A Tea Gathering for 2 + Warabi Mochi" />
-            <ProductName>A TEA GATHERING FOR 2 + WARABI MOCHI</ProductName>
-            <ProductRating>★ 4.8 <ProductReview>(37)</ProductReview></ProductRating>
-          </ProductCard>
-          <ProductCard>
-            <ProductImg src="https://matchaya.sg/cdn/shop/products/DualColdDrinks_400x.png?v=1629609658" alt="Winter's Here" />
-            <ProductName>WINTER'S HERE</ProductName>
-            <ProductRating>★ 4.7 <ProductReview>(29)</ProductReview></ProductRating>
-            <ProductPrice>$45 <ProductOldPrice>$48</ProductOldPrice></ProductPrice>
-          </ProductCard>
-        </ProductWrapper>
-      </ProductSection>
-    </Wrapper>
+        {/* Carousel sản phẩm */}
+        <ProductSection>
+        <SliderTitle>SHOP NOW</SliderTitle>
+          <ProductWrapper>
+            <ProductCard>
+              <ProductImg src="https://matchaya.sg/cdn/shop/products/DualColdDrinks_400x.png?v=1629609658" alt="A Tea Gathering" />
+              <ProductName>A TEA GATHERING</ProductName>
+              <ProductRating>★ 4.9 <ProductReview>(56)</ProductReview></ProductRating>
+              <ProductPrice>$11 <ProductOldPrice>$12</ProductOldPrice></ProductPrice>
+            </ProductCard>
+            <ProductCard>
+              <ProductImg src="https://matchaya.sg/cdn/shop/products/DualColdDrinks_400x.png?v=1629609658" alt="A Tea Gathering for 2 + Warabi Mochi" />
+              <ProductName>A TEA GATHERING FOR 2 + WARABI MOCHI</ProductName>
+              <ProductRating>★ 4.8 <ProductReview>(37)</ProductReview></ProductRating>
+            </ProductCard>
+            <ProductCard>
+              <ProductImg src="https://matchaya.sg/cdn/shop/products/DualColdDrinks_400x.png?v=1629609658" alt="Winter's Here" />
+              <ProductName>WINTER'S HERE</ProductName>
+              <ProductRating>★ 4.7 <ProductReview>(29)</ProductReview></ProductRating>
+              <ProductPrice>$45 <ProductOldPrice>$48</ProductOldPrice></ProductPrice>
+            </ProductCard>
+          </ProductWrapper>
+        </ProductSection>
+      </Wrapper>
     </>
   );
 };

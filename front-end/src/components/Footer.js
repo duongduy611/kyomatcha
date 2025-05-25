@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const footerData = [
   {
@@ -24,11 +25,12 @@ const footerData = [
     ],
   },
   {
-    title: "LEARN",
+    title: "BLOG",
     links: [
-      { text: "Latest News", href: "#" },
-      { text: "Tea Insight", href: "#" },
-      { text: "Tea Recipes", href: "#" },
+      { text: "Latest BLOG", href: "#" },
+      { text: "Khám phá về Matcha", href: "#" },
+      { text: "Làm đẹp", href: "#" },
+      { text: "Pha chế", href: "#" },
     ],
   },
   {
@@ -52,17 +54,8 @@ const footerData = [
       { text: "Redmart", href: "#" },
     ],
   },
-  {
-    title: "CONTACT US",
-    links: [
-      { text: "General Enquires", href: "#" },
-      { text: "Corporate Enquires", href: "#" },
-      { text: "Franchise Enquires", href: "#" },
-      { text: "Wholesale Enquires", href: "#" },
-      { text: "Partnerships", href: "#" },
-    ],
-  },
 ];
+
 
 const FooterWrapper = styled.footer`
   background-color: #ffffff;
@@ -81,7 +74,7 @@ const FooterInner = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 30px;
-  justify-content: space-between;
+  justify-content: center; /* Centers the blocks horizontally */
 `;
 
 const Block = styled.div`
@@ -89,7 +82,7 @@ const Block = styled.div`
 `;
 
 const Title = styled.h6`
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
   margin-bottom: 20px;
   color: #333;
@@ -131,7 +124,7 @@ const Copyright = styled.div`
   font-size: 12px;
 `;
 
-const StoreName = styled.a`
+const StoreName = styled(Link)`
   font-size: 12px;
   font-weight: 400;
   margin-bottom: 20px;
@@ -155,6 +148,10 @@ const PaymentItem = styled.li`
 `;
 
 const Footer = () => {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <FooterWrapper>
       <Container>
@@ -175,7 +172,7 @@ const Footer = () => {
 
         <FooterAside>
           <Copyright>
-            <StoreName href="/">© KYOMATCHA</StoreName>
+            <StoreName to="/" onClick={scrollToTop}>© KYOMATCHA</StoreName>
           </Copyright>
           <PaymentList>
             <PaymentItem>

@@ -2,45 +2,21 @@ import React, { useState } from "react";
 import styled from 'styled-components';
 import bannerWeb from "../assets/images/banner_web.jpg";
 import GlobalStyle from '../components/GlobalStyle';
+import { useNavigate } from 'react-router-dom';
+import { blogs } from '../data/blogs';
 
 const tabs = [
-  { label: "All" },
-  { label: "Bespoke Projects" },
-  { label: "Mobile Tea Bar" },
-  { label: "Progressive Tea Bar" },
-  { label: "Workshop" },
+  { label: "Tất cả" },
+  { label: "Khám phá về Matcha" },
+  { label: "Làm đẹp" },
+  { label: "Pha chế" },
 ];
 
 const featured = {
   image: bannerWeb,
   title: "NOSTALGIA AND TRANQUILITY - SAKURA SEASON 2025",
-  desc: "The sakura season is relatively brief, with the peak bloom lasting only about a week — a quiet reminder of transience and the impermanence of life...",
   link: "#",
 };
-
-const blogs = [
-  {
-    image: "https://matchaya.sg/cdn/shop/articles/Webpage-without-words__1800x1200_bd231296-8111-4a9c-a04f-f8509ab2ef6b_400x.png?v=1745214204",
-    category: "PROGRESSIVE TEA BAR",
-    title: "SANTA'S MENU 2024 | NOW TILL 2 JAN",
-    desc: "This year, we're bringing the Grinch's favourite soft serve flavour to our outlets - Chocolate Mint. Chocolate Mint Soft Serve Rich, creamy dark c...",
-    link: "https://matchaya.sg/blogs/latest-news/santas-menu-2024-now-till-2-jan"
-  },
-  {
-    image: "https://matchaya.sg/cdn/shop/articles/IMG_3773_400x.jpg?v=1742391264",
-    category: "VARIETY TEA BOX",
-    title: "CAPTIVATING FLAVOURS ALL AROUND JAPAN | VARIETY TEA BOX",
-    desc: "One common misconception about tea is that it can only be enjoyed at certain times of the day. With our carefully curated selection of straight an...",
-    link: "https://matchaya.sg/blogs/latest-news/captivating-flavours-all-around-japan-variety-tea-box"
-  },
-  {
-    image: "https://matchaya.sg/cdn/shop/articles/Untitled_design_45_400x.png?v=1738899160",
-    category: "WORKSHOP",
-    title: "SUSS X MATCHAYA | UWELLNESS FESTIVAL",
-    desc: "Earlier this month, we had the pleasure of participating in the UWellness Festival, hosted by the Singapore University of Social Sciences (SUSS) i...",
-    link: "https://matchaya.sg/blogs/latest-news/suss-x-matchaya-uwellness"
-  }
-];
 
 const products = [
   {
@@ -98,6 +74,7 @@ const TabList = styled.div`
 `;
 
 const Tab = styled.button`
+  font-family: 'Montserrat', sans-serif;
   background: none;
   border: none;
   font-size: 1rem;
@@ -118,7 +95,6 @@ const Tab = styled.button`
 
 const FeaturedWrapper = styled.div`
   background: #fff;
-  border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
   display: flex;
@@ -173,7 +149,7 @@ const FeaturedDesc = styled.p`
 const ReadMoreBtn = styled.a`
   background: linear-gradient(to right, transparent 50%, #81893f 50%);
   background-size: 200% 100%;
-  background-position: right bottom; /* Bắt đầu từ bên phải */
+  background-position: right bottom;
   color: #fff;
   border: 2px solid #81893f;
   padding: 14px 38px;
@@ -190,7 +166,7 @@ const ReadMoreBtn = styled.a`
   z-index: 1;
 
   &:hover {
-    background-position: left bottom; /* Chạy sang trái khi hover */
+    background-position: left bottom;
     color: #fff;
   }
 `;
@@ -364,13 +340,33 @@ const Blog = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [page, setPage] = useState(1);
   const [slide, setSlide] = useState(0);
+  const navigate = useNavigate();
+
+  // Lọc blog theo tab
+  let filteredBlogs = [];
+  if (activeTab === 0) {
+    // Tất cả: lấy 3 blog đầu mỗi category
+    const categories = ["Khám phá về Matcha", "Làm đẹp", "Pha chế"];
+    categories.forEach(cat => {
+      filteredBlogs = filteredBlogs.concat(
+        blogs.filter(b => b.category === cat).slice(0, 3)
+      );
+    });
+  } else {
+    const tabLabel = tabs[activeTab].label;
+    filteredBlogs = blogs.filter(b => b.category === tabLabel);
+  }
+
+  const handleBlogClick = (id) => {
+    navigate(`/blog/${id}`);
+  };
 
   return (
     <>
       <GlobalStyle />
       <PageWrapper>
         <Section>
-          <Title>LATEST NEWS</Title>
+          <Title>LATEST BLOG</Title>
           <TabList>
             {tabs.map((tab, idx) => (
               <Tab
@@ -393,11 +389,21 @@ const Blog = () => {
         </Section>
         <BlogListSection>
           <BlogGrid>
-            {blogs.map((b, idx) => (
+            {filteredBlogs.map((b, idx) => (
               <BlogCard key={idx}>
-                <BlogImage src={b.image} alt={b.title} />
+                <BlogImage
+                  src={b.image}
+                  alt={b.title}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleBlogClick(b.id)}
+                />
                 <BlogCategory>{b.category}</BlogCategory>
-                <BlogTitle>{b.title}</BlogTitle>
+                <BlogTitle
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleBlogClick(b.id)}
+                >
+                  {b.title}
+                </BlogTitle>
                 <BlogDesc>{b.desc}</BlogDesc>
                 <BlogReadMore href={b.link} target="_blank" rel="noopener noreferrer">Read more</BlogReadMore>
               </BlogCard>
