@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import bannerWeb from '../assets/images/banner_web.jpg';
 import styled from 'styled-components';
-import { FaStar } from "react-icons/fa";
 import GlobalStyle from '../components/GlobalStyle';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+
+const BACKEND_URL = 'http://localhost:9999';
 
 const BannerWrapper = styled.div`  width: 100%;
   height: 100vh;
@@ -88,37 +91,6 @@ const BannerButton = styled.button`
   }
 `;
 
-const products = [
-  {
-    image: "https://matchaya.sg/cdn/shop/files/Genmaicha_5cb2679a-d36d-4271-af6b-1caf7173ffb7_600x.png?v=1737885672",
-    name: "CEREMONIAL GRADE MATCHA POWDER (OKUMIDORI)",
-    price: "FROM $48",
-    rating: 5,
-    reviews: 7,
-  },
-  {
-    image: "https://matchaya.sg/cdn/shop/files/Matcha8_600x.png?v=1737886288",
-    name: "UJI MATCHA 8 POWDER",
-    price: "FROM $21",
-    rating: 0,
-    reviews: 0,
-  },
-  {
-    image: "https://matchaya.sg/cdn/shop/files/Matcha_18_600x.png?v=1737886025",
-    name: "UJI MATCHA 18 POWDER",
-    price: "FROM $14",
-    rating: 5,
-    reviews: 86,
-  },
-  {
-    image: "https://matchaya.sg/cdn/shop/files/Houjicha_622bf5db-6336-4631-b849-a7b3432d0210_600x.png?v=1737885509",
-    name: "UJI HOUJICHA POWDER",
-    price: "FROM $14",
-    rating: 5,
-    reviews: 25,
-  },
-];
-
 const Section = styled.section`
   border-top: 1px solid #e5e5e5;
   background: #f7f6f4;
@@ -179,25 +151,74 @@ const ProductRating = styled.div`
 `;
 
 function TeaCollection() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(`${BACKEND_URL}/api/products`);
+        if (response.data && response.data.data) {
+          const filteredProducts = response.data.data
+            .filter(product =>
+              !product.name.includes('matcha fuji 01') &&
+              (product.name.includes('Matcha Natsu') ||
+               product.name.includes('Matcha Aki') ||
+               product.name.includes('Matcha Haru') ||
+               product.name.includes('Matcha Fuji 02') ||
+               product.name.includes('Matcha Fuji 03') ||
+               product.name.includes('Matcha Fuji 05'))
+            )
+            .slice(0, 6);
+          console.log('Filtered Products:', filteredProducts); // Debug log
+          setProducts(filteredProducts);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return (
+      <Section>
+        <SectionTitle>TEA COLLECTION</SectionTitle>
+        <div style={{ textAlign: 'center' }}>Loading...</div>
+      </Section>
+    );
+  }
+
   return (
     <Section>
       <SectionTitle>TEA COLLECTION</SectionTitle>
       <ProductGrid>
-        {products.map((p, idx) => (
-          <ProductCard key={idx}>
-            <ProductImage src={p.image} alt={p.name} />
-            <ProductName>{p.name}</ProductName>
-            {p.rating > 0 && (
-              <ProductRating>
-                {[...Array(5)].map((_, i) => (
-                  <FaStar key={i} color={i < p.rating ? "#bfae5a" : "#e0e0e0"} />
-                ))}
-                <span style={{ color: '#81893f', fontSize: '0.95rem', marginLeft: 4 }}>({p.reviews})</span>
-              </ProductRating>
-            )}
-            <ProductPrice>{p.price}</ProductPrice>
-          </ProductCard>
-        ))}
+        {products.map((product) => {
+          console.log('Product images:', product.images); // Debug log
+          return (
+            <ProductCard key={product._id}>
+              <Link to={`/products/${product.slug}`} style={{ textDecoration: 'none' }}>
+                <ProductImage
+                  src={product.images && product.images.length > 0
+                    ? `${BACKEND_URL}${product.images[0]}`
+                    : '/placeholder.jpg'
+                  }
+                  alt={product.name}
+                  onError={(e) => {
+                    console.log('Image load error for:', product.name); // Debug log
+                    e.target.onerror = null;
+                    e.target.src = '/placeholder.jpg';
+                  }}
+                />
+                <ProductName>{product.name}</ProductName>
+                <ProductPrice>Chỉ từ {product.price.toLocaleString()}đ</ProductPrice>
+              </Link>
+            </ProductCard>
+          );
+        })}
       </ProductGrid>
     </Section>
   );

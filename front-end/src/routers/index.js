@@ -9,6 +9,9 @@ import Contact from '../pages/Contact';
 import AboutUs from '../pages/AboutUs';
 import History from '../pages/History';
 import NotFound from '../pages/NotFound';
+import AllProducts from '../pages/AllProducts';
+import ProductDetail from '../pages/ProductDetail';
+
 export const routes = [
     {
         path: "/",
@@ -63,6 +66,16 @@ export const routes = [
     {
         path: '*',
         page: NotFound,
+        isShowHeader: true
+    },
+    {
+        path: '/products',
+        page: AllProducts,
+        isShowHeader: true
+    },
+    {
+        path: '/products/:slug',
+        page: ProductDetail,
         isShowHeader: true
     }
 ]
