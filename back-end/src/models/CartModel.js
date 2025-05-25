@@ -5,10 +5,12 @@ const cartSchema = new mongoose.Schema({
   items: [
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-      quantity:  { type: Number, required: true, min: 1 }
+      name: { type: String },     // bổ sung thêm để lưu tên sản phẩm khi thêm vào cart
+      price: { type: Number },    // lưu giá tại thời điểm thêm vào giỏ (snapshot)
+      quantity: { type: Number, required: true, min: 1 }
     }
   ],
-  isDeleted: { type: Boolean, default: false }
+  isDeleted: { type: Boolean, default: false },  // đổi tên cho thống nhất với data
 }, { timestamps: true });
 
 module.exports = mongoose.model('Cart', cartSchema);

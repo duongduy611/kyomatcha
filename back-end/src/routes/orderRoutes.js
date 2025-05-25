@@ -1,12 +1,27 @@
-const express = require("express");
-const {} = require("../controllers/OrderController");
+const express = require('express');
+const {
+	getOrdersByCustomer,
+	createOrder,
+	getOrderById,
+	getAllOrders,
+	updateOrderStatus,
+} = require('../controllers/OrderController');
 
 const router = express.Router();
 
+// Lấy tất cả đơn hàng của 1 customer
+router.get('/customer/:customerId', getOrdersByCustomer);
 
-router.get("/customer/:customerId", ),
+// Tạo đơn hàng mới
+router.post('/', createOrder);
 
+// Lấy đơn hàng theo ID
+router.get('/:orderId', getOrderById);
 
+// Quản trị viên/nhân viên: lấy toàn bộ đơn hàng
+router.get('/', getAllOrders);
 
+// Cập nhật trạng thái đơn hàng (nếu có)
+router.put('/:orderId/status', updateOrderStatus);
 
 module.exports = router;
