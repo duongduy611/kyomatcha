@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import GlobalStyle from '../components/GlobalStyle';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { blogs } from '../data/blogs';
 
 const BACKEND_URL = 'http://localhost:9999';
 
@@ -72,7 +73,7 @@ const BannerButtonGroup = styled.div`
   gap: 18px;
 `;
 
-const BannerButton = styled.button`
+const BannerButton = styled(Link)`
   background: #81893f;
   color: #fff;
   border: 2px solid #81893f;
@@ -84,10 +85,13 @@ const BannerButton = styled.button`
   cursor: pointer;
   transition: background 0.2s, color 0.2s, border 0.2s;
   font-family: 'Montserrat', sans-serif;
+  text-decoration: none;
+  text-align: center;
+
   &:hover {
     background: transparent;
-    color: #81893f;
-    border: 2px solid #81893f;
+    color: #fff;
+    border: 2px solid #fff;
   }
 `;
 
@@ -138,16 +142,6 @@ const ProductPrice = styled.div`
   color: #81893f;
   font-size: 1rem;
   margin-top: 2px;
-`;
-
-const ProductRating = styled.div`
-  color: #bfae5a;
-  font-size: 1rem;
-  margin-bottom: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
 `;
 
 function TeaCollection() {
@@ -224,27 +218,6 @@ function TeaCollection() {
   );
 }
 
-const blogs = [
-  {
-    image: "https://matchaya.sg/cdn/shop/articles/Webpage-without-words__1800x1200_bd231296-8111-4a9c-a04f-f8509ab2ef6b_400x.png?v=1745214204",
-    title: "NOSTALGIA AND TRANQUILITY - SAKURA SEASON 2025",
-    desc: "The sakura season is relatively brief, with the peak bloom lasting only about a week — a quiet reminder of transience and the impermanence of life...",
-    link: "#"
-  },
-  {
-    image: "https://matchaya.sg/cdn/shop/articles/IMG_3773_400x.jpg?v=1742391264",
-    title: "KEYSIGHT X MATCHAYA | MOBILE TEA BAR",
-    desc: "After a great event at Keysight's carnival last year, we're excited to be back with another Mobile Tea Bar activation!  Originally planned for Inte...",
-    link: "#"
-  },
-  {
-    image: "https://matchaya.sg/cdn/shop/articles/Untitled_design_45_400x.png?v=1738899160",
-    title: "A FRESH BEGINNING | REVAMP PACKAGING",
-    desc: "The Year of the Snake invites us to reflect on transformation and personal growth, much like a snake shedding its skin, we've made space for someth...",
-    link: "#"
-  }
-];
-
 const BlogSection = styled.section`
   background: #f7f6f4;
   padding: 60px 0 40px 0;
@@ -277,8 +250,17 @@ const BlogGrid = styled.div`
 
 const BlogCard = styled.div`
   width: 370px;
-  background: transparent;
+  background: white;
   text-align: left;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
 `;
 
 const BlogImage = styled.img`
@@ -286,48 +268,83 @@ const BlogImage = styled.img`
   height: 210px;
   object-fit: cover;
   margin-bottom: 18px;
+  border-radius: 4px;
 `;
 
-const BlogPostTitle = styled.div`
-  font-size: 1.08rem;
-  color: #6d6a4f;
-  font-weight: 500;
+const BlogCategory = styled.div`
+  color: #81893f;
+  font-size: 0.9rem;
   letter-spacing: 2px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   text-transform: uppercase;
 `;
 
+const BlogPostTitle = styled.div`
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  line-height: 1.4;
+
+  &:hover {
+    color: #81893f;
+  }
+`;
+
 const BlogDesc = styled.div`
-  font-family: 'Nunito Sans', sans-serif;
-  color: #81893f;
-  font-size: 14px;
+  color: #666;
+  font-size: 0.95rem;
   margin-bottom: 18px;
+  line-height: 1.6;
 `;
 
 const BlogReadMore = styled(Link)`
-  font-family: 'Nunito Sans', sans-serif;
   color: #81893f;
-  font-size: 14px;
+  font-size: 0.95rem;
   text-decoration: underline;
   text-underline-offset: 3px;
   transition: color 0.2s;
+  font-weight: 500;
+
   &:hover {
     color: #6d7a44;
   }
 `;
 
 function BlogList() {
+  // Lấy blog mới nhất từ mỗi category
+  const getLatestBlogsByCategory = () => {
+    const categories = ["Khám phá về Matcha", "Làm đẹp", "Pha chế"];
+    const latestBlogs = [];
+
+    categories.forEach(category => {
+      const categoryBlogs = blogs
+        .filter(blog => blog.category === category)
+        .sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+
+      if (categoryBlogs.length > 0) {
+        latestBlogs.push(categoryBlogs[0]);
+      }
+    });
+
+    return latestBlogs;
+  };
+
+  const latestBlogs = getLatestBlogsByCategory();
+
   return (
     <BlogSection>
       <BlogLabel>Blogs</BlogLabel>
       <BlogTitle>LATEST BLOGS</BlogTitle>
       <BlogGrid>
-        {blogs.map((b, idx) => (
+        {latestBlogs.map((blog, idx) => (
           <BlogCard key={idx}>
-            <BlogImage src={b.image} alt={b.title} />
-            <BlogPostTitle>{b.title}</BlogPostTitle>
-            <BlogDesc>{b.desc}</BlogDesc>
-            <BlogReadMore to={b.link}>Read more</BlogReadMore>
+            <BlogImage src={blog.image} alt={blog.title} />
+            <BlogCategory>{blog.category}</BlogCategory>
+            <BlogPostTitle>{blog.title}</BlogPostTitle>
+            <BlogDesc>{blog.desc}</BlogDesc>
+            <BlogReadMore to={`/blog/${blog.id}`}>Read more</BlogReadMore>
           </BlogCard>
         ))}
       </BlogGrid>
@@ -346,8 +363,8 @@ const Home = () => {
           <BannerSubText>CULTIVATING MINDFULNESS AND TRANQUILITY</BannerSubText>
           <BannerTitle>A FRESH BEGINNING</BannerTitle>
           <BannerButtonGroup>
-            <BannerButton>SHOP NEW LOOK</BannerButton>
-            <BannerButton>READ MORE</BannerButton>
+            <BannerButton to="/products">SHOP NEW LOOK</BannerButton>
+            <BannerButton to="/blog">READ MORE</BannerButton>
           </BannerButtonGroup>
         </BannerTextWrapper>
       </BannerWrapper>

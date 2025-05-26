@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 const Banner = styled.div`
   position: relative;
   width: 100%;
-  height: 420px;
+  height: 600px;
   overflow: hidden;
 `;
 const BannerImg = styled.img`

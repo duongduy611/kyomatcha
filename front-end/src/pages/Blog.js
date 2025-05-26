@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import styled from 'styled-components';
-import GlobalStyle from '../components/GlobalStyle';
-import { useNavigate } from 'react-router-dom';
-import { blogs } from '../data/blogs';
-import { useAppContext } from '../context/AppContext';
+import styled from "styled-components";
+import GlobalStyle from "../components/GlobalStyle";
+import { useNavigate } from "react-router-dom";
+import { blogs } from "../data/blogs";
+import { useAppContext } from "../context/AppContext";
+import axios from "axios";
+
+const BACKEND_URL = "http://localhost:9999";
 
 const tabs = [
   { label: "Tất cả" },
@@ -12,50 +15,7 @@ const tabs = [
   { label: "Pha chế" },
 ];
 
-const featuredContent = {
-  "Tất cả": {
-    image: "https://matchaya.sg/cdn/shop/articles/artem-r-BLNqqiIJaos-unsplash_2b6efb14-0198-4271-8513-4c07aa3d40e9_400x.jpg?v=1746154725",
-    title: "NOSTALGIA AND TRANQUILITY - SAKURA SEASON 2025",
-  },
-  "Khám phá về Matcha": {
-    image: "matchaBanner",
-    title: "HÀNH TRÌNH TÌM HIỂU VỀ MATCHA NHẬT BẢN",
-    desc: "Khám phá nguồn gốc và quy trình sản xuất Matcha truyền thống",
-    link: "#"
-  },
-  "Làm đẹp": {
-    image: "beautyBanner",
-    title: "BÍ QUYẾT LÀM ĐẸP VỚI BỘT MATCHA",
-    desc: "Tận dụng công dụng làm đẹp tuyệt vời từ bột Matcha",
-    link: "#"
-  },
-  "Pha chế": {
-    image: "recipeBanner",
-    title: "NGHỆ THUẬT PHA CHẾ MATCHA",
-    desc: "Học cách pha chế những món đồ uống tuyệt hảo từ Matcha",
-    link: "#"
-  }
-};
-
-const products = [
-  {
-    image: "https://matchaya.sg/cdn/shop/products/DualColdDrinks_400x.png?v=1629609658",
-    name: "A TEA GATHERING",
-    price: 11,
-    oldPrice: 12,
-  },
-  {
-    image: "https://matchaya.sg/cdn/shop/products/ColdDrinks_Mochi_400x.png?v=1629609719",
-    name: "A TEA GATHERING FOR 2 + WARABI MOCHI",
-    price: 19,
-  },
-  {
-    image: "https://matchaya.sg/cdn/shop/products/DualColdDrinks_400x.png?v=1629609658",
-    name: "WINTER'S HERE",
-    price: 45,
-    oldPrice: 48,
-  },
-];
+const ITEMS_PER_PAGE = 6;
 
 const PageWrapper = styled.div`
   background: #f4f4f4;
@@ -87,7 +47,7 @@ const TabList = styled.div`
 `;
 
 const Tab = styled.button`
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   background: none;
   border: none;
   font-size: 1rem;
@@ -130,12 +90,6 @@ const FeaturedContent = styled.div`
   bottom: 0;
   padding: 48px 32px 32px 48px;
   color: #fff;
-  background: linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.32) 60%,
-    rgba(0, 0, 0, 0.08) 100%,
-    transparent 100%
-  );
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -152,35 +106,22 @@ const FeaturedTitle = styled.h3`
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 `;
 
-const FeaturedDesc = styled.p`
-  font-size: 1.08rem;
-  margin-bottom: 28px;
-  max-width: 600px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-`;
-
-const ReadMoreBtn = styled.a`
-  background: linear-gradient(to right, transparent 50%, #81893f 50%);
-  background-size: 200% 100%;
-  background-position: right bottom;
-  color: #fff;
-  border: 2px solid #81893f;
+const ReadMoreBtn = styled.button`
+  background: #fff;
+  color: black;
+  border: 2px solid #fff;
   padding: 14px 38px;
   font-size: 1rem;
   font-weight: 500;
   letter-spacing: 2px;
   border-radius: 2px;
   cursor: pointer;
-  transition: background-position 0.5s ease, color 0.5s ease;
-  font-family: 'Montserrat', sans-serif;
-  text-decoration: none;
-  display: inline-block;
-  position: relative;
-  z-index: 1;
-
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  font-family: "Montserrat", sans-serif;
   &:hover {
-    background-position: left bottom;
+    background: transparent;
     color: #fff;
+    border: 2px solid #fff;
   }
 `;
 
@@ -260,136 +201,133 @@ const Pagination = styled.div`
   color: #6d6a4f;
   user-select: none;
 `;
+const PageArrow = styled.button`
+  background: none;
+  border: none;
+  color: ${props => props.disabled ? '#bdbdbd' : '#81893f'};
+  font-size: 1.2rem;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  padding: 0 12px;
+  transition: color 0.2s;
+
+  &:hover {
+    color: ${props => props.disabled ? '#bdbdbd' : '#6d7a44'};
+  }
+`;
 const PageNum = styled.span`
   padding: 2px 12px 4px 12px;
-  border-bottom: 3px solid ${props => props.active ? '#81893f' : 'transparent'};
-  color: ${props => props.active ? '#81893f' : '#6d6a4f'};
-  cursor: pointer;
+  border-bottom: 3px solid ${(props) => (props.active ? "#81893f" : "transparent")};
+  color: ${(props) => {
+    if (props.isEllipsis) return '#bdbdbd';
+    return props.active ? "#81893f" : "#6d6a4f";
+  }};
+  cursor: ${props => props.isEllipsis ? 'default' : 'pointer'};
   transition: border 0.2s, color 0.2s;
+  user-select: none;
+
+  &:hover {
+    color: ${props => props.isEllipsis ? '#bdbdbd' : '#81893f'};
+  }
 `;
 
-const SliderWrapper = styled.div`
-  max-width: 1300px;
-  margin: 48px auto 0 auto;
-  background: #f4f4f4;
-  position: relative;
-  padding: 48px 0 32px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+const ProductSection = styled.section`
+  max-width: 1200px;
+  margin: 48px auto;
+  padding: 0 20px;
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 40px 20px;
 `;
-const SliderTitle = styled.h2`
+
+const ProductTitle = styled.h2`
   text-align: center;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   letter-spacing: 3px;
-  color: #6d6a4f;
-  font-weight: 500;
-  margin-bottom: 32px;
+  color: #81893f;
+  font-weight: 600;
+  margin-bottom: 40px;
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: #81893f;
+    border-radius: 2px;
+  }
 `;
+
 const ProductGrid = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 48px;
-  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 `;
+
 const ProductCard = styled.div`
-  width: 320px;
-  background: transparent;
   text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
 `;
+
 const ProductImage = styled.img`
   width: 100%;
-  height: 220px;
+  height: 250px;
   object-fit: cover;
-  border-radius: 2px;
-  margin-bottom: 18px;
+  border-radius: 8px;
+  margin-bottom: 20px;
 `;
-const ProductName = styled.div`
-  font-size: 1.05rem;
-  color: #6d6a4f;
+
+const ProductName = styled.h3`
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 12px;
   font-weight: 500;
-  margin: 18px 0 8px 0;
   letter-spacing: 1px;
 `;
-const ProductRating = styled.div`
-  color: #bfae5a;
-  font-size: 1rem;
-  margin-bottom: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-`;
-const ProductPrice = styled.div`
-  color: #81893f;
-  font-size: 1rem;
-  margin-top: 2px;
-  span {
-    color: #bdbdbd;
-    text-decoration: line-through;
-    margin-left: 8px;
-    font-size: 0.95rem;
-  }
-`;
-const ArrowBtn = styled.button`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #fff;
-  border: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  font-size: 2rem;
-  color: #81893f;
-  cursor: pointer;
-  z-index: 2;
-  left: ${props => props.left ? '24px' : 'unset'};
-  right: ${props => props.right ? '24px' : 'unset'};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  &:hover {
-    background: #f7f6f4;
-  }
-`;
 
-const FeaturedCategory = styled(BlogCategory)`
+const ProductPrice = styled.p`
+  color: #81893f;
+  font-weight: 600;
   font-size: 1.1rem;
-  margin-bottom: 10px;
-`;
-
-const FeaturedDate = styled(BlogDate)`
-  font-size: 1rem;
-  margin-bottom: 12px;
 `;
 
 const Blog = () => {
   const [page, setPage] = useState(1);
-  const [slide, setSlide] = useState(0);
   const navigate = useNavigate();
   const { selectedBlogCategory, setSelectedBlogCategory } = useAppContext();
-
-  // Format date to display
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('vi-VN', options);
-  };
+  const [featuredProducts, setFeaturedProducts] = useState([]);
 
   // Get featured blog based on selected category
   const getFeaturedBlog = () => {
     let filteredBlogs;
-    if (selectedBlogCategory === 'Tất cả') {
-      // Get all blogs
+    if (selectedBlogCategory === "Tất cả") {
       filteredBlogs = [...blogs];
     } else {
-      // Get blogs for specific category
-      filteredBlogs = blogs.filter(b => b.category === selectedBlogCategory);
+      filteredBlogs = blogs.filter((b) => b.category === selectedBlogCategory);
     }
-    // Sort by date and get the latest
-    return filteredBlogs.sort((a, b) =>
-      new Date(b.publishDate) - new Date(a.publishDate)
+    return filteredBlogs.sort(
+      (a, b) => new Date(b.publishDate) - new Date(a.publishDate)
     )[0];
   };
 
@@ -397,20 +335,90 @@ const Blog = () => {
   const featured = getFeaturedBlog();
 
   // Lọc và sắp xếp blog
-  let filteredBlogs = [];
-  if (selectedBlogCategory === 'Tất cả') {
-    // Hiển thị tất cả blog và sắp xếp theo ngày mới nhất
-    filteredBlogs = [...blogs].sort((a, b) =>
-      new Date(b.publishDate) - new Date(a.publishDate)
-    );
-  } else {
-    filteredBlogs = blogs
-      .filter(b => b.category === selectedBlogCategory)
-      .sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
-  }
+  const getFilteredBlogs = () => {
+    if (selectedBlogCategory === "Tất cả") {
+      return [...blogs].sort(
+        (a, b) => new Date(b.publishDate) - new Date(a.publishDate)
+      );
+    } else {
+      return blogs
+        .filter((b) => b.category === selectedBlogCategory)
+        .sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+    }
+  };
+
+  // Fetch featured Matcha products
+  useEffect(() => {
+    const fetchFeaturedProducts = async () => {
+      try {
+        const response = await axios.get(`${BACKEND_URL}/api/products`, {
+          params: {
+            limit: 3,
+          }
+        });
+
+        if (response.data && response.data.data) {
+          setFeaturedProducts(response.data.data.slice(0, 3));
+        }
+      } catch (error) {
+        console.error('Error fetching Matcha products:', error);
+      }
+    };
+
+    fetchFeaturedProducts();
+  }, []);
+
+  const filteredBlogs = getFilteredBlogs();
+  const totalPages = Math.ceil(filteredBlogs.length / ITEMS_PER_PAGE);
+
+  // Reset page to 1 when category changes
+  useEffect(() => {
+    setPage(1);
+  }, [selectedBlogCategory]);
+
+  // Get current page blogs
+  const getCurrentPageBlogs = () => {
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return filteredBlogs.slice(startIndex, endIndex);
+  };
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      pageNumbers.push(1);
+
+      if (page <= 3) {
+        pageNumbers.push(2, 3, 4, '...', totalPages);
+      } else if (page >= totalPages - 2) {
+        pageNumbers.push('...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pageNumbers.push('...', page - 1, page, page + 1, '...', totalPages);
+      }
+    }
+
+    return pageNumbers;
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
 
   const handleBlogClick = (id) => {
     navigate(`/blog/${id}`);
+  };
+
+  const handleProductClick = (slug) => {
+    navigate(`/products/${slug}`);
   };
 
   return (
@@ -433,63 +441,82 @@ const Blog = () => {
           <FeaturedWrapper>
             <FeaturedImage src={featured.image} alt={featured.title} />
             <FeaturedContent>
-              <FeaturedCategory>{featured.category}</FeaturedCategory>
-              <FeaturedDate>{formatDate(featured.publishDate)}</FeaturedDate>
               <FeaturedTitle>{featured.title}</FeaturedTitle>
-              <FeaturedDesc>{featured.desc}</FeaturedDesc>
-              <ReadMoreBtn onClick={() => handleBlogClick(featured.id)}>READ MORE</ReadMoreBtn>
+              <ReadMoreBtn onClick={() => handleBlogClick(featured.id)}>
+                READ MORE
+              </ReadMoreBtn>
             </FeaturedContent>
           </FeaturedWrapper>
         </Section>
         <BlogListSection>
           <BlogGrid>
-            {filteredBlogs.map((b, idx) => (
+            {getCurrentPageBlogs().map((b, idx) => (
               <BlogCard key={idx}>
                 <BlogImage
                   src={b.image}
                   alt={b.title}
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: "pointer" }}
                   onClick={() => handleBlogClick(b.id)}
                 />
                 <BlogCategory>{b.category}</BlogCategory>
-                <BlogDate>{formatDate(b.publishDate)}</BlogDate>
                 <BlogTitle
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: "pointer" }}
                   onClick={() => handleBlogClick(b.id)}
                 >
                   {b.title}
                 </BlogTitle>
                 <BlogDesc>{b.desc}</BlogDesc>
-                <BlogReadMore onClick={() => handleBlogClick(b.id)}>Read more</BlogReadMore>
+                <BlogReadMore onClick={() => handleBlogClick(b.id)}>
+                  Read more
+                </BlogReadMore>
               </BlogCard>
             ))}
           </BlogGrid>
-          <Pagination>
-            <PageNum active={page===1} onClick={()=>setPage(1)}>1</PageNum>
-            <PageNum onClick={()=>setPage(2)}>2</PageNum>
-            <PageNum onClick={()=>setPage(3)}>3</PageNum>
-            <span>...</span>
-            <PageNum onClick={()=>setPage(5)}>5</PageNum>
-            <PageNum onClick={()=>setPage(page+1)}>&#8594;</PageNum>
-          </Pagination>
+          {totalPages > 1 && (
+            <Pagination>
+              <PageArrow
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page === 1}
+              >
+                &larr;
+              </PageArrow>
+              {getPageNumbers().map((pageNum, idx) => (
+                <PageNum
+                  key={idx}
+                  active={page === pageNum}
+                  onClick={() => typeof pageNum === 'number' ? handlePageChange(pageNum) : null}
+                  isEllipsis={pageNum === '...'}
+                >
+                  {pageNum}
+                </PageNum>
+              ))}
+              <PageArrow
+                onClick={() => handlePageChange(page + 1)}
+                disabled={page === totalPages}
+              >
+                &rarr;
+              </PageArrow>
+            </Pagination>
+          )}
         </BlogListSection>
-        <SliderWrapper>
-          <SliderTitle>SHOP NOW</SliderTitle>
-          <ArrowBtn left onClick={() => setSlide(s => Math.max(0, s - 1))}>&lt;</ArrowBtn>
+        <ProductSection>
+          <ProductTitle>MATCHA PREMIUM</ProductTitle>
           <ProductGrid>
-            {products.slice(slide, slide + 3).map((p, idx) => (
-              <ProductCard key={idx}>
-                <ProductImage src={p.image} alt={p.name} />
-                <ProductName>{p.name}</ProductName>
+            {featuredProducts.map((product) => (
+              <ProductCard key={product._id}>
+                <ProductImage
+                  src={`${BACKEND_URL}${product.images[0]}`}
+                  alt={product.name}
+                  onClick={() => handleProductClick(product.slug)}
+                />
+                <ProductName>{product.name}</ProductName>
                 <ProductPrice>
-                  ${p.price}
-                  {p.oldPrice && <span>${p.oldPrice}</span>}
+                  Chỉ từ {product.price.toLocaleString()}đ
                 </ProductPrice>
               </ProductCard>
             ))}
           </ProductGrid>
-          <ArrowBtn right onClick={() => setSlide(s => Math.min(products.length - 3, s + 1))}>&gt;</ArrowBtn>
-        </SliderWrapper>
+        </ProductSection>
       </PageWrapper>
     </>
   );
