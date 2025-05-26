@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import GlobalStyle from '../components/GlobalStyle';
 import styled   from 'styled-components';
-import logoImg from '../assets/logo/logo.jpg';
-
-
+import logoImg from '../assets/logo/logo1.png';
 
 const LoginWrapper = styled.div`
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgb(181, 248, 193) 0%, #cfdef3 100%);
+  background: #f0f0f0;
   margin-top: 80px;
   `;
 
@@ -43,7 +42,6 @@ const LogoImg = styled.img`
   width: 180px;
   height: auto;
   border-radius: 20%;
-  box-shadow: 0 2px 12px rgba(46,204,64,0.10);
 `;
 
 const FormSide = styled.div`
@@ -181,6 +179,7 @@ function Login() {
 
   return (
     <>
+    <GlobalStyle />
     <LoginWrapper>
       <LoginContainer>
         <LogoSide>

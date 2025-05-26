@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import GlobalStyle from '../components/GlobalStyle';
 import styled from 'styled-components';
-import logoImg from '../assets/logo/logo.jpg';
+import logoImg from '../assets/logo/logo1.png';
 
 const RegisterWrapper = styled.div`
   margin-top: 150px;
@@ -41,7 +42,6 @@ const LogoImg = styled.img`
   width: 180px;
   height: auto;
   border-radius: 20%;
-  box-shadow: 0 2px 12px rgba(46,204,64,0.10);
 `;
 
 const FormSide = styled.div`
@@ -192,6 +192,8 @@ function Register() {
   };
 
   return (
+    <>
+    <GlobalStyle />
     <RegisterWrapper>
       <RegisterContainer>
         <LogoSide>
@@ -256,7 +258,8 @@ function Register() {
         </FormSide>
       </RegisterContainer>
     </RegisterWrapper>
+    </>
   );
 }
 
-export default Register; 
+export default Register;

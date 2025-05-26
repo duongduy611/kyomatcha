@@ -1,23 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import bannerWeb from '../assets/images/banner_web.jpg';
-import styled, { createGlobalStyle } from 'styled-components';
-import { FaStar } from "react-icons/fa";
+import styled from 'styled-components';
+import GlobalStyle from '../components/GlobalStyle';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 const BACKEND_URL = 'http://localhost:9999';
-
-// Xóa margin/padding mặc định của body/html
-const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
-  html, body, #root {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    font-family: 'Montserrat', sans-serif;
-  }
-`;
 
 const BannerWrapper = styled.div`  width: 100%;
   height: 100vh;
@@ -172,7 +160,7 @@ function TeaCollection() {
         const response = await axios.get(`${BACKEND_URL}/api/products`);
         if (response.data && response.data.data) {
           const filteredProducts = response.data.data
-            .filter(product => 
+            .filter(product =>
               !product.name.includes('matcha fuji 01') &&
               (product.name.includes('Matcha Natsu') ||
                product.name.includes('Matcha Aki') ||
@@ -213,8 +201,8 @@ function TeaCollection() {
           return (
             <ProductCard key={product._id}>
               <Link to={`/products/${product.slug}`} style={{ textDecoration: 'none' }}>
-                <ProductImage 
-                  src={product.images && product.images.length > 0 
+                <ProductImage
+                  src={product.images && product.images.length > 0
                     ? `${BACKEND_URL}${product.images[0]}`
                     : '/placeholder.jpg'
                   }
@@ -241,19 +229,19 @@ const blogs = [
     image: "https://matchaya.sg/cdn/shop/articles/Webpage-without-words__1800x1200_bd231296-8111-4a9c-a04f-f8509ab2ef6b_400x.png?v=1745214204",
     title: "NOSTALGIA AND TRANQUILITY - SAKURA SEASON 2025",
     desc: "The sakura season is relatively brief, with the peak bloom lasting only about a week — a quiet reminder of transience and the impermanence of life...",
-    link: "https://matchaya.sg/blogs/latest-news/sakura-season-2025"
+    link: "#"
   },
   {
     image: "https://matchaya.sg/cdn/shop/articles/IMG_3773_400x.jpg?v=1742391264",
     title: "KEYSIGHT X MATCHAYA | MOBILE TEA BAR",
     desc: "After a great event at Keysight's carnival last year, we're excited to be back with another Mobile Tea Bar activation!  Originally planned for Inte...",
-    link: "https://matchaya.sg/blogs/latest-news/keysight-x-matchaya-mobile-tea-bar"
+    link: "#"
   },
   {
     image: "https://matchaya.sg/cdn/shop/articles/Untitled_design_45_400x.png?v=1738899160",
     title: "A FRESH BEGINNING | REVAMP PACKAGING",
     desc: "The Year of the Snake invites us to reflect on transformation and personal growth, much like a snake shedding its skin, we've made space for someth...",
-    link: "https://matchaya.sg/blogs/latest-news/a-fresh-beginning-revamp-packaging"
+    link: "#"
   }
 ];
 
@@ -316,9 +304,8 @@ const BlogDesc = styled.div`
   margin-bottom: 18px;
 `;
 
-const BlogReadMore = styled.a`
+const BlogReadMore = styled(Link)`
   font-family: 'Nunito Sans', sans-serif;
-
   color: #81893f;
   font-size: 14px;
   text-decoration: underline;
@@ -340,7 +327,7 @@ function BlogList() {
             <BlogImage src={b.image} alt={b.title} />
             <BlogPostTitle>{b.title}</BlogPostTitle>
             <BlogDesc>{b.desc}</BlogDesc>
-            <BlogReadMore href={b.link} target="_blank" rel="noopener noreferrer">Read more</BlogReadMore>
+            <BlogReadMore to={b.link}>Read more</BlogReadMore>
           </BlogCard>
         ))}
       </BlogGrid>

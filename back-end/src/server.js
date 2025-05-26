@@ -27,6 +27,9 @@ const authRouter = require('./routes/authRoutes');
 app.use('/api', authRouter);
 const productRouter = require('./routes/product');
 app.use('/api', productRouter);
+const contactRouter = require('./routes/contactRouter');
+app.use('/api', contactRouter);
+
 
 const PORT = 9999;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

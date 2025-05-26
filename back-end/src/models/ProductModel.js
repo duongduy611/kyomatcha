@@ -11,11 +11,11 @@ const productSchema = new mongoose.Schema(
 			images: { type: String, required: false }
 		}],
 		price: { type: Number, required: true },
-		subPrice: [{ //giá cụ thể theo từng subCategory
+		subPrice: [{
 			color: { type: String, required: false },
 			size: { type: String, required: false },
 			price: { type: Number, required: false }
-		}],	
+		}],
 		images: [{ type: String }],
 		description: { type: String },
 		stock: { type: Number, default: 0 },

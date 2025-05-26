@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import GlobalStyle from '../components/GlobalStyle';
 
 const Profile = () => {
   const [user, setUser] = useState({ username: '', fullName: '', email: '', phone: '', address: '', role: '', status: '' });
@@ -56,4 +57,4 @@ const Profile = () => {
   );
 };
 
-export default Profile; 
+export default Profile;
