@@ -6,6 +6,9 @@ import EditProfile from '../pages/EditProfile';
 import AllProducts from '../pages/AllProducts';
 import ProductDetail from '../pages/ProductDetail';
 import MyCart from '../pages/MyCart';
+import ThankYouPage from "../pages/ThankYouPage";
+import OrderHistory from "../pages/OrderHistory";
+import OrderDetail from "../pages/OrderDetail";
 
 export const routes = [
     {
@@ -46,6 +49,21 @@ export const routes = [
     {
         path: '/cart',
         page: MyCart,
+        isShowHeader: true
+    },
+    {
+        path: '/thankyou',
+        page: ThankYouPage,
+        isShowHeader: true
+    },
+    {
+        path: '/my-orders',
+        page: OrderHistory,
+        isShowHeader: true
+    },
+    {
+        path: '/my-orders/:orderId',
+        page: OrderDetail,
         isShowHeader: true
     }
 

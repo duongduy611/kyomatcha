@@ -11,15 +11,67 @@ import {
 	Form,
 	ListGroup,
 } from 'react-bootstrap';
+import Select from 'react-select';
+import { redirect } from 'react-router-dom';
 
 const MyCart = () => {
 	const [cart, setCart] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [paymentMethod, setPaymentMethod] = useState('');
+	const [receiverName, setReceiverName] = useState('');
+	const [phone, setPhone] = useState('');
+	const [address, setAddress] = useState('');
+	const [provinces, setProvinces] = useState([]);
+	const [districts, setDistricts] = useState([]);
+	const [wards, setWards] = useState([]);
+
+	const [selectedProvince, setSelectedProvince] = useState(null);
+	const [selectedDistrict, setSelectedDistrict] = useState(null);
+	const [selectedWard, setSelectedWard] = useState(null);
 
 	const userId = localStorage.getItem('id');
 	const BACKEND_URL = 'http://localhost:9999';
+
+	useEffect(() => {
+		const fetchProvinces = async () => {
+			const res = await axios.get('https://provinces.open-api.vn/api/p/');
+			setProvinces(res.data.map((p) => ({ label: p.name, value: p.code })));
+		};
+		fetchProvinces();
+	}, []);
+
+	useEffect(() => {
+		if (selectedProvince) {
+			axios
+				.get(
+					`https://provinces.open-api.vn/api/p/${selectedProvince.value}?depth=2`
+				)
+				.then((res) => {
+					setDistricts(
+						res.data.districts.map((d) => ({ label: d.name, value: d.code }))
+					);
+					setWards([]);
+					setSelectedDistrict(null);
+					setSelectedWard(null);
+				});
+		}
+	}, [selectedProvince]);
+
+	useEffect(() => {
+		if (selectedDistrict) {
+			axios
+				.get(
+					`https://provinces.open-api.vn/api/d/${selectedDistrict.value}?depth=2`
+				)
+				.then((res) => {
+					setWards(
+						res.data.wards.map((w) => ({ label: w.name, value: w.code }))
+					);
+					setSelectedWard(null);
+				});
+		}
+	}, [selectedDistrict]);
 
 	useEffect(() => {
 		const fetchCart = async () => {
@@ -80,19 +132,66 @@ const MyCart = () => {
 		}
 	};
 
-	const handleCheckout = () => {
-		if (paymentMethod === 'cod') {
-			toast.success('Đặt hàng thành công! Đang xử lý đơn hàng.');
+	const handleCheckout = async () => {
+		if (
+			!receiverName ||
+			!phone ||
+			!address ||
+			!selectedProvince ||
+			!selectedDistrict ||
+			!selectedWard
+		) {
+			toast.warning('Vui lòng nhập đầy đủ thông tin giao hàng');
+			return;
+		}
+
+		const fullAddress = [
+			address?.trim(),
+			selectedWard?.label,
+			selectedDistrict?.label,
+			selectedProvince?.label,
+		]
+			.filter(Boolean)
+			.join(', ');
+
+		if (paymentMethod === 'COD') {
+			try {
+				await axios.post(`${BACKEND_URL}/orders`, {
+					userId,
+					items: cart.items.map((item) => ({
+						productId: item.productId,
+						name: item.name,
+						quantity: item.quantity,
+						price: item.price,
+					})),
+					total: totalPrice,
+					shippingInfo: {
+						address: fullAddress,
+						receiverName,
+						phone,
+					},
+					paymentInfo: { method: 'COD' },
+				});
+
+				await axios.delete(`${BACKEND_URL}/cart/clear/${userId}`);
+				setCart({ items: [] });
+
+				toast.success('Đặt hàng thành công!');
+				redirect('/thankyou');
+			} catch (err) {
+				console.error(err);
+				toast.error('Lỗi khi tạo đơn hàng');
+			}
 		} else if (paymentMethod === 'zalopay') {
 			window.location.href = `${BACKEND_URL}/payment/zalopay/redirect?userId=${userId}`;
 		}
 	};
 
 	if (loading)
-		return <div className='pt-5 text-center'>Đang tải giỏ hàng...</div>;
+		return <div className='pt-5 text-center' style={{ marginTop: '200px', marginBottom: '100px' }}>Đang tải giỏ hàng...</div>;
 	if (error) return <div className='pt-5 text-center text-danger'>{error}</div>;
 	if (!cart || cart.items.length === 0)
-		return <div className='pt-5 text-center'>Giỏ hàng trống</div>;
+		return <div className='pt-5 text-center'  style={{ marginTop: '200px', marginBottom: '100px' }}>Giỏ hàng trống</div>;
 
 	const totalPrice = cart.items.reduce(
 		(total, item) => total + item.price * item.quantity,
@@ -102,6 +201,77 @@ const MyCart = () => {
 
 	return (
 		<Container style={{ marginTop: '200px' }} className='pb-5'>
+			<h2 className='mb-3' style={{ color: '#33691e' }}>
+				🚚 Thông tin giao hàng
+			</h2>
+			<Row>
+				<Col md={6}>
+					<Form.Group className='mb-2'>
+						<Form.Label>Họ tên người nhận</Form.Label>
+						<Form.Control
+							type='text'
+							value={receiverName}
+							onChange={(e) => setReceiverName(e.target.value)}
+							placeholder='Nhập họ tên'
+						/>
+					</Form.Group>
+
+					<Form.Group className='mb-2'>
+						<Form.Label>Số điện thoại</Form.Label>
+						<Form.Control
+							type='text'
+							value={phone}
+							onChange={(e) => setPhone(e.target.value)}
+							placeholder='Nhập số điện thoại'
+						/>
+					</Form.Group>
+
+					<Form.Group className='mb-2'>
+						<Form.Label>Tỉnh / Thành phố</Form.Label>
+						<Select
+							options={provinces}
+							value={selectedProvince}
+							onChange={setSelectedProvince}
+							placeholder='Chọn tỉnh'
+						/>
+					</Form.Group>
+				</Col>
+				<Col md={6}>
+					<Form.Group className='mb-2'>
+						<Form.Label>Quận / Huyện</Form.Label>
+						<Select
+							options={districts}
+							value={selectedDistrict}
+							onChange={setSelectedDistrict}
+							placeholder='Chọn huyện'
+							isDisabled={!selectedProvince}
+						/>
+					</Form.Group>
+
+					<Form.Group className='mb-2'>
+						<Form.Label>Phường / Xã</Form.Label>
+						<Select
+							options={wards}
+							value={selectedWard}
+							onChange={setSelectedWard}
+							placeholder='Chọn phường'
+							isDisabled={!selectedDistrict}
+						/>
+					</Form.Group>
+
+					<Form.Group className='mb-4'>
+						<Form.Label>Địa chỉ chi tiết</Form.Label>
+						<Form.Control
+							type='text'
+							rows={2}
+							value={address}
+							onChange={(e) => setAddress(e.target.value)}
+							placeholder='Nhập địa chỉ nhận hàng'
+						/>
+					</Form.Group>
+				</Col>
+			</Row>
+
 			<h2 className='mb-4'>🛒 Giỏ hàng của bạn</h2>
 			<Row>
 				<Col md={8}>
@@ -116,20 +286,39 @@ const MyCart = () => {
 									<Row className='align-items-center'>
 										<Col md={2}>
 											<Image
-												src={`${item.image}`}
+												src={`${BACKEND_URL}${item.image}`}
+												alt={item.name}
 												fluid
 												rounded
 												style={{ borderRadius: '10px' }}
+												onError={(e) => {
+													e.target.onerror = null;
+													e.target.src = '/images/placeholder.jpg'; // fallback local in public/images
+												}}
 											/>
 										</Col>
 										<Col md={4}>
 											<h5 style={{ fontWeight: 600 }}>{item.name}</h5>
-											<p className='mb-1'>
-												Màu: <strong>{item.color}</strong>
-											</p>
-											<p>
-												Kích cỡ: <strong>{item.size}</strong>
-											</p>
+
+											{item.color ? (
+												<p className='mb-1'>
+													Màu: <strong>{item.color}</strong>
+												</p>
+											) : (
+												<p className='mb-1 text-muted'>
+													<em>Không có màu</em>
+												</p>
+											)}
+
+											{item.size ? (
+												<p>
+													Kích cỡ: <strong>{item.size}</strong>
+												</p>
+											) : (
+												<p className='text-muted'>
+													<em>Không có kích cỡ</em>
+												</p>
+											)}
 										</Col>
 										<Col md={3}>
 											<div className='d-flex align-items-center justify-content-start'>
@@ -213,11 +402,11 @@ const MyCart = () => {
 									<div className='mb-3'>
 										<Form.Check
 											type='radio'
-											id='cod'
+											id='COD'
 											name='paymentMethod'
 											label='📦 Thanh toán khi nhận hàng (COD)'
-											value='cod'
-											checked={paymentMethod === 'cod'}
+											value='COD'
+											checked={paymentMethod === 'COD'}
 											onChange={(e) => setPaymentMethod(e.target.value)}
 										/>
 										<Form.Check

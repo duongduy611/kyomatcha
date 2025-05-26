@@ -48,7 +48,7 @@ const Profile = () => {
         <hr style={{ width: '100%', margin: '18px 0 10px 0', border: 'none', borderTop: '1.5px solid #e0e0e0' }} />
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 12 }}>
           <button style={{ width: '100%', padding: 13, borderRadius: 10, background: 'linear-gradient(90deg, #2ecc40 0%, #27ae60 100%)', color: '#fff', fontWeight: 600, fontSize: 17, border: 'none', marginBottom: 2, cursor: 'pointer', boxShadow: '0 2px 8px rgba(46,204,64,0.10)', transition: 'background 0.2s' }} onClick={() => navigate('/edit-profile')}>Sửa thông tin cá nhân</button>
-          <button style={{ width: '100%', padding: 13, borderRadius: 10, background: 'linear-gradient(90deg, #27ae60 0%, #2ecc40 100%)', color: '#fff', fontWeight: 600, fontSize: 17, border: 'none', marginBottom: 2, cursor: 'pointer', boxShadow: '0 2px 8px rgba(46,204,64,0.10)', transition: 'background 0.2s' }} onClick={() => alert('Chức năng lịch sử order sẽ được bổ sung!')}>Lịch sử order</button>
+          <button style={{ width: '100%', padding: 13, borderRadius: 10, background: 'linear-gradient(90deg, #27ae60 0%, #2ecc40 100%)', color: '#fff', fontWeight: 600, fontSize: 17, border: 'none', marginBottom: 2, cursor: 'pointer', boxShadow: '0 2px 8px rgba(46,204,64,0.10)', transition: 'background 0.2s' }} onClick={() => navigate('/my-orders')}>Lịch sử order</button>
           <button style={{ width: '100%', padding: 13, borderRadius: 10, background: 'linear-gradient(90deg, #e74c3c 0%, #e67e22 100%)', color: '#fff', fontWeight: 600, fontSize: 17, border: 'none', cursor: 'pointer', boxShadow: '0 2px 8px rgba(231,76,60,0.10)', transition: 'background 0.2s' }} onClick={handleLogout}>Đăng xuất</button>
         </div>
       </div>

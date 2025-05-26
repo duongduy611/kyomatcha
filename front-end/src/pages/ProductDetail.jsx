@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import { FaMinus, FaPlus } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 const BACKEND_URL = 'http://localhost:9999'; // Add backend URL
 
@@ -114,9 +115,19 @@ const ProductDetail = () => {
 		}
 	};
 
-	const handleAddToCart = async ({ productId, quantity, color, size }) => {
+	const handleAddToCart = async ({
+		productId,
+		quantity,
+		color,
+		size,
+		stock,
+	}) => {
 		const userId = localStorage.getItem('id');
-		const BACKEND_URL = 'http://localhost:9999';
+
+		if (stock <= 0) {
+			toast.info('Sản phẩm đã hết hàng!');
+			return;
+		}
 
 		try {
 			const res = await axios.post(`${BACKEND_URL}/cart/add`, {
@@ -127,11 +138,11 @@ const ProductDetail = () => {
 				size,
 			});
 
-			alert('Đã thêm vào giỏ hàng!');
-			console.log('Cart updated:', res.data); // Hoặc cập nhật giỏ hàng nếu cần
+			toast.success('Đã thêm vào giỏ hàng!');
+			console.log('Cart updated:', res.data);
 		} catch (error) {
 			console.error('Lỗi khi thêm vào giỏ hàng:', error);
-			alert('Thêm vào giỏ hàng thất bại!');
+			toast.error('Thêm vào giỏ hàng thất bại!');
 		}
 	};
 
@@ -246,12 +257,16 @@ const ProductDetail = () => {
 
 					<AddToCart
 						onClick={() =>
-							handleAddToCart({ productId : product._id
-                                , quantity
-                                , color: selectedColor
-                                , size: selectedSize })
-						}>
-						Thêm vào giỏ hàng
+							handleAddToCart({
+								productId: product._id,
+								quantity,
+								color: selectedColor,
+								size: selectedSize,
+								stock: product.stock,
+							})
+						}
+						disabled={product.stock <= 0}>
+						{product.stock <= 0 ? 'Hết hàng' : 'Thêm vào giỏ hàng'}
 					</AddToCart>
 				</ProductInfo>
 			</ProductSection>
