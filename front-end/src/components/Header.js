@@ -234,7 +234,8 @@ const Header = () => {
                 }
               }}
             />
-            <FaShoppingCart />
+            <FaShoppingCart 
+              onClick={() => navigate('/cart')}/>
           </IconGroup>
         </TopRow>
         <NavRow>
