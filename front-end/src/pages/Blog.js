@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from 'styled-components';
-import bannerWeb from "../assets/images/banner_web.jpg";
 import GlobalStyle from '../components/GlobalStyle';
 import { useNavigate } from 'react-router-dom';
 import { blogs } from '../data/blogs';
+import { useAppContext } from '../context/AppContext';
 
 const tabs = [
   { label: "Tất cả" },
@@ -12,33 +12,46 @@ const tabs = [
   { label: "Pha chế" },
 ];
 
-const featured = {
-  image: bannerWeb,
-  title: "NOSTALGIA AND TRANQUILITY - SAKURA SEASON 2025",
-  link: "#",
+const featuredContent = {
+  "Tất cả": {
+    image: "https://matchaya.sg/cdn/shop/articles/artem-r-BLNqqiIJaos-unsplash_2b6efb14-0198-4271-8513-4c07aa3d40e9_400x.jpg?v=1746154725",
+    title: "NOSTALGIA AND TRANQUILITY - SAKURA SEASON 2025",
+  },
+  "Khám phá về Matcha": {
+    image: "matchaBanner",
+    title: "HÀNH TRÌNH TÌM HIỂU VỀ MATCHA NHẬT BẢN",
+    desc: "Khám phá nguồn gốc và quy trình sản xuất Matcha truyền thống",
+    link: "#"
+  },
+  "Làm đẹp": {
+    image: "beautyBanner",
+    title: "BÍ QUYẾT LÀM ĐẸP VỚI BỘT MATCHA",
+    desc: "Tận dụng công dụng làm đẹp tuyệt vời từ bột Matcha",
+    link: "#"
+  },
+  "Pha chế": {
+    image: "recipeBanner",
+    title: "NGHỆ THUẬT PHA CHẾ MATCHA",
+    desc: "Học cách pha chế những món đồ uống tuyệt hảo từ Matcha",
+    link: "#"
+  }
 };
 
 const products = [
   {
     image: "https://matchaya.sg/cdn/shop/products/DualColdDrinks_400x.png?v=1629609658",
     name: "A TEA GATHERING",
-    rating: 5,
-    reviews: 56,
     price: 11,
     oldPrice: 12,
   },
   {
     image: "https://matchaya.sg/cdn/shop/products/ColdDrinks_Mochi_400x.png?v=1629609719",
     name: "A TEA GATHERING FOR 2 + WARABI MOCHI",
-    rating: 5,
-    reviews: 37,
     price: 19,
   },
   {
     image: "https://matchaya.sg/cdn/shop/products/DualColdDrinks_400x.png?v=1629609658",
     name: "WINTER'S HERE",
-    rating: 5,
-    reviews: 29,
     price: 45,
     oldPrice: 48,
   },
@@ -208,6 +221,12 @@ const BlogCategory = styled.div`
   margin-bottom: 8px;
   text-transform: uppercase;
 `;
+const BlogDate = styled.div`
+  color: #81893f;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  font-style: italic;
+`;
 const BlogTitle = styled.h2`
   font-size: 1.25rem;
   letter-spacing: 2px;
@@ -336,25 +355,58 @@ const ArrowBtn = styled.button`
   }
 `;
 
+const FeaturedCategory = styled(BlogCategory)`
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+`;
+
+const FeaturedDate = styled(BlogDate)`
+  font-size: 1rem;
+  margin-bottom: 12px;
+`;
+
 const Blog = () => {
-  const [activeTab, setActiveTab] = useState(0);
   const [page, setPage] = useState(1);
   const [slide, setSlide] = useState(0);
   const navigate = useNavigate();
+  const { selectedBlogCategory, setSelectedBlogCategory } = useAppContext();
 
-  // Lọc blog theo tab
+  // Format date to display
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('vi-VN', options);
+  };
+
+  // Get featured blog based on selected category
+  const getFeaturedBlog = () => {
+    let filteredBlogs;
+    if (selectedBlogCategory === 'Tất cả') {
+      // Get all blogs
+      filteredBlogs = [...blogs];
+    } else {
+      // Get blogs for specific category
+      filteredBlogs = blogs.filter(b => b.category === selectedBlogCategory);
+    }
+    // Sort by date and get the latest
+    return filteredBlogs.sort((a, b) =>
+      new Date(b.publishDate) - new Date(a.publishDate)
+    )[0];
+  };
+
+  // Get featured content from latest blog
+  const featured = getFeaturedBlog();
+
+  // Lọc và sắp xếp blog
   let filteredBlogs = [];
-  if (activeTab === 0) {
-    // Tất cả: lấy 3 blog đầu mỗi category
-    const categories = ["Khám phá về Matcha", "Làm đẹp", "Pha chế"];
-    categories.forEach(cat => {
-      filteredBlogs = filteredBlogs.concat(
-        blogs.filter(b => b.category === cat).slice(0, 3)
-      );
-    });
+  if (selectedBlogCategory === 'Tất cả') {
+    // Hiển thị tất cả blog và sắp xếp theo ngày mới nhất
+    filteredBlogs = [...blogs].sort((a, b) =>
+      new Date(b.publishDate) - new Date(a.publishDate)
+    );
   } else {
-    const tabLabel = tabs[activeTab].label;
-    filteredBlogs = blogs.filter(b => b.category === tabLabel);
+    filteredBlogs = blogs
+      .filter(b => b.category === selectedBlogCategory)
+      .sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
   }
 
   const handleBlogClick = (id) => {
@@ -371,8 +423,8 @@ const Blog = () => {
             {tabs.map((tab, idx) => (
               <Tab
                 key={tab.label}
-                active={activeTab === idx}
-                onClick={() => setActiveTab(idx)}
+                active={selectedBlogCategory === tab.label}
+                onClick={() => setSelectedBlogCategory(tab.label)}
               >
                 {tab.label}
               </Tab>
@@ -381,9 +433,11 @@ const Blog = () => {
           <FeaturedWrapper>
             <FeaturedImage src={featured.image} alt={featured.title} />
             <FeaturedContent>
+              <FeaturedCategory>{featured.category}</FeaturedCategory>
+              <FeaturedDate>{formatDate(featured.publishDate)}</FeaturedDate>
               <FeaturedTitle>{featured.title}</FeaturedTitle>
               <FeaturedDesc>{featured.desc}</FeaturedDesc>
-              <ReadMoreBtn href={featured.link}>READ MORE</ReadMoreBtn>
+              <ReadMoreBtn onClick={() => handleBlogClick(featured.id)}>READ MORE</ReadMoreBtn>
             </FeaturedContent>
           </FeaturedWrapper>
         </Section>
@@ -398,6 +452,7 @@ const Blog = () => {
                   onClick={() => handleBlogClick(b.id)}
                 />
                 <BlogCategory>{b.category}</BlogCategory>
+                <BlogDate>{formatDate(b.publishDate)}</BlogDate>
                 <BlogTitle
                   style={{ cursor: 'pointer' }}
                   onClick={() => handleBlogClick(b.id)}
@@ -405,7 +460,7 @@ const Blog = () => {
                   {b.title}
                 </BlogTitle>
                 <BlogDesc>{b.desc}</BlogDesc>
-                <BlogReadMore href={b.link} target="_blank" rel="noopener noreferrer">Read more</BlogReadMore>
+                <BlogReadMore onClick={() => handleBlogClick(b.id)}>Read more</BlogReadMore>
               </BlogCard>
             ))}
           </BlogGrid>
@@ -426,12 +481,6 @@ const Blog = () => {
               <ProductCard key={idx}>
                 <ProductImage src={p.image} alt={p.name} />
                 <ProductName>{p.name}</ProductName>
-                <ProductRating>
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} style={{color: i < p.rating ? '#bfae5a' : '#e0e0e0'}}>★</span>
-                  ))}
-                  <span style={{ color: '#81893f', fontSize: '0.95rem', marginLeft: 4 }}>({p.reviews})</span>
-                </ProductRating>
                 <ProductPrice>
                   ${p.price}
                   {p.oldPrice && <span>${p.oldPrice}</span>}

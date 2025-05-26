@@ -4,6 +4,8 @@ const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedBlogCategory, setSelectedBlogCategory] = useState('Tất cả');
+
 
   const categoryMapping = {
     'matcha': 'Matcha',
@@ -17,20 +19,33 @@ export const AppProvider = ({ children }) => {
     'Dụng cụ pha chế': 'barista_tools'
   };
 
+  const blogCategoryMapping = {
+    'discover-matcha': 'Khám phá về Matcha',
+    'beauty': 'Làm đẹp',
+    'recipe': 'Pha chế'
+  };
+
   const updateCategory = (urlCategory) => {
     setSelectedCategory(urlCategory);
+  };
+
+  const updateBlogCategory = (category) => {
+    setSelectedBlogCategory(category);
   };
 
   const getCategoryDisplay = (category) => {
     return categoryMapping[category] || category;
   };
 
-  // Giá trị context có thể mở rộng thêm các state và functions khác trong tương lai
   const contextValue = {
     selectedCategory,
     setSelectedCategory,
+    selectedBlogCategory,
+    setSelectedBlogCategory,
     updateCategory,
+    updateBlogCategory,
     categoryMapping,
+    blogCategoryMapping,
     getCategoryDisplay,
     reverseCategoryMapping
   };
@@ -48,4 +63,4 @@ export const useAppContext = () => {
     throw new Error('useAppContext must be used within an AppProvider');
   }
   return context;
-}; 
+};

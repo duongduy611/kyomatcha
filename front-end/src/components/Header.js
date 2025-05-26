@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaUser, FaShoppingCart } from "react-icons/fa";
 import styled, { css } from "styled-components";
-import logoImg from "../assets/logo/logo.jpg";
-import logoImg2 from "../assets/logo/logo2.jpg";
+import logoImg from "../assets/logo/logo1.png";
+import logoImg2 from "../assets/logo/logo2.png";
 import { useAppContext } from "../context/AppContext";
 
 const HeaderWrapper = styled.header`
@@ -52,7 +52,7 @@ const NavRow = styled.div`
 `;
 
 const Logo = styled.img`
-  height: 80px;
+  height: 100px;
   width: auto;
   display: block;
 `;
@@ -167,8 +167,13 @@ const Header = () => {
   const isHome = location.pathname === "/";
   const shouldApplyHoverStyle = isScrolled || !isHome || isHovered;
   const navigate = useNavigate();
-  const { selectedCategory, setSelectedCategory, categoryMapping } =
-    useAppContext();
+  const {
+    selectedCategory,
+    setSelectedCategory,
+    categoryMapping,
+    setSelectedBlogCategory,
+    blogCategoryMapping
+  } = useAppContext();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -184,6 +189,12 @@ const Header = () => {
 
   const handleCategoryClick = (urlCategory) => {
     setSelectedCategory(urlCategory || "");
+    closeDropdown();
+  };
+
+  const handleBlogCategoryClick = (path, category) => {
+    setSelectedBlogCategory(category || "");
+    navigate('/blog');
     closeDropdown();
   };
 
@@ -244,7 +255,7 @@ const Header = () => {
               onMouseEnter={() => handleDropdown("about")}
               onMouseLeave={closeDropdown}
             >
-              <NavSpan active={shouldApplyHoverStyle}>Giới thiệu</NavSpan>
+              <NavLink active={shouldApplyHoverStyle} to="/about-us">Giới thiệu</NavLink>
               <DropdownMenu show={isMenuActive("about")}>
                 <DropdownLink
                   to="/about-us"
@@ -267,7 +278,12 @@ const Header = () => {
               onMouseEnter={() => handleDropdown("product")}
               onMouseLeave={closeDropdown}
             >
-              <NavSpan active={shouldApplyHoverStyle}>Sản phẩm</NavSpan>
+              <NavSpan active={shouldApplyHoverStyle}
+              onClick={() =>
+              {
+                handleCategoryClick("");
+                navigate("/products");
+              }}>Sản phẩm</NavSpan>
               <DropdownMenu show={isMenuActive("product")}>
                 <DropdownLink
                   to="/products"
@@ -303,15 +319,28 @@ const Header = () => {
               onMouseEnter={() => handleDropdown("blog")}
               onMouseLeave={closeDropdown}
             >
-              <NavLink to="/blog" active={shouldApplyHoverStyle}>
+              <NavLink to="/blog" active={shouldApplyHoverStyle} onClick={() => handleBlogCategoryClick("", "Tất cả")}>
                 Blog
               </NavLink>
               <DropdownMenu show={isMenuActive("blog")}>
-                <DropdownLink to="/discover-matcha">
+                <DropdownLink
+                  to="/blog"
+                  onClick={() => handleBlogCategoryClick('discover-matcha', 'Khám phá về Matcha')}
+                >
                   Khám phá về Matcha
                 </DropdownLink>
-                <DropdownLink to="/beauty">Làm đẹp</DropdownLink>
-                <DropdownLink to="/recipe">Pha chế</DropdownLink>
+                <DropdownLink
+                  to="/blog"
+                  onClick={() => handleBlogCategoryClick('beauty', 'Làm đẹp')}
+                >
+                  Làm đẹp
+                </DropdownLink>
+                <DropdownLink
+                  to="/blog"
+                  onClick={() => handleBlogCategoryClick('recipe', 'Pha chế')}
+                >
+                  Pha chế
+                </DropdownLink>
               </DropdownMenu>
             </NavItem>
             <NavItem onMouseEnter={() => closeDropdown()}>

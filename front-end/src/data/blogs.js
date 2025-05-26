@@ -5,7 +5,8 @@ export const blogs = [
     category: "Khám phá về Matcha",
     title: "Tìm hiểu về Matcha Nhật Bản",
     desc: "Matcha là loại trà xanh truyền thống của Nhật Bản, nổi tiếng với hương vị đặc trưng và lợi ích sức khỏe vượt trội...",
-    link: "#"
+    link: "#",
+    publishDate: "2024-03-15"
   },
   {
     id: 2,
@@ -13,7 +14,8 @@ export const blogs = [
     category: "Khám phá về Matcha",
     title: "Lịch sử phát triển của Matcha",
     desc: "Từ những nghi lễ trà đạo cổ xưa đến hiện đại, Matcha luôn giữ vị trí quan trọng trong văn hóa Nhật Bản...",
-    link: "#"
+    link: "#",
+    publishDate: "2024-03-10"
   },
   {
     id: 3,
@@ -21,7 +23,8 @@ export const blogs = [
     category: "Khám phá về Matcha",
     title: "Cách chọn Matcha chất lượng",
     desc: "Để thưởng thức Matcha ngon, việc chọn đúng loại bột trà là rất quan trọng. Hãy cùng tìm hiểu các tiêu chí chọn Matcha...",
-    link: "#"
+    link: "#",
+    publishDate: "2024-03-05"
   },
   {
     id: 4,
@@ -29,7 +32,8 @@ export const blogs = [
     category: "Làm đẹp",
     title: "Làm đẹp da với Matcha",
     desc: "Matcha chứa nhiều chất chống oxy hóa giúp làm sáng da, giảm mụn và chống lão hóa hiệu quả...",
-    link: "#"
+    link: "#",
+    publishDate: "2024-03-18"
   },
   {
     id: 5,
@@ -37,7 +41,8 @@ export const blogs = [
     category: "Làm đẹp",
     title: "Mặt nạ Matcha tự nhiên",
     desc: "Cách làm mặt nạ dưỡng da từ Matcha đơn giản tại nhà, an toàn và tiết kiệm...",
-    link: "#"
+    link: "#",
+    publishDate: "2024-03-12"
   },
   {
     id: 6,
@@ -45,7 +50,8 @@ export const blogs = [
     category: "Làm đẹp",
     title: "Matcha và sức khỏe tóc",
     desc: "Không chỉ tốt cho da, Matcha còn giúp tóc chắc khỏe, giảm gãy rụng nhờ các dưỡng chất tự nhiên...",
-    link: "#"
+    link: "#",
+    publishDate: "2024-03-08"
   },
   {
     id: 7,
@@ -53,7 +59,8 @@ export const blogs = [
     category: "Pha chế",
     title: "Cách pha Matcha truyền thống",
     desc: "Hướng dẫn từng bước pha Matcha đúng chuẩn Nhật Bản, giữ trọn hương vị và dinh dưỡng...",
-    link: "#"
+    link: "#",
+    publishDate: "2024-03-20"
   },
   {
     id: 8,
@@ -61,7 +68,8 @@ export const blogs = [
     category: "Pha chế",
     title: "Matcha Latte cho ngày mới",
     desc: "Công thức pha Matcha Latte thơm ngon, dễ làm, phù hợp cho mọi lứa tuổi...",
-    link: "#"
+    link: "#",
+    publishDate: "2024-03-16"
   },
   {
     id: 9,
@@ -69,6 +77,7 @@ export const blogs = [
     category: "Pha chế",
     title: "Matcha đá xay mát lạnh",
     desc: "Thưởng thức Matcha đá xay giải nhiệt mùa hè, công thức đơn giản mà hấp dẫn...",
-    link: "#"
+    link: "#",
+    publishDate: "2024-03-14"
   },
 ];
