@@ -3,10 +3,6 @@ import styled from 'styled-components';
 import GlobalStyle from '../components/GlobalStyle';
 import { useParams } from 'react-router-dom';
 import { blogs } from '../data/blogs';
-import { AppProvider } from '../context/AppContext';
-import axios from 'axios';
-
-const BACKEND_URL = 'http://localhost:9999';
 
 const Wrapper = styled.div`
   padding-top: 160px;
