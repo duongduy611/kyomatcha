@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import bannerWeb from '../assets/images/banner_web.jpg';
-import styled from 'styled-components';
-import GlobalStyle from '../components/GlobalStyle';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { blogs } from '../data/blogs';
+import React, { useState, useEffect } from "react";
+import bannerWeb from "../assets/images/banner_web.jpg";
+import styled from "styled-components";
+import GlobalStyle from "../components/GlobalStyle";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { blogs } from "../data/blogs";
 
-const BACKEND_URL = 'http://localhost:9999';
+const BACKEND_URL = "http://localhost:9999";
 
-const BannerWrapper = styled.div`  width: 100%;
+const BannerWrapper = styled.div`
+  width: 100%;
   height: 100vh;
   position: relative;
   overflow: hidden;
@@ -27,7 +28,11 @@ const BannerOverlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to top, rgba(0,0,0,0.45) 60%, rgba(0,0,0,0) 100%);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.45) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
   z-index: 1;
 `;
 
@@ -64,7 +69,7 @@ const BannerTitle = styled.div`
   font-size: 22px;
   letter-spacing: 3px;
   margin-bottom: 32px;
-  text-shadow: 0 3px 10px rgba(0,0,0,0.6);
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
 `;
 
 const BannerButtonGroup = styled.div`
@@ -74,9 +79,9 @@ const BannerButtonGroup = styled.div`
 `;
 
 const BannerButton = styled(Link)`
-  background: #81893f;
+  background: #4A7C59;
   color: #fff;
-  border: 2px solid #81893f;
+  border: 2px solid #4A7C59;
   padding: 14px 38px;
   font-size: 1rem;
   font-weight: 500;
@@ -84,7 +89,7 @@ const BannerButton = styled(Link)`
   border-radius: 2px;
   cursor: pointer;
   transition: background 0.2s, color 0.2s, border 0.2s;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   text-decoration: none;
   text-align: center;
 
@@ -105,7 +110,7 @@ const SectionTitle = styled.h2`
   text-align: center;
   font-size: 1.4rem;
   letter-spacing: 3px;
-  color: #6d6a4f;
+  color: #4A7C59;
   font-weight: 500;
   margin-bottom: 48px;
 `;
@@ -132,14 +137,14 @@ const ProductImage = styled.img`
 
 const ProductName = styled.div`
   font-size: 1.05rem;
-  color: #6d6a4f;
+  color: #4A7C59;
   font-weight: 500;
   margin: 18px 0 8px 0;
   letter-spacing: 1px;
 `;
 
 const ProductPrice = styled.div`
-  color: #81893f;
+  color: #4A7C59;
   font-size: 1rem;
   margin-top: 2px;
 `;
@@ -154,22 +159,23 @@ function TeaCollection() {
         const response = await axios.get(`${BACKEND_URL}/api/products`);
         if (response.data && response.data.data) {
           const filteredProducts = response.data.data
-            .filter(product =>
-              !product.name.includes('matcha fuji 01') &&
-              (product.name.includes('Matcha Natsu') ||
-               product.name.includes('Matcha Aki') ||
-               product.name.includes('Matcha Haru') ||
-               product.name.includes('Matcha Fuji 02') ||
-               product.name.includes('Matcha Fuji 03') ||
-               product.name.includes('Matcha Fuji 05'))
+            .filter(
+              (product) =>
+                !product.name.includes("matcha fuji 01") &&
+                (product.name.includes("Matcha Natsu") ||
+                  product.name.includes("Matcha Aki") ||
+                  product.name.includes("Matcha Haru") ||
+                  product.name.includes("Matcha Fuji 02") ||
+                  product.name.includes("Matcha Fuji 03") ||
+                  product.name.includes("Matcha Fuji 05"))
             )
             .slice(0, 6);
-          console.log('Filtered Products:', filteredProducts); // Debug log
+          console.log("Filtered Products:", filteredProducts); // Debug log
           setProducts(filteredProducts);
         }
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error("Error fetching products:", error);
         setLoading(false);
       }
     };
@@ -180,35 +186,41 @@ function TeaCollection() {
   if (loading) {
     return (
       <Section>
-        <SectionTitle>TEA COLLECTION</SectionTitle>
-        <div style={{ textAlign: 'center' }}>Loading...</div>
+        <SectionTitle>MATCHA CỦA CHÚNG TÔI</SectionTitle>
+        <div style={{ textAlign: "center" }}>Loading...</div>
       </Section>
     );
   }
 
   return (
     <Section>
-      <SectionTitle>TEA COLLECTION</SectionTitle>
+      <SectionTitle>MATCHA CỦA CHÚNG TÔI</SectionTitle>
       <ProductGrid>
         {products.map((product) => {
-          console.log('Product images:', product.images); // Debug log
+          console.log("Product images:", product.images); // Debug log
           return (
             <ProductCard key={product._id}>
-              <Link to={`/products/${product.slug}`} style={{ textDecoration: 'none' }}>
+              <Link
+                to={`/products/${product.slug}`}
+                style={{ textDecoration: "none" }}
+              >
                 <ProductImage
-                  src={product.images && product.images.length > 0
-                    ? `${BACKEND_URL}${product.images[0]}`
-                    : '/placeholder.jpg'
+                  src={
+                    product.images && product.images.length > 0
+                      ? `${BACKEND_URL}${product.images[0]}`
+                      : "/placeholder.jpg"
                   }
                   alt={product.name}
                   onError={(e) => {
-                    console.log('Image load error for:', product.name); // Debug log
+                    console.log("Image load error for:", product.name); // Debug log
                     e.target.onerror = null;
-                    e.target.src = '/placeholder.jpg';
+                    e.target.src = "/placeholder.jpg";
                   }}
                 />
                 <ProductName>{product.name}</ProductName>
-                <ProductPrice>Chỉ từ {product.price.toLocaleString()}đ</ProductPrice>
+                <ProductPrice>
+                  Chỉ từ {product.price.toLocaleString()}đ
+                </ProductPrice>
               </Link>
             </ProductCard>
           );
@@ -226,7 +238,7 @@ const BlogSection = styled.section`
 
 const BlogLabel = styled.div`
   text-align: center;
-  color: #81893f;
+  color: #4A7C59;
   font-size: 0.95rem;
   letter-spacing: 2px;
   margin-bottom: 8px;
@@ -236,7 +248,7 @@ const BlogTitle = styled.h2`
   text-align: center;
   font-size: 1.4rem;
   letter-spacing: 3px;
-  color: #6d6a4f;
+  color: #4A7C59;
   font-weight: 500;
   margin-bottom: 48px;
 `;
@@ -250,17 +262,9 @@ const BlogGrid = styled.div`
 
 const BlogCard = styled.div`
   width: 370px;
-  background: white;
   text-align: left;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  }
 `;
 
 const BlogImage = styled.img`
@@ -269,10 +273,16 @@ const BlogImage = styled.img`
   object-fit: cover;
   margin-bottom: 18px;
   border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
 `;
 
 const BlogCategory = styled.div`
-  color: #81893f;
+  color: #4A7C59;
   font-size: 0.9rem;
   letter-spacing: 2px;
   margin-bottom: 8px;
@@ -286,9 +296,9 @@ const BlogPostTitle = styled.div`
   letter-spacing: 1px;
   margin-bottom: 12px;
   line-height: 1.4;
-
+  cursor: pointer;
   &:hover {
-    color: #81893f;
+    color: #4A7C59;
   }
 `;
 
@@ -300,7 +310,7 @@ const BlogDesc = styled.div`
 `;
 
 const BlogReadMore = styled(Link)`
-  color: #81893f;
+  color: #4A7C59;
   font-size: 0.95rem;
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -308,19 +318,18 @@ const BlogReadMore = styled(Link)`
   font-weight: 500;
 
   &:hover {
-    color: #6d7a44;
+    color: #4A7C59;
   }
 `;
 
 function BlogList() {
-  // Lấy blog mới nhất từ mỗi category
   const getLatestBlogsByCategory = () => {
     const categories = ["Khám phá về Matcha", "Làm đẹp", "Pha chế"];
     const latestBlogs = [];
 
-    categories.forEach(category => {
+    categories.forEach((category) => {
       const categoryBlogs = blogs
-        .filter(blog => blog.category === category)
+        .filter((blog) => blog.category === category)
         .sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
 
       if (categoryBlogs.length > 0) {
@@ -336,15 +345,17 @@ function BlogList() {
   return (
     <BlogSection>
       <BlogLabel>Blogs</BlogLabel>
-      <BlogTitle>LATEST BLOGS</BlogTitle>
+      <BlogTitle>BLOGS MỚI NHẤT</BlogTitle>
       <BlogGrid>
         {latestBlogs.map((blog, idx) => (
           <BlogCard key={idx}>
-            <BlogImage src={blog.image} alt={blog.title} />
+            <Link to={`/blog/${blog.id}`} style={{ textDecoration: 'none' }}>
+              <BlogImage src={blog.image} alt={blog.title} />
+              <BlogPostTitle>{blog.title}</BlogPostTitle>
+            </Link>
             <BlogCategory>{blog.category}</BlogCategory>
-            <BlogPostTitle>{blog.title}</BlogPostTitle>
             <BlogDesc>{blog.desc}</BlogDesc>
-            <BlogReadMore to={`/blog/${blog.id}`}>Read more</BlogReadMore>
+            <BlogReadMore to={`/blog/${blog.id}`}>Xem thêm</BlogReadMore>
           </BlogCard>
         ))}
       </BlogGrid>
@@ -360,11 +371,11 @@ const Home = () => {
         <BannerImage src={bannerWeb} alt="Banner" />
         <BannerOverlay />
         <BannerTextWrapper>
-          <BannerSubText>CULTIVATING MINDFULNESS AND TRANQUILITY</BannerSubText>
-          <BannerTitle>A FRESH BEGINNING</BannerTitle>
+          <BannerSubText>TU LUYỆN CHÁNH NIỆM VÀ SỰ YÊN TĨNH</BannerSubText>
+          <BannerTitle>MỘT KHỞI ĐẦU MỚI</BannerTitle>
           <BannerButtonGroup>
-            <BannerButton to="/products">SHOP NEW LOOK</BannerButton>
-            <BannerButton to="/blog">READ MORE</BannerButton>
+            <BannerButton to="/products">MUA NGAY</BannerButton>
+            <BannerButton to="/blog">XEM THÊM</BannerButton>
           </BannerButtonGroup>
         </BannerTextWrapper>
       </BannerWrapper>

@@ -29,7 +29,8 @@ const productRouter = require('./routes/product');
 app.use('/api', productRouter);
 const contactRouter = require('./routes/contactRouter');
 app.use('/api', contactRouter);
-
+const blogRouter = require('./routes/blogRoutes');
+app.use('/api', blogRouter);
 
 const PORT = 9999;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

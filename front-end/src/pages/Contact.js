@@ -1,88 +1,165 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import GlobalStyle from "../components/GlobalStyle";
+import { Link } from "react-router-dom";
+import { FaFacebookF, FaTwitter, FaInstagram, FaPinterestP, FaYoutube } from "react-icons/fa";
+import { MdAttachMoney, MdTimer, MdPeople } from "react-icons/md";
 
 const ContactWrapper = styled.div`
-  padding-top: 180px;
+  padding-top: 100px;
   background: #f4f4f4;
-  padding-bottom: 48px;
+  padding-bottom: 20px;
 `;
+
 const Section = styled.div`
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px;
 `;
+
 const ContactContent = styled.div`
-  display: flex;
-  gap: 48px;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
   margin-bottom: 32px;
-  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `;
-const ContactInfo = styled.div`
-  flex: 1 1 350px;
-  min-width: 320px;
-`;
-const SectionTitle = styled.h2`
-  font-size: 1.3rem;
-  margin-bottom: 18px;
-  color: #222;
-`;
-const AddressText = styled.div`
-  font-size: 1.1rem;
-  margin-bottom: 16px;
-`;
-const InfoLine = styled.div`
-  margin-bottom: 8px;
-  color: #444;
-`;
+
 const ContactForm = styled.form`
-  flex: 1 1 350px;
-  min-width: 320px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 20px;
 `;
+
+const FormTitle = styled.h2`
+  font-size: 24px;
+  margin-bottom: 10px;
+  span {
+    color: #4A7C59;
+    font-style: italic;
+  }
+`;
+
+const FormSubtitle = styled.div`
+  font-size: 14px;
+  margin-bottom: 30px;
+`;
+
+const InputGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const Label = styled.label`
+  font-size: 14px;
+  color: #333;
+  &::after {
+    content: " *";
+    color: red;
+  }
+`;
+
 const Input = styled.input`
   font-family: 'Montserrat', sans-serif;
-  padding: 10px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 1rem;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
   outline: none;
   &:focus {
-    border-color: #8bc34a;
+    border-color: #4A7C59;
   }
 `;
+
 const TextArea = styled.textarea`
   font-family: 'Montserrat', sans-serif;
-  padding: 10px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 1rem;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
   outline: none;
   resize: vertical;
+  min-height: 120px;
   &:focus {
-    border-color: #8bc34a;
+    border-color: #4A7C59;
   }
 `;
+
 const SubmitButton = styled.button`
-  font-family: 'Montserrat', sans-serif;
-  background: #8bc34a;
+  background: #4A7C59;
   color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 12px 0;
-  font-size: 1.1rem;
-  font-weight: 600;
+  border: 2px solid #4A7C59;
+  padding: 14px 38px;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+  border-radius: 2px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  font-family: "Montserrat", sans-serif;
+  text-decoration: none;
+  text-align: center;
+
   &:hover {
-    background: #689f38;
+    background: transparent;
+    color: #4A7C59;
+    border: 2px solid #4A7C59;
   }
 `;
+
+const ContactInfo = styled.div`
+  background: #4A7C59;
+  color: white;
+  padding: 40px;
+  border-radius: 8px;
+`;
+
+const InfoSection = styled.div`
+  margin-bottom: 30px;
+`;
+
+const InfoTitle = styled.h3`
+  font-size: 18px;
+  margin-bottom: 15px;
+  font-weight: 500;
+`;
+
+const InfoText = styled.p`
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+`;
+
+const SocialLinks = styled.div`
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+`;
+
+const SocialIcon = styled.a`
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #4A7C59;
+    transform: translateY(-3px);
+  }
+`;
+
 const MapWrapper = styled.div`
   width: 100%;
-  margin-top: 32px;
+  margin-top: 50px;
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 `;
@@ -127,52 +204,76 @@ const Contact = () => {
       <ContactWrapper>
         <Section>
           <ContactContent>
-            <ContactInfo>
-              <SectionTitle>Address</SectionTitle>
-              <AddressText>
-                <b>
-                  Khu Giáo dục và Đào tạo – Khu Công nghệ cao Hòa Lạc – Km29 Đại
-                  lộ Thăng Long, H. Thạch Thất, TP. Hà Nội
-                </b>
-              </AddressText>
-              <InfoLine>
-                <b>Hotline/Zalo:</b> 0987 65 4321 – 0123 45 6789.
-              </InfoLine>
-              <InfoLine>
-                <b>Email:</b> kyomatcha@gmail.com – matchachacha@gmail.com
-              </InfoLine>
-            </ContactInfo>
             <ContactForm onSubmit={handleSubmit}>
-              <Input
-                type="text"
-                name="name"
-                placeholder="Tên khách hàng"
-                value={form.name}
-                onChange={handleChange}
-                required
-              />
-              <Input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={form.email}
-                onChange={handleChange}
-                required
-              />
-              <TextArea
-                name="message"
-                placeholder="Nội dung"
-                rows={4}
-                value={form.message}
-                onChange={handleChange}
-                required
-              />
+              <FormTitle>Liên hệ với KyoMatcha</FormTitle>
+              <FormSubtitle>Hãy liên hệ với chúng tôi để được hỗ trợ tốt nhất</FormSubtitle>
+              <InputGroup>
+                <Label>Tên của bạn</Label>
+                <Input
+                  type="text"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  required
+                />
+              </InputGroup>
+              <InputGroup>
+                <Label>Email</Label>
+                <Input
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                />
+              </InputGroup>
+              <InputGroup>
+                <Label>Nội dung bạn muốn gửi</Label>
+                <TextArea
+                  name="message"
+                  value={form.message}
+                  onChange={handleChange}
+                  required
+                />
+              </InputGroup>
               <SubmitButton type="submit" disabled={loading}>
                 {loading ? "Đang gửi..." : "GỬI THÔNG TIN"}
               </SubmitButton>
               {success && <div style={{ color: "green" }}>{success}</div>}
               {error && <div style={{ color: "red" }}>{error}</div>}
             </ContactForm>
+
+            <ContactInfo>
+              <InfoSection>
+                <InfoTitle>Địa chỉ</InfoTitle>
+                <InfoText>
+                  Khu Giáo dục và Đào tạo – Khu Công nghệ cao Hòa Lạc – Km29 Đại lộ Thăng Long, H. Thạch Thất, TP. Hà Nội
+                </InfoText>
+              </InfoSection>
+
+              <InfoSection>
+                <InfoTitle>Liên hệ</InfoTitle>
+                <InfoText>Điện thoại: 0987 65 4321 – 0123 45 6789</InfoText>
+                <InfoText>Email: kyomatcha@gmail.com</InfoText>
+              </InfoSection>
+
+              <InfoSection>
+                <InfoTitle>Giờ làm việc</InfoTitle>
+                <InfoText>Thứ 2 - Thứ 6: 09:00 - 22:00</InfoText>
+                <InfoText>Thứ 7 - Chủ nhật: 11:00 - 18:00</InfoText>
+              </InfoSection>
+
+              <InfoSection>
+                <InfoTitle>Kết nối với chúng tôi</InfoTitle>
+                <SocialLinks>
+                  <SocialIcon href="#" target="_blank"><FaFacebookF /></SocialIcon>
+                  <SocialIcon href="#" target="_blank"><FaTwitter /></SocialIcon>
+                  <SocialIcon href="#" target="_blank"><FaInstagram /></SocialIcon>
+                  <SocialIcon href="#" target="_blank"><FaPinterestP /></SocialIcon>
+                  <SocialIcon href="#" target="_blank"><FaYoutube /></SocialIcon>
+                </SocialLinks>
+              </InfoSection>
+            </ContactInfo>
           </ContactContent>
           <MapWrapper>
             <iframe

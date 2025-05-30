@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import GlobalStyle from "../components/GlobalStyle";
 
 const Wrapper = styled.div`
-  margin-top: 100px;
-  min-height: 60vh;
+  margin-top: 80px;
+  min-height: 83vh;
   display: flex;
   flex-direction: column;
   align-items: center;

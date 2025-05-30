@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaUser, FaShoppingCart } from "react-icons/fa";
 import styled, { css } from "styled-components";
 import logoImg from "../assets/logo/logo1.png";
-import logoImg2 from "../assets/logo/logo2.png";
+import logoImg2 from "../assets/logo/logo-white.png";
 import { useAppContext } from "../context/AppContext";
 
 const HeaderWrapper = styled.header`
@@ -13,15 +13,17 @@ const HeaderWrapper = styled.header`
   left: 0;
   width: 100vw;
   min-width: 0;
-  height: 160px;
+  height: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
   z-index: 999;
   background-color: ${({ active }) => (active ? "white" : "transparent")};
-  color: ${({ active }) => (active ? "black" : "white")};
+  color: ${({ active }) => (active ? "#4A7C59" : "white")};
   box-sizing: border-box;
+  border-bottom: ${({ active }) => (active ? "1px solid rgba(0, 0, 0, 0.1)" : "1px solid rgba(255, 255, 255, 0.1)")};
+  box-shadow: ${({ active }) => (active ? "0 2px 4px rgba(0, 0, 0, 0.05)" : "none")};
 `;
 
 const HeaderContainer = styled.div`
@@ -29,55 +31,34 @@ const HeaderContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  position: relative;
-`;
-
-const TopRow = styled.div`
-  width: 100%;
-  display: flex;
   align-items: center;
   justify-content: space-between;
-  position: relative;
-  margin: 12px 0;
-  box-sizing: border-box;
-`;
-
-const NavRow = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 0 20px;
 `;
 
 const Logo = styled.img`
-  height: 100px;
+  height: 60px;
   width: auto;
   display: block;
-`;
-
-const VNFlag = styled.img`
-  width: 48px;
-  height: 32px;
-  object-fit: cover;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-`;
-
-const IconGroup = styled.div`
-  display: flex;
-  align-items: center;
-  svg {
-    margin-left: 15px;
-    font-size: 24px;
-    cursor: pointer;
-  }
+  margin-right: 20px;
 `;
 
 const Nav = styled.nav`
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 20px;
+  flex-grow: 1;
+  justify-content: center;
+`;
+
+const IconGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  svg {
+    font-size: 20px;
+    cursor: pointer;
+  }
 `;
 
 const NavItem = styled.div`
@@ -93,7 +74,7 @@ const NavItem = styled.div`
     bottom: -6px;
     width: 0%;
     height: 3px;
-    background: #2ecc40;
+    background: #4A7C59;
     border-radius: 2px;
     transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 0;
@@ -164,8 +145,8 @@ const Header = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const location = useLocation();
-  const isHome = location.pathname === "/";
-  const shouldApplyHoverStyle = isScrolled || !isHome || isHovered;
+  const isTransparentPage = ["/", "/about-us"].includes(location.pathname);
+  const shouldApplyHoverStyle = isTransparentPage ? (isScrolled || isHovered) : true;
   const navigate = useNavigate();
   const {
     selectedCategory,
@@ -208,149 +189,136 @@ const Header = () => {
       }}
     >
       <HeaderContainer>
-        <TopRow>
-          <VNFlag
-            src="/vn-flag.png"
-            alt="VN Flag"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src =
-                "https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg";
-            }}
+        <Link to="/" onClick={() => setSelectedCategory("")}>
+          <Logo
+            src={shouldApplyHoverStyle ? logoImg : logoImg2}
+            alt="KyoMatcha Logo"
           />
-          <Link to="/" onClick={() => setSelectedCategory("")}>
-            <Logo
-              src={shouldApplyHoverStyle ? logoImg : logoImg2}
-              alt="KyoMatcha Logo"
-            />
-          </Link>
-          <IconGroup>
-            <FaUser
+        </Link>
+        <Nav>
+          <NavItem onMouseEnter={() => closeDropdown()}>
+            <NavLink
+              to="/"
+              active={shouldApplyHoverStyle}
+              onClick={() => setSelectedCategory("")}
+            >
+              Trang chủ
+            </NavLink>
+          </NavItem>
+          <NavItem
+            className={`nav-animated${isMenuActive("about") ? " active" : ""}`}
+            onMouseEnter={() => handleDropdown("about")}
+            onMouseLeave={closeDropdown}
+          >
+            <NavLink active={shouldApplyHoverStyle} to="/about-us">
+              Giới thiệu
+            </NavLink>
+            <DropdownMenu show={isMenuActive("about")}>
+              <DropdownLink to="/about-us" onClick={() => setSelectedCategory("")}>
+                Về chúng tôi
+              </DropdownLink>
+              <DropdownLink to="/history" onClick={() => setSelectedCategory("")}>
+                Lịch sử trà Nhật
+              </DropdownLink>
+            </DropdownMenu>
+          </NavItem>
+          <NavItem
+            className={`nav-animated${isMenuActive("product") ? " active" : ""}`}
+            onMouseEnter={() => handleDropdown("product")}
+            onMouseLeave={closeDropdown}
+          >
+            <NavSpan
+              active={shouldApplyHoverStyle}
               onClick={() => {
-                if (localStorage.getItem("token")) {
-                  navigate("/profile");
-                } else {
-                  navigate("/login");
-                }
-              }}
-            />
-            <FaShoppingCart 
-              onClick={() => navigate('/cart')}/>
-          </IconGroup>
-        </TopRow>
-        <NavRow>
-          <Nav>
-            <NavItem onMouseEnter={() => closeDropdown()}>
-              <NavLink
-                to="/"
-                active={shouldApplyHoverStyle}
-                onClick={() => setSelectedCategory("")}
-              >
-                Trang chủ
-              </NavLink>
-            </NavItem>
-            <NavItem
-              className={`nav-animated${
-                isMenuActive("about") ? " active" : ""
-              }`}
-              onMouseEnter={() => handleDropdown("about")}
-              onMouseLeave={closeDropdown}
-            >
-              <NavLink active={shouldApplyHoverStyle} to="/about-us">Giới thiệu</NavLink>
-              <DropdownMenu show={isMenuActive("about")}>
-                <DropdownLink
-                  to="/about-us"
-                  onClick={() => setSelectedCategory("")}
-                >
-                  Về chúng tôi
-                </DropdownLink>
-                <DropdownLink
-                  to="/history"
-                  onClick={() => setSelectedCategory("")}
-                >
-                  Lịch sử trà Nhật
-                </DropdownLink>
-              </DropdownMenu>
-            </NavItem>
-            <NavItem
-              className={`nav-animated${
-                isMenuActive("product") ? " active" : ""
-              }`}
-              onMouseEnter={() => handleDropdown("product")}
-              onMouseLeave={closeDropdown}
-            >
-              <NavSpan active={shouldApplyHoverStyle}
-              onClick={() =>
-              {
                 handleCategoryClick("");
                 navigate("/products");
-              }}>Sản phẩm</NavSpan>
-              <DropdownMenu show={isMenuActive("product")}>
-                <DropdownLink
-                  to="/products"
-                  onClick={() => {
-                    handleCategoryClick("Matcha");
-                    navigate("/products");
-                  }}
-                >
-                  Matcha
-                </DropdownLink>
-                <DropdownLink
-                  to="/products"
-                  onClick={() => {
-                    handleCategoryClick("tea_tools");
-                    navigate("/products");
-                  }}
-                >
-                  Dụng cụ trà đạo
-                </DropdownLink>
-                <DropdownLink
-                  to="/products"
-                  onClick={() => {
-                    handleCategoryClick("barista_tools");
-                    navigate("/products");
-                  }}
-                >
-                  Dụng cụ pha chế
-                </DropdownLink>
-              </DropdownMenu>
-            </NavItem>
-            <NavItem
-              className={`nav-animated${isMenuActive("blog") ? " active" : ""}`}
-              onMouseEnter={() => handleDropdown("blog")}
-              onMouseLeave={closeDropdown}
+              }}
             >
-              <NavLink to="/blog" active={shouldApplyHoverStyle} onClick={() => handleBlogCategoryClick("", "Tất cả")}>
-                Blog
-              </NavLink>
-              <DropdownMenu show={isMenuActive("blog")}>
-                <DropdownLink
-                  to="/blog"
-                  onClick={() => handleBlogCategoryClick('discover-matcha', 'Khám phá về Matcha')}
-                >
-                  Khám phá về Matcha
-                </DropdownLink>
-                <DropdownLink
-                  to="/blog"
-                  onClick={() => handleBlogCategoryClick('beauty', 'Làm đẹp')}
-                >
-                  Làm đẹp
-                </DropdownLink>
-                <DropdownLink
-                  to="/blog"
-                  onClick={() => handleBlogCategoryClick('recipe', 'Pha chế')}
-                >
-                  Pha chế
-                </DropdownLink>
-              </DropdownMenu>
-            </NavItem>
-            <NavItem onMouseEnter={() => closeDropdown()}>
-              <NavLink to="/contact" active={shouldApplyHoverStyle}>
-                Liên hệ
-              </NavLink>
-            </NavItem>
-          </Nav>
-        </NavRow>
+              Sản phẩm
+            </NavSpan>
+            <DropdownMenu show={isMenuActive("product")}>
+              <DropdownLink
+                to="/products"
+                onClick={() => {
+                  handleCategoryClick("Matcha");
+                  navigate("/products");
+                }}
+              >
+                Matcha
+              </DropdownLink>
+              <DropdownLink
+                to="/products"
+                onClick={() => {
+                  handleCategoryClick("tea_tools");
+                  navigate("/products");
+                }}
+              >
+                Dụng cụ trà đạo
+              </DropdownLink>
+              <DropdownLink
+                to="/products"
+                onClick={() => {
+                  handleCategoryClick("barista_tools");
+                  navigate("/products");
+                }}
+              >
+                Dụng cụ pha chế
+              </DropdownLink>
+            </DropdownMenu>
+          </NavItem>
+          <NavItem
+            className={`nav-animated${isMenuActive("blog") ? " active" : ""}`}
+            onMouseEnter={() => handleDropdown("blog")}
+            onMouseLeave={closeDropdown}
+          >
+            <NavLink
+              to="/blog"
+              active={shouldApplyHoverStyle}
+              onClick={() => handleBlogCategoryClick("", "Tất cả")}
+            >
+              Blog
+            </NavLink>
+            <DropdownMenu show={isMenuActive("blog")}>
+              <DropdownLink
+                to="/blog"
+                onClick={() =>
+                  handleBlogCategoryClick("discover-matcha", "Khám phá về Matcha")
+                }
+              >
+                Khám phá về Matcha
+              </DropdownLink>
+              <DropdownLink
+                to="/blog"
+                onClick={() => handleBlogCategoryClick("beauty", "Làm đẹp")}
+              >
+                Làm đẹp
+              </DropdownLink>
+              <DropdownLink
+                to="/blog"
+                onClick={() => handleBlogCategoryClick("recipe", "Pha chế")}
+              >
+                Pha chế
+              </DropdownLink>
+            </DropdownMenu>
+          </NavItem>
+          <NavItem onMouseEnter={() => closeDropdown()}>
+            <NavLink to="/contact" active={shouldApplyHoverStyle}>
+              Liên hệ
+            </NavLink>
+          </NavItem>
+        </Nav>
+        <IconGroup>
+          <FaUser
+            onClick={() => {
+              if (localStorage.getItem("token")) {
+                navigate("/profile");
+              } else {
+                navigate("/login");
+              }
+            }}
+          />
+          <FaShoppingCart onClick={() => navigate("/cart")} />
+        </IconGroup>
       </HeaderContainer>
     </HeaderWrapper>
   );

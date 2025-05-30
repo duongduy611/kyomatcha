@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import GlobalStyle from '../components/GlobalStyle';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { blogs } from '../data/blogs';
+import axios from 'axios';
+
+const BACKEND_URL = "http://localhost:9999";
 
 const Wrapper = styled.div`
-  padding-top: 160px;
+  padding-top: 80px;
   background: #f5f5f5;
   min-height: 100vh;
 `;
@@ -140,61 +143,101 @@ const RelatedTitle = styled.div`
   margin-bottom: 8px;
 `;
 
-const ProductSection = styled.div`
-  padding: 60px 0;
-`;
-const SliderTitle = styled.h2`
-  text-align: center;
-  font-size: 1.4rem;
-  letter-spacing: 3px;
-  color: #6d6a4f;
-  font-weight: 500;
-  margin-bottom: 32px;
-`;
-const ProductWrapper = styled.div`
+const ProductSection = styled.section`
   max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  gap: 60px;
+  margin: 48px auto;
+  padding: 0 20px;
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 40px 20px;
+`;
+const ProductTitle = styled.h2`
+  text-align: center;
+  font-size: 1.6rem;
+  letter-spacing: 3px;
+  color: #81893f;
+  font-weight: 600;
+  margin-bottom: 40px;
+  position: relative;
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: #81893f;
+    border-radius: 2px;
+  }
+`;
+const ProductGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 `;
 const ProductCard = styled.div`
-  width: 250px;
   text-align: center;
-`;
-const ProductImg = styled.img`
-  width: 100%;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  background: white;
+  padding: 20px;
   border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+`;
+const ProductImage = styled.img`
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 20px;
+`;
+const ProductName = styled.h3`
+  font-size: 1.1rem;
+  color: #333;
   margin-bottom: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
 `;
-const ProductName = styled.div`
-  font-size: 16px;
-  color: #3a3a2a;
-  margin-bottom: 4px;
-`;
-const ProductRating = styled.div`
-  color: #e6b800;
+const ProductPrice = styled.p`
+  color: #81893f;
   font-weight: 600;
-  font-size: 15px;
-`;
-const ProductReview = styled.span`
-  color: #7a7a3a;
-  font-weight: 400;
-`;
-const ProductPrice = styled.div`
-  color: #e74c3c;
-  font-weight: 600;
-  font-size: 16px;
-`;
-const ProductOldPrice = styled.span`
-  color: #7a7a3a;
-  text-decoration: line-through;
-  font-weight: 400;
+  font-size: 1.1rem;
 `;
 
 const BlogDetail = () => {
   const { blogId } = useParams();
   const blog = blogs.find(b => b.id === Number(blogId));
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(`${BACKEND_URL}/api/products`, {
+          params: { limit: 3 },
+        });
+        if (response.data && response.data.data) {
+          setProducts(response.data.data.slice(0, 3));
+        }
+      } catch (error) {
+        setProducts([]);
+      }
+      setLoading(false);
+    };
+    fetchProducts();
+  }, []);
+
   if (!blog) return <div style={{paddingTop: 180, textAlign: 'center'}}>Blog không tồn tại!</div>;
 
   return (
@@ -233,13 +276,6 @@ const BlogDetail = () => {
         {/* Thông tin tác giả */}
         <Author>WRITTEN BY MATCHAYA ONLINE TEAM</Author>
 
-        {/* Chia sẻ mạng xã hội */}
-        <SocialShare>
-          <SocialBtn><SocialIcon className="fab fa-facebook-f" /></SocialBtn>
-          <SocialBtn><SocialIcon className="fab fa-twitter" /></SocialBtn>
-          <SocialBtn><SocialIcon className="fab fa-pinterest-p" /></SocialBtn>
-        </SocialShare>
-
         {/* Các bài viết liên quan */}
         <RelatedSection>
           <RelatedWrapper>
@@ -256,26 +292,30 @@ const BlogDetail = () => {
 
         {/* Carousel sản phẩm */}
         <ProductSection>
-        <SliderTitle>SHOP NOW</SliderTitle>
-          <ProductWrapper>
-            <ProductCard>
-              <ProductImg src="https://matchaya.sg/cdn/shop/products/DualColdDrinks_400x.png?v=1629609658" alt="A Tea Gathering" />
-              <ProductName>A TEA GATHERING</ProductName>
-              <ProductRating>★ 4.9 <ProductReview>(56)</ProductReview></ProductRating>
-              <ProductPrice>$11 <ProductOldPrice>$12</ProductOldPrice></ProductPrice>
-            </ProductCard>
-            <ProductCard>
-              <ProductImg src="https://matchaya.sg/cdn/shop/products/DualColdDrinks_400x.png?v=1629609658" alt="A Tea Gathering for 2 + Warabi Mochi" />
-              <ProductName>A TEA GATHERING FOR 2 + WARABI MOCHI</ProductName>
-              <ProductRating>★ 4.8 <ProductReview>(37)</ProductReview></ProductRating>
-            </ProductCard>
-            <ProductCard>
-              <ProductImg src="https://matchaya.sg/cdn/shop/products/DualColdDrinks_400x.png?v=1629609658" alt="Winter's Here" />
-              <ProductName>WINTER'S HERE</ProductName>
-              <ProductRating>★ 4.7 <ProductReview>(29)</ProductReview></ProductRating>
-              <ProductPrice>$45 <ProductOldPrice>$48</ProductOldPrice></ProductPrice>
-            </ProductCard>
-          </ProductWrapper>
+          <ProductTitle>MATCHA PREMIUM</ProductTitle>
+          {loading ? (
+            <div style={{ textAlign: 'center' }}>Loading...</div>
+          ) : products.length === 0 ? (
+            <div style={{ textAlign: 'center' }}>No products found.</div>
+          ) : (
+            <ProductGrid>
+              {products.map(product => (
+                <ProductCard key={product._id}>
+                  <Link to={`/products/${product.slug}`} style={{ textDecoration: 'none' }}>
+                    <ProductImage
+                      src={product.images && product.images.length > 0 ? `${BACKEND_URL}${product.images[0]}` : "/placeholder.jpg"}
+                      alt={product.name}
+                      onError={e => { e.target.onerror = null; e.target.src = "/placeholder.jpg"; }}
+                    />
+                    <ProductName>{product.name}</ProductName>
+                    <ProductPrice>
+                      {product.price ? `Chỉ từ ${product.price.toLocaleString()}đ` : ''}
+                    </ProductPrice>
+                  </Link>
+                </ProductCard>
+              ))}
+            </ProductGrid>
+          )}
         </ProductSection>
       </Wrapper>
     </>

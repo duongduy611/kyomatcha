@@ -4,8 +4,14 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { useAppContext } from '../context/AppContext';
 import bannerImage from '../assets/images/banner_product.jpg';
+import GlobalStyle from '../components/GlobalStyle';
+const BACKEND_URL = 'http://localhost:9999';
 
-const BACKEND_URL = 'http://localhost:9999'; // Add backend URL
+const KingofTea = styled.div`
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0;
+`;
 
 const Banner = styled.div`
     width: 100%;
@@ -15,7 +21,7 @@ const Banner = styled.div`
     background-position: center;
     background-repeat: no-repeat;
     position: relative;
-    margin-top: 160px;
+    margin-top: 80px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -303,71 +309,75 @@ const AllProducts = () => {
 
     return (
         <>
-            <Banner>
-                <BannerText>sản phẩm của chúng tôi </BannerText>
-            </Banner>
-            <Container>
-                <Header>
-                    <FilterSection>
-                        <select
-                            value={selectedCategory}
-                            onChange={(e) => setSelectedCategory(e.target.value)}
-                        >
-                            <option value="">Tất Cả Danh Mục</option>
-                            {categories.map((category) => (
-                                <option key={category} value={category}>
-                                    {categoryMapping[category] || category}
-                                </option>
-                            ))}
-                        </select>
-                        <select
-                            value={sortOption}
-                            onChange={(e) => setSortOption(e.target.value)}
-                        >
-                            <option value="">Sắp xếp theo</option>
-                            <option value="name-asc">Tên, A-Z</option>
-                            <option value="name-desc">Tên, Z-A</option>
-                            <option value="price-asc">Giá, thấp đến cao</option>
-                            <option value="price-desc">Giá, cao đến thấp</option>
-                        </select>
-                    </FilterSection>
-                    <SearchBar>
-                        <input
-                            type="text"
-                            placeholder="Tìm kiếm sản phẩm..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </SearchBar>
-                </Header>
+            <GlobalStyle />
+            <KingofTea>
 
-                {loading ? (
-                    <Loading>Đang tải sản phẩm...</Loading>
-                ) : (
-                    <ProductGrid>
-                        {products.map((product) => (
-                            <ProductCard key={product.slug}>
-                                <Link to={`/products/${product.slug}`}>
-                                    <ProductImage>
-                                        <img
-                                            src={`${BACKEND_URL}${product.images[0]}`}
-                                            alt={product.name}
-                                            onError={(e) => {
-                                                e.target.onerror = null;
-                                                e.target.src = '/placeholder.jpg';
-                                            }}
-                                        />
-                                    </ProductImage>
-                                    <ProductInfo>
-                                        <h3>{product.name}</h3>
-                                        <p className="price">Chỉ từ {product.price.toLocaleString()}đ</p>
-                                    </ProductInfo>
-                                </Link>
-                            </ProductCard>
-                        ))}
-                    </ProductGrid>
-                )}
-            </Container>
+                <Banner>
+                    <BannerText>sản phẩm của chúng tôi </BannerText>
+                </Banner>
+                <Container>
+                    <Header>
+                        <FilterSection>
+                            <select
+                                value={selectedCategory}
+                                onChange={(e) => setSelectedCategory(e.target.value)}
+                            >
+                                <option value="">Tất Cả Danh Mục</option>
+                                {categories.map((category) => (
+                                    <option key={category} value={category}>
+                                        {categoryMapping[category] || category}
+                                    </option>
+                                ))}
+                            </select>
+                            <select
+                                value={sortOption}
+                                onChange={(e) => setSortOption(e.target.value)}
+                            >
+                                <option value="">Sắp xếp theo</option>
+                                <option value="name-asc">Tên, A-Z</option>
+                                <option value="name-desc">Tên, Z-A</option>
+                                <option value="price-asc">Giá, thấp đến cao</option>
+                                <option value="price-desc">Giá, cao đến thấp</option>
+                            </select>
+                        </FilterSection>
+                        <SearchBar>
+                            <input
+                                type="text"
+                                placeholder="Tìm kiếm sản phẩm..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </SearchBar>
+                    </Header>
+
+                    {loading ? (
+                        <Loading>Đang tải sản phẩm...</Loading>
+                    ) : (
+                        <ProductGrid>
+                            {products.map((product) => (
+                                <ProductCard key={product.slug}>
+                                    <Link to={`/products/${product.slug}`}>
+                                        <ProductImage>
+                                            <img
+                                                src={`${BACKEND_URL}${product.images[0]}`}
+                                                alt={product.name}
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    e.target.src = '/placeholder.jpg';
+                                                }}
+                                            />
+                                        </ProductImage>
+                                        <ProductInfo>
+                                            <h3>{product.name}</h3>
+                                            <p className="price">Chỉ từ {product.price.toLocaleString()}đ</p>
+                                        </ProductInfo>
+                                    </Link>
+                                </ProductCard>
+                            ))}
+                        </ProductGrid>
+                    )}
+                </Container>
+            </KingofTea>
         </>
     );
 };

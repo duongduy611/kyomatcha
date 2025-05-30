@@ -20,7 +20,7 @@ const ITEMS_PER_PAGE = 6;
 const PageWrapper = styled.div`
   background: #f4f4f4;
   min-height: 100vh;
-  padding-top: 180px;
+  padding-top: 100px;
   padding-bottom: 40px;
 `;
 
