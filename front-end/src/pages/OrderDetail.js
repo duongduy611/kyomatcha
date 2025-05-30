@@ -88,7 +88,7 @@ const OrderDetail = () => {
 		<Container
 			className='pt-5'
 			style={{ marginTop: '150px', marginBottom: '100px' }}>
-			<h4 className='mb-4' style={{ color: '#6b4f2d' }}>
+			<h4 className='mb-4' style={{ color: '#6b4f2d', fontWeight: 'bold' }}>
 				<i
 					className='bi bi-box-seam-fill me-2'
 					style={{ color: '#b0884d' }}></i>

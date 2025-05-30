@@ -216,9 +216,9 @@ const handleCheckout = async () => {
 	console.log(cart.items[0].image);
 
 	return (
-		<Container style={{ marginTop: '200px' }} className='pb-5'>
-			<h2 className='mb-3' style={{ color: '#33691e' }}>
-				🚚 Thông tin giao hàng
+		<Container style={{ marginTop: '200px'}} className='pb-5'>
+			<h2 className='mb-3' style={{ color: '#33691e' , fontStyle: 'bold'}}>
+				 Thông tin giao hàng
 			</h2>
 			<Row>
 				<Col md={6}>
@@ -288,7 +288,7 @@ const handleCheckout = async () => {
 				</Col>
 			</Row>
 
-			<h2 className='mb-4'>🛒 Giỏ hàng của bạn</h2>
+			<h2 className='mb-4' > Giỏ hàng của bạn</h2>
 			<Row>
 				<Col md={8}>
 					<Card
@@ -400,8 +400,8 @@ const handleCheckout = async () => {
 				<Col md={4}>
 					<Card style={{ backgroundColor: '#f9fbe7', borderRadius: '16px' }}>
 						<Card.Body>
-							<h5 className='mb-3' style={{ color: '#33691e' }}>
-								🧾 Tổng cộng
+							<h5 className='mb-3' style={{ color: '#33691e', fontWeight: 'bold' }}>
+								 Tổng cộng
 							</h5>
 							<p style={{ fontSize: '1.1rem' }}>
 								Tổng tiền:{' '}
@@ -420,7 +420,7 @@ const handleCheckout = async () => {
 											type='radio'
 											id='COD'
 											name='paymentMethod'
-											label='📦 Thanh toán khi nhận hàng (COD)'
+											label='Thanh toán khi nhận hàng (COD)'
 											value='COD'
 											checked={paymentMethod === 'COD'}
 											onChange={(e) => setPaymentMethod(e.target.value)}
@@ -434,12 +434,7 @@ const handleCheckout = async () => {
 											onChange={(e) => setPaymentMethod(e.target.value)}
 											label={
 												<span>
-													<img
-														src='https://img.icons8.com/color/48/zalo.png'
-														alt='ZaloPay'
-														style={{ height: '24px', marginRight: '8px' }}
-													/>
-													Thanh toán qua ZaloPay
+													Thanh toán qua VietQR
 												</span>
 											}
 										/>
@@ -472,8 +467,8 @@ const handleCheckout = async () => {
 						<Card.Body>
 							<Form>
 								<Form.Group controlId='couponCode'>
-									<Form.Label style={{ fontWeight: 500 }}>
-										🎁 Mã giảm giá
+									<Form.Label style={{ fontWeight: 500, fontStyle: 'bold' }}>
+										 Mã giảm giá
 									</Form.Label>
 									<div className='d-flex'>
 										<Form.Control type='text' placeholder='Nhập mã...' />
