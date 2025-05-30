@@ -15,6 +15,7 @@ import MyCart from '../pages/MyCart';
 import ThankYouPage from "../pages/ThankYouPage";
 import OrderHistory from "../pages/OrderHistory";
 import OrderDetail from "../pages/OrderDetail";
+import QRPaymentPage from "../pages/QRPayment";
 
 export const routes = [
     {
@@ -100,6 +101,11 @@ export const routes = [
     {
         path: '/my-orders/:orderId',
         page: OrderDetail,
+        isShowHeader: true
+    },
+     {
+        path: '/qr-payment',
+        page: QRPaymentPage,
         isShowHeader: true
     }
 
