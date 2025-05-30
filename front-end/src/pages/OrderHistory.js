@@ -40,7 +40,7 @@ const OrderHistory = () => {
 			<Container
 				className='pt-5 text-center'
 				style={{ marginTop: '200px', marginBottom: '100px' }}>
-				<h4>😢 Bạn chưa có đơn hàng nào</h4>
+				<h4>Bạn chưa có đơn hàng nào</h4>
 			</Container>
 		);
 	}
@@ -64,7 +64,7 @@ const OrderHistory = () => {
 
 	return (
 		<Container className='pt-5' style={{ marginTop: '200px' }}>
-			<h2 className='mb-4'>📦 Lịch sử đơn hàng</h2>
+			<h2 className='mb-4' style={{ fontWeight: 'bold' }} >Lịch sử đơn hàng</h2>
 			{orders.map((order) => (
 				<Card key={order._id} className='mb-4'>
 					<Card.Header>

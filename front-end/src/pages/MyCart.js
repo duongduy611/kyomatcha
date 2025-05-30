@@ -12,7 +12,7 @@ import {
 	ListGroup,
 } from 'react-bootstrap';
 import Select from 'react-select';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const MyCart = () => {
 	const [cart, setCart] = useState(null);
@@ -31,6 +31,7 @@ const MyCart = () => {
 	const [selectedWard, setSelectedWard] = useState(null);
 
 	const userId = localStorage.getItem('id');
+	const navigate = useNavigate();
 	const BACKEND_URL = 'http://localhost:9999';
 
 	useEffect(() => {
@@ -132,60 +133,75 @@ const MyCart = () => {
 		}
 	};
 
-	const handleCheckout = async () => {
-		if (
-			!receiverName ||
-			!phone ||
-			!address ||
-			!selectedProvince ||
-			!selectedDistrict ||
-			!selectedWard
-		) {
-			toast.warning('Vui lòng nhập đầy đủ thông tin giao hàng');
-			return;
-		}
+const handleCheckout = async () => {
+	if (
+		!receiverName ||
+		!phone ||
+		!address ||
+		!selectedProvince ||
+		!selectedDistrict ||
+		!selectedWard
+	) {
+		toast.warning('Vui lòng nhập đầy đủ thông tin giao hàng');
+		return;
+	}
 
-		const fullAddress = [
-			address?.trim(),
-			selectedWard?.label,
-			selectedDistrict?.label,
-			selectedProvince?.label,
-		]
-			.filter(Boolean)
-			.join(', ');
+	const fullAddress = [
+		address?.trim(),
+		selectedWard?.label,
+		selectedDistrict?.label,
+		selectedProvince?.label,
+	]
+		.filter(Boolean)
+		.join(', ');
 
-		if (paymentMethod === 'COD') {
-			try {
-				await axios.post(`${BACKEND_URL}/orders`, {
-					userId,
-					items: cart.items.map((item) => ({
-						productId: item.productId,
-						name: item.name,
-						quantity: item.quantity,
-						price: item.price,
-					})),
-					total: totalPrice,
-					shippingInfo: {
-						address: fullAddress,
-						receiverName,
-						phone,
-					},
-					paymentInfo: { method: 'COD' },
-				});
+	try {
+		// Bước 1: Tạo đơn hàng trước
+		const orderRes = await axios.post(`${BACKEND_URL}/orders`, {
+			userId,
+			items: cart.items.map((item) => ({
+				productId: item.productId,
+				name: item.name,
+				quantity: item.quantity,
+				price: item.price,
+			})),
+			total: totalPrice,
+			shippingInfo: {
+				address: fullAddress,
+				receiverName,
+				phone,
+			},
+			paymentInfo: { method: 'VietQR' },
+		});
 
-				await axios.delete(`${BACKEND_URL}/cart/clear/${userId}`);
-				setCart({ items: [] });
+		const createdOrder = orderRes.data;
 
-				toast.success('Đặt hàng thành công!');
-				redirect('/thankyou');
-			} catch (err) {
-				console.error(err);
-				toast.error('Lỗi khi tạo đơn hàng');
+		if (paymentMethod === 'VietQR') {
+			// Bước 2: Gọi API VietQR để lấy mã QR
+			const qrRes = await axios.post(`${BACKEND_URL}/vietqr/create`, {
+				orderId: createdOrder._id,
+			});
+
+			// Bước 3: Điều hướng tới trang hiển thị mã QR (tạo mới nếu chưa có)
+			if (qrRes.data?.qrBase64) {
+				// lưu tạm orderId vào localStorage hoặc dùng redirect có query param
+				localStorage.setItem('qrCheckout', JSON.stringify(qrRes.data));
+				navigate('/qr-payment');
+			} else {
+				toast.error('Không thể tạo mã QR thanh toán');
 			}
-		} else if (paymentMethod === 'zalopay') {
-			window.location.href = `${BACKEND_URL}/payment/zalopay/redirect?userId=${userId}`;
+		} else {
+			// Xử lý COD như bình thường
+			await axios.delete(`${BACKEND_URL}/cart/clear/${userId}`);
+			setCart({ items: [] });
+			toast.success('Đặt hàng thành công!');
+			navigate('/thankyou'); 
 		}
-	};
+	} catch (err) {
+		console.error(err);
+		toast.error('Lỗi khi xử lý thanh toán');
+	}
+};
 
 	if (loading)
 		return <div className='pt-5 text-center' style={{ marginTop: '200px', marginBottom: '100px' }}>Đang tải giỏ hàng...</div>;
@@ -200,9 +216,9 @@ const MyCart = () => {
 	console.log(cart.items[0].image);
 
 	return (
-		<Container style={{ marginTop: '200px' }} className='pb-5'>
-			<h2 className='mb-3' style={{ color: '#33691e' }}>
-				🚚 Thông tin giao hàng
+		<Container style={{ marginTop: '200px'}} className='pb-5'>
+			<h2 className='mb-3' style={{ color: '#33691e' , fontStyle: 'bold'}}>
+				 Thông tin giao hàng
 			</h2>
 			<Row>
 				<Col md={6}>
@@ -272,7 +288,7 @@ const MyCart = () => {
 				</Col>
 			</Row>
 
-			<h2 className='mb-4'>🛒 Giỏ hàng của bạn</h2>
+			<h2 className='mb-4' > Giỏ hàng của bạn</h2>
 			<Row>
 				<Col md={8}>
 					<Card
@@ -384,8 +400,8 @@ const MyCart = () => {
 				<Col md={4}>
 					<Card style={{ backgroundColor: '#f9fbe7', borderRadius: '16px' }}>
 						<Card.Body>
-							<h5 className='mb-3' style={{ color: '#33691e' }}>
-								🧾 Tổng cộng
+							<h5 className='mb-3' style={{ color: '#33691e', fontWeight: 'bold' }}>
+								 Tổng cộng
 							</h5>
 							<p style={{ fontSize: '1.1rem' }}>
 								Tổng tiền:{' '}
@@ -404,26 +420,21 @@ const MyCart = () => {
 											type='radio'
 											id='COD'
 											name='paymentMethod'
-											label='📦 Thanh toán khi nhận hàng (COD)'
+											label='Thanh toán khi nhận hàng (COD)'
 											value='COD'
 											checked={paymentMethod === 'COD'}
 											onChange={(e) => setPaymentMethod(e.target.value)}
 										/>
 										<Form.Check
 											type='radio'
-											id='zalopay'
+											id='VietQR'
 											name='paymentMethod'
-											value='zalopay'
-											checked={paymentMethod === 'zalopay'}
+											value='VietQR'
+											checked={paymentMethod === 'VietQR'}
 											onChange={(e) => setPaymentMethod(e.target.value)}
 											label={
 												<span>
-													<img
-														src='https://img.icons8.com/color/48/zalo.png'
-														alt='ZaloPay'
-														style={{ height: '24px', marginRight: '8px' }}
-													/>
-													Thanh toán qua ZaloPay
+													Thanh toán qua VietQR
 												</span>
 											}
 										/>
@@ -456,8 +467,8 @@ const MyCart = () => {
 						<Card.Body>
 							<Form>
 								<Form.Group controlId='couponCode'>
-									<Form.Label style={{ fontWeight: 500 }}>
-										🎁 Mã giảm giá
+									<Form.Label style={{ fontWeight: 500, fontStyle: 'bold' }}>
+										 Mã giảm giá
 									</Form.Label>
 									<div className='d-flex'>
 										<Form.Control type='text' placeholder='Nhập mã...' />
