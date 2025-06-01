@@ -1,66 +1,151 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+
+const BACKEND_URL = 'http://localhost:9999';
 
 const AppContext = createContext();
 
+export const useAppContext = () => useContext(AppContext);
+
 export const AppProvider = ({ children }) => {
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedBlogCategory, setSelectedBlogCategory] = useState('Tất cả');
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [selectedBlogCategory, setSelectedBlogCategory] = useState('Tất cả');
+    const [user, setUser] = useState(null);
+    const [favorites, setFavorites] = useState([]);
+    const [loading, setLoading] = useState(false);
 
+    const categoryMapping = {
+        'matcha': 'Matcha',
+        'tea-tools': 'Dụng cụ trà đạo',
+        'barista-tools': 'Dụng cụ pha chế'
+    };
 
-  const categoryMapping = {
-    'matcha': 'Matcha',
-    'tea_tools': 'Dụng cụ trà đạo',
-    'barista_tools': 'Dụng cụ pha chế'
-  };
+    const reverseCategoryMapping = {
+        'Matcha': 'matcha',
+        'Dụng cụ trà đạo': 'tea-tools',
+        'Dụng cụ pha chế': 'barista-tools'
+    };
 
-  const reverseCategoryMapping = {
-    'Matcha': 'matcha',
-    'Dụng cụ trà đạo': 'tea_tools',
-    'Dụng cụ pha chế': 'barista_tools'
-  };
+    const blogCategoryMapping = {
+        'discover-matcha': 'Khám phá về Matcha',
+        'beauty': 'Làm đẹp',
+        'recipe': 'Pha chế'
+    };
 
-  const blogCategoryMapping = {
-    'discover-matcha': 'Khám phá về Matcha',
-    'beauty': 'Làm đẹp',
-    'recipe': 'Pha chế'
-  };
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            fetchUserData(token);
+            fetchFavorites();
+        }
+    }, []);
 
-  const updateCategory = (urlCategory) => {
-    setSelectedCategory(urlCategory);
-  };
+    const fetchUserData = async (token) => {
+        try {
+            const response = await axios.get(`${BACKEND_URL}/api/user/profile`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setUser(response.data.data);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            localStorage.removeItem('token');
+            setUser(null);
+        }
+    };
 
-  const updateBlogCategory = (category) => {
-    setSelectedBlogCategory(category);
-  };
+    const fetchFavorites = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) return;
 
-  const getCategoryDisplay = (category) => {
-    return categoryMapping[category] || category;
-  };
+        try {
+            const response = await axios.get(`${BACKEND_URL}/api/favorites`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setFavorites(response.data.data);
+        } catch (error) {
+            console.error('Error fetching favorites:', error);
+        }
+    };
 
-  const contextValue = {
-    selectedCategory,
-    setSelectedCategory,
-    selectedBlogCategory,
-    setSelectedBlogCategory,
-    updateCategory,
-    updateBlogCategory,
-    categoryMapping,
-    blogCategoryMapping,
-    getCategoryDisplay,
-    reverseCategoryMapping
-  };
+    const toggleFavorite = async (productId) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            toast.info('Vui lòng đăng nhập để thêm sản phẩm vào yêu thích');
+            return;
+        }
 
-  return (
-    <AppContext.Provider value={contextValue}>
-      {children}
-    </AppContext.Provider>
-  );
+        try {
+            setLoading(true);
+            const response = await axios.post(
+                `${BACKEND_URL}/api/favorites/toggle`,
+                { productId },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            if (response.data.success) {
+                // Cập nhật danh sách yêu thích
+                await fetchFavorites();
+                toast.success(response.data.data.message);
+            }
+        } catch (error) {
+            console.error('Error toggling favorite:', error);
+            toast.error('Có lỗi xảy ra khi thêm/xóa yêu thích');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const isProductFavorited = (productId) => {
+        return favorites.some(fav => fav.productId._id === productId);
+    };
+
+    const login = async (token) => {
+        localStorage.setItem('token', token);
+        await fetchUserData(token);
+        await fetchFavorites();
+    };
+
+    const logout = () => {
+        localStorage.removeItem('token');
+        setUser(null);
+        setFavorites([]);
+    };
+
+    const updateCategory = (urlCategory) => {
+        setSelectedCategory(urlCategory);
+    };
+
+    const updateBlogCategory = (category) => {
+        setSelectedBlogCategory(category);
+    };
+
+    const getCategoryDisplay = (category) => {
+        return categoryMapping[category] || category;
+    };
+
+    const value = {
+        selectedCategory,
+        setSelectedCategory,
+        selectedBlogCategory,
+        setSelectedBlogCategory,
+        updateCategory,
+        updateBlogCategory,
+        categoryMapping,
+        blogCategoryMapping,
+        getCategoryDisplay,
+        reverseCategoryMapping,
+        user,
+        setUser,
+        login,
+        logout,
+        favorites,
+        toggleFavorite,
+        isProductFavorited,
+        loading
+    };
+
+    return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
-export const useAppContext = () => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error('useAppContext must be used within an AppProvider');
-  }
-  return context;
-};
+export default AppContext;

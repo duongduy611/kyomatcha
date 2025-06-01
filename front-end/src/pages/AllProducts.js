@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useAppContext } from '../context/AppContext';
 import bannerImage from '../assets/images/banner_product.jpg';
 import GlobalStyle from '../components/GlobalStyle';
+import { toast } from 'react-toastify';
 const BACKEND_URL = 'http://localhost:9999';
 
 const KingofTea = styled.div`
@@ -147,20 +148,35 @@ const ProductGrid = styled.div`
 `;
 
 const ProductCard = styled.div`
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
     a {
         text-decoration: none;
         color: inherit;
-        display: block;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
     }
 `;
 
 const ProductImage = styled.div`
     position: relative;
     padding-top: 100%;
-    overflow: hidden;
-    margin-bottom: 1rem;
     background-color: #f8f8f8;
-    border-radius: 4px;
+    overflow: hidden;
 
     img {
         position: absolute;
@@ -170,48 +186,111 @@ const ProductImage = styled.div`
         height: 100%;
         object-fit: cover;
         transition: transform 0.3s ease;
+    }
+`;
 
-        &:hover {
-            transform: scale(1.05);
+const FavoriteButton = styled.button`
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+
+    svg {
+        width: 18px;
+        height: 18px;
+        color: #666;
+    }
+
+    &.active {
+        background-color: #ff4d4f;
+        svg {
+            color: white;
         }
+    }
+
+    &:hover {
+        transform: scale(1.1);
+        background: ${props => props.className === 'active' ? '#ff4d4f' : '#fff'};
     }
 `;
 
 const ProductInfo = styled.div`
-    text-align: center;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+`;
 
-    h3 {
-        font-size: 1.1rem;
-        margin-bottom: 0.5rem;
+const ProductName = styled.h3`
+    font-size: 16px;
+    font-weight: 500;
         color: #333;
-        font-weight: 500;
-        text-transform: uppercase;
-    }
+    margin: 0 0 8px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+`;
 
-    p {
-        color: #666;
-        font-size: 0.9rem;
-        &.price {
-            color: #2ecc40;
-            font-weight: 500;
-            margin-top: 0.5rem;
+const ProductPrice = styled.div`
+    font-size: 16px;
+    font-weight: 600;
+    color: #2ecc40;
+    margin-top: auto;
+`;
+
+const ShippingInfo = styled.span`
+    font-size: 14px;
+    color: #666;
+    font-weight: normal;
+    margin-left: 4px;
+`;
+
+const ButtonGroup = styled.div`
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 8px;
+    padding: 16px;
+    padding-top: 0;
+`;
+
+const Button = styled.button`
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+        font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+
+    &.buy-now {
+        background-color: #2ecc40;
+        color: white;
+        &:hover {
+            background-color: #27ae60;
         }
     }
-`;
 
-const RatingContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.2rem;
-    margin: 0.5rem 0;
-    color: #ffd700;
-`;
-
-const ReviewCount = styled.span`
-    color: #666;
-    font-size: 0.8rem;
-    margin-left: 0.5rem;
+    &.add-to-cart {
+        background-color: white;
+        border-color: #2ecc40;
+            color: #2ecc40;
+        &:hover {
+            background-color: #f0fff4;
+        }
+    }
 `;
 
 const Loading = styled.div`
@@ -244,13 +323,49 @@ const categoryDisplayNames = {
 
 const AllProducts = () => {
     const { category } = useParams();
-    const { selectedCategory, setSelectedCategory, categoryMapping } = useAppContext();
+    const { selectedCategory, setSelectedCategory, categoryMapping, toggleFavorite, isProductFavorited } = useAppContext();
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [sortOption, setSortOption] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+
+    const handleAddToCart = async (productId) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                toast.info('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
+                navigate('/login');
+                return;
+            }
+
+            const response = await axios.post(
+                `${BACKEND_URL}/api/cart/add`, 
+                {
+                    productId,
+                    quantity: 1
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            if (response.data.success) {
+                toast.success('Đã thêm vào giỏ hàng!');
+            }
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            if (error.response?.status === 401) {
+                toast.error('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
+                navigate('/login');
+            } else {
+                toast.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
+            }
+        }
+    };
 
     const fetchProducts = useCallback(async () => {
         try {
@@ -355,23 +470,60 @@ const AllProducts = () => {
                     ) : (
                         <ProductGrid>
                             {products.map((product) => (
-                                <ProductCard key={product.slug}>
+                                <ProductCard key={product._id}>
                                     <Link to={`/products/${product.slug}`}>
                                         <ProductImage>
                                             <img
-                                                src={`${BACKEND_URL}${product.images[0]}`}
+                                                src={product.images && product.images.length > 0
+                                                    ? `${BACKEND_URL}${product.images[0]}`
+                                                    : "/placeholder.jpg"
+                                                }
                                                 alt={product.name}
                                                 onError={(e) => {
                                                     e.target.onerror = null;
-                                                    e.target.src = '/placeholder.jpg';
+                                                    e.target.src = "/placeholder.jpg";
                                                 }}
                                             />
                                         </ProductImage>
                                         <ProductInfo>
-                                            <h3>{product.name}</h3>
-                                            <p className="price">Chỉ từ {product.price.toLocaleString()}đ</p>
+                                            <ProductName>{product.name}</ProductName>
+                                            <ProductPrice>
+                                                {product.price.toLocaleString('vi-VN')}₫
+                                                <ShippingInfo>+ Miễn phí vận chuyển</ShippingInfo>
+                                            </ProductPrice>
                                         </ProductInfo>
                                     </Link>
+                                    <ButtonGroup>
+                                        <Button 
+                                            className="buy-now"
+                                            onClick={() => navigate(`/products/${product.slug}`)}
+                                        >
+                                            Mua ngay
+                                        </Button>
+                                        <Button 
+                                            className="add-to-cart"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                handleAddToCart(product._id);
+                                            }}
+                                        >
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                                                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                                            </svg>
+                                        </Button>
+                                    </ButtonGroup>
+                                    <FavoriteButton 
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            toggleFavorite(product._id);
+                                        }}
+                                        className={isProductFavorited(product._id) ? 'active' : ''}
+                                    >
+                                        <svg viewBox="0 0 24 24" fill={isProductFavorited(product._id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+                                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                        </svg>
+                                    </FavoriteButton>
                                 </ProductCard>
                             ))}
                         </ProductGrid>
