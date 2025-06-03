@@ -113,7 +113,7 @@ const SectionTitle = styled.h2`
   text-align: center;
   font-size: 1.4rem;
   letter-spacing: 3px;
-  color: #4A7C59;
+  color: #000;
   font-weight: 500;
   margin-bottom: 48px;
 `;
@@ -175,8 +175,9 @@ const ProductInfo = styled.div`
   flex: 1;
 `;
 
-const ProductName = styled.h3`
-  font-size: 16px;
+const ProductName = styled.div`
+  font-size: 1.05rem;
+  color: #4A7C59;
   font-weight: 500;
   color: #333;
   margin: 0 0 8px 0;
@@ -288,7 +289,7 @@ const TeaCollection = () => {
       }
 
       const response = await axios.post(
-        `${BACKEND_URL}/api/cart/add`, 
+        `${BACKEND_URL}/api/cart/add`,
         {
           productId,
           quantity: 1
@@ -382,13 +383,13 @@ const TeaCollection = () => {
               </ProductInfo>
             </Link>
             <ButtonGroup>
-              <Button 
+              <Button
                 className="buy-now"
                 onClick={() => navigate(`/products/${product.slug}`)}
               >
                 Mua ngay
               </Button>
-              <Button 
+              <Button
                 className="add-to-cart"
                 onClick={(e) => {
                   e.preventDefault();
@@ -401,7 +402,7 @@ const TeaCollection = () => {
                 </svg>
               </Button>
             </ButtonGroup>
-            <FavoriteButton 
+            <FavoriteButton
               onClick={(e) => {
                 e.preventDefault();
                 toggleFavorite(product._id);
@@ -437,7 +438,7 @@ const BlogTitle = styled.h2`
   text-align: center;
   font-size: 1.4rem;
   letter-spacing: 3px;
-  color: #4A7C59;
+  color: #000;
   font-weight: 500;
   margin-bottom: 48px;
 `;
@@ -461,7 +462,6 @@ const BlogImage = styled.img`
   height: 210px;
   object-fit: cover;
   margin-bottom: 18px;
-  border-radius: 4px;
   cursor: pointer;
 
   &:hover {
@@ -471,7 +471,7 @@ const BlogImage = styled.img`
 `;
 
 const BlogCategory = styled.div`
-  color: #4A7C59;
+  color: #000;
   font-size: 0.9rem;
   letter-spacing: 2px;
   margin-bottom: 8px;
@@ -533,13 +533,12 @@ function BlogList() {
 
   return (
     <BlogSection>
-      <BlogLabel>Blogs</BlogLabel>
       <BlogTitle>BLOGS MỚI NHẤT</BlogTitle>
       <BlogGrid>
         {latestBlogs.map((blog, idx) => (
           <BlogCard key={idx}>
             <Link to={`/blog/${blog.id}`} style={{ textDecoration: 'none' }}>
-              <BlogImage src={blog.image} alt={blog.title} />
+              <BlogImage src={blog.thumbnailUrl} alt={blog.title} />
               <BlogPostTitle>{blog.title}</BlogPostTitle>
             </Link>
             <BlogCategory>{blog.category}</BlogCategory>

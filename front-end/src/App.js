@@ -4,11 +4,13 @@ import Default from "./components/Default";
 import { routes } from "./routers/index";
 import GlobalStyle from './components/GlobalStyle';
 import { AppProvider } from './context/AppContext';
+import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => {
   return (
     <div className="App">
       <Router>
+        <ScrollToTop />
         <AppProvider>
           <GlobalStyle />
           <Routes>

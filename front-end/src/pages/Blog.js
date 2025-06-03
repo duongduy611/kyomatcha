@@ -187,6 +187,7 @@ const BlogReadMore = styled.a`
   text-decoration: underline;
   text-underline-offset: 3px;
   transition: color 0.2s;
+  cursor: pointer;
   &:hover {
     color: #6d7a44;
   }
@@ -439,11 +440,11 @@ const Blog = () => {
             ))}
           </TabList>
           <FeaturedWrapper>
-            <FeaturedImage src={featured.image} alt={featured.title} />
+            <FeaturedImage src={featured.thumbnailUrl} alt={featured.title} />
             <FeaturedContent>
               <FeaturedTitle>{featured.title}</FeaturedTitle>
               <ReadMoreBtn onClick={() => handleBlogClick(featured.id)}>
-                READ MORE
+                XEM THÊM
               </ReadMoreBtn>
             </FeaturedContent>
           </FeaturedWrapper>
@@ -453,7 +454,7 @@ const Blog = () => {
             {getCurrentPageBlogs().map((b, idx) => (
               <BlogCard key={idx}>
                 <BlogImage
-                  src={b.image}
+                  src={b.thumbnailUrl}
                   alt={b.title}
                   style={{ cursor: "pointer" }}
                   onClick={() => handleBlogClick(b.id)}
@@ -467,7 +468,7 @@ const Blog = () => {
                 </BlogTitle>
                 <BlogDesc>{b.desc}</BlogDesc>
                 <BlogReadMore onClick={() => handleBlogClick(b.id)}>
-                  Read more
+                  Xem thêm
                 </BlogReadMore>
               </BlogCard>
             ))}

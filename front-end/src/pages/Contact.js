@@ -4,6 +4,8 @@ import GlobalStyle from "../components/GlobalStyle";
 import { Link } from "react-router-dom";
 import { FaFacebookF, FaTwitter, FaInstagram, FaPinterestP, FaYoutube } from "react-icons/fa";
 import { MdAttachMoney, MdTimer, MdPeople } from "react-icons/md";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ContactWrapper = styled.div`
   padding-top: 100px;
@@ -187,13 +189,13 @@ const Contact = () => {
       });
       const data = await res.json();
       if (data.success) {
-        setSuccess("Gửi thông tin thành công!");
+        toast.success("Gửi thông tin thành công!");
         setForm({ name: "", email: "", message: "" });
       } else {
-        setError(data.message || "Gửi thông tin thất bại.");
+        toast.error(data.message || "Gửi thông tin thất bại.");
       }
     } catch (err) {
-      setError("Có lỗi xảy ra. Vui lòng thử lại.");
+      toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
     }
     setLoading(false);
   };
@@ -218,7 +220,7 @@ const Contact = () => {
                 />
               </InputGroup>
               <InputGroup>
-                <Label>Email</Label>
+                <Label>Email của bạn</Label>
                 <Input
                   type="email"
                   name="email"
@@ -239,8 +241,6 @@ const Contact = () => {
               <SubmitButton type="submit" disabled={loading}>
                 {loading ? "Đang gửi..." : "GỬI THÔNG TIN"}
               </SubmitButton>
-              {success && <div style={{ color: "green" }}>{success}</div>}
-              {error && <div style={{ color: "red" }}>{error}</div>}
             </ContactForm>
 
             <ContactInfo>

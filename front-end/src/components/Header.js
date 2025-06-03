@@ -20,7 +20,7 @@ const HeaderWrapper = styled.header`
   transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
   z-index: 999;
   background-color: ${({ active }) => (active ? "white" : "transparent")};
-  color: ${({ active }) => (active ? "#4A7C59" : "white")};
+  color: ${({ active }) => (active ? "black" : "white")};
   box-sizing: border-box;
   border-bottom: ${({ active }) => (active ? "1px solid rgba(0, 0, 0, 0.1)" : "1px solid rgba(255, 255, 255, 0.1)")};
   box-shadow: ${({ active }) => (active ? "0 2px 4px rgba(0, 0, 0, 0.05)" : "none")};
