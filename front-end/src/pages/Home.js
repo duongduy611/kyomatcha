@@ -272,41 +272,60 @@ const TeaCollection = () => {
   const navigate = useNavigate();
   const { toggleFavorite, isProductFavorited } = useAppContext();
 
-  const handleAddToCart = async (productId) => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        toast.info('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
-        navigate('/login');
-        return;
-      }
+ const handleAddToCart = async (productId, color = "", size = "") => {
+  try {
+    // Lấy token và id người dùng từ localStorage
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('id');
 
-      const response = await axios.post(
-        `${BACKEND_URL}/api/cart/add`,
-        {
-          productId,
-          quantity: 1
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      if (response.data.success) {
-        toast.success('Đã thêm vào giỏ hàng!');
-      }
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      if (error.response?.status === 401) {
-        toast.error('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
-        navigate('/login');
-      } else {
-        toast.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
-      }
+    // Nếu chưa đăng nhập, điều hướng về trang login
+    if (!token || !userId) {
+      toast.info('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
+      navigate('/login');
+      return;
     }
-  };
+
+    // Chuẩn bị payload theo đúng spec của backend
+    const payload = {
+      userId: userId,
+      productId: productId,
+      quantity: 1,      // ở đây mình để mặc định 1; bạn có thể truyền vào tham số nếu muốn
+      color: color,     // truyền vào từ component hoặc để mặc định
+      size: size        // truyền vào từ component hoặc để mặc định
+    };
+
+    // Gọi API thêm vào giỏ
+    const response = await axios.post(
+      `${BACKEND_URL}/cart/add`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+  if (response.status === 200 && response.data && response.data._id) {
+      // Backend trả về obj cart mới (có _id) → coi như thành công
+      toast.success('Đã thêm vào giỏ hàng!');
+    } else {
+      console.log('Unexpected response from /cart/add:', response.data);
+      toast.error('Thêm vào giỏ hàng không thành công. Vui lòng thử lại.');
+    }
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    if (error.response?.status === 401) {
+      toast.error('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
+      navigate('/login');
+    } else if (error.response?.data?.message) {
+      // Hiển thị message lỗi do backend trả về (nếu có)
+      toast.error(error.response.data.message);
+    } else {
+      toast.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
+    }
+  }
+};
 
   useEffect(() => {
     const fetchProducts = async () => {
