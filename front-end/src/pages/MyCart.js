@@ -171,7 +171,7 @@ const handleCheckout = async () => {
 				receiverName,
 				phone,
 			},
-			paymentInfo: { method: 'VietQR' },
+			paymentInfo: { method: paymentMethod },
 		});
 
 		const createdOrder = orderRes.data;
