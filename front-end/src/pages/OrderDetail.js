@@ -67,22 +67,7 @@ const OrderDetail = () => {
 		}
 	};
 
-	const getStatusIndex = (status) => {
-		switch (status) {
-			case 'PENDING':
-				return 0;
-			case 'CONFIRMED':
-				return 1;
-			case 'SHIPPED':
-				return 2;
-			case 'DELIVERED':
-				return 3;
-			case 'CANCELLED':
-				return 4;
-			default:
-				return 0;
-		}
-	};
+
 
 	return (
 		<Container
@@ -125,35 +110,7 @@ const OrderDetail = () => {
 					
 				</Row>
 
-				{/* THANH TIẾN TRÌNH
-				<div className='d-flex justify-content-between text-center border-bottom pb-3 mt-3'>
-					{[
-						'Chờ xác nhận',
-						'Xác nhận đơn hàng',
-						'Trên đường giao',
-						'Đã giao',
-						'Đã huỷ đơn',
-					].map((step, idx) => (
-						<div key={idx} style={{ width: '20%' }}>
-							<div
-								className={`rounded-circle mx-auto mb-2`}
-								style={{
-									width: 24,
-									height: 24,
-									backgroundColor:
-										idx === getStatusIndex(order.status) ? '#28a745' : '#ccc',
-								}}></div>
-							<div
-								style={{
-									fontSize: '0.85rem',
-									color:
-										idx === getStatusIndex(order.status) ? '#28a745' : '#888',
-								}}>
-								{step}
-							</div>
-						</div>
-					))}
-				</div> */}
+			
                 <OrderProgressBar status={order.status} />
 
 
