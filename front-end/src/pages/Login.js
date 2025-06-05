@@ -159,7 +159,7 @@ function Login() {
       const data = await res.json();
       if (res.ok) {
         localStorage.setItem('token', data.token);
-        localStorage.setItem('id', data.id || '');
+        localStorage.setItem('userId', data.id || '');
         localStorage.setItem('username', data.username || '');
         localStorage.setItem('fullName', data.fullName || '');
         localStorage.setItem('email', data.email || '');

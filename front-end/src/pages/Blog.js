@@ -427,7 +427,7 @@ const Blog = () => {
       <GlobalStyle />
       <PageWrapper>
         <Section>
-          <Title>LATEST BLOG</Title>
+        <Title>BLOG CỦA CHÚNG TÔI</Title>
           <TabList>
             {tabs.map((tab, idx) => (
               <Tab
@@ -501,7 +501,7 @@ const Blog = () => {
           )}
         </BlogListSection>
         <ProductSection>
-          <ProductTitle>MATCHA PREMIUM</ProductTitle>
+        <ProductTitle>SẢN PHẨM LIÊN QUAN</ProductTitle>
           <ProductGrid>
             {featuredProducts.map((product) => (
               <ProductCard key={product._id}>

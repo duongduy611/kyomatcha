@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GlobalStyle from '../components/GlobalStyle';
+import axios from 'axios';
 
 const Profile = () => {
   const [user, setUser] = useState({ username: '', fullName: '', email: '', phone: '', address: '', role: '', status: '' });
+  const [points, setPoints] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,6 +23,11 @@ const Profile = () => {
       role: localStorage.getItem('role') || '',
       status: localStorage.getItem('status') || '',
     });
+    // Lấy điểm user
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      axios.get(`/api/users/${userId}/points`).then(res => setPoints(res.data.points)).catch(() => setPoints(0));
+    }
   }, [navigate]);
 
   const handleLogout = () => {
@@ -46,6 +53,12 @@ const Profile = () => {
         <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}><b>Email:</b> {user.email || 'Chưa cập nhật'}</div>
         <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}><b>SĐT:</b> {user.phone || 'Chưa cập nhật'}</div>
         <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}><b>Địa chỉ:</b> {user.address || 'Chưa cập nhật'}</div>
+        <div style={{ color: '#2ecc40', fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
+          <span>Điểm tích lũy: </span>
+          <span style={{ color: '#27ae60', fontWeight: 700 }}>{points}</span>
+        </div>
+        <button style={{ width: '100%', padding: 13, borderRadius: 10, background: 'linear-gradient(90deg, #00b894 0%, #00cec9 100%)', color: '#fff', fontWeight: 600, fontSize: 17, border: 'none', marginBottom: 2, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,184,148,0.10)', transition: 'background 0.2s' }} onClick={() => navigate('/point-history')}>Lịch sử tích điểm</button>
+        <button style={{ width: '100%', padding: 13, borderRadius: 10, background: 'linear-gradient(90deg, #fdcb6e 0%, #e17055 100%)', color: '#fff', fontWeight: 600, fontSize: 17, border: 'none', marginBottom: 2, cursor: 'pointer', boxShadow: '0 2px 8px rgba(253,203,110,0.10)', transition: 'background 0.2s' }} onClick={() => navigate('/exchange-points')}>Quy đổi điểm lấy voucher</button>
         <hr style={{ width: '100%', margin: '18px 0 10px 0', border: 'none', borderTop: '1.5px solid #e0e0e0' }} />
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 12 }}>
           <button style={{ width: '100%', padding: 13, borderRadius: 10, background: 'linear-gradient(90deg, #2ecc40 0%, #27ae60 100%)', color: '#fff', fontWeight: 600, fontSize: 17, border: 'none', marginBottom: 2, cursor: 'pointer', boxShadow: '0 2px 8px rgba(46,204,64,0.10)', transition: 'background 0.2s' }} onClick={() => navigate('/edit-profile')}>Sửa thông tin cá nhân</button>

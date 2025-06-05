@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import GlobalStyle from "../components/GlobalStyle";
+import banner1 from "../assets/images/about-us/about-us-banner-1.png";
 import plantImg from "../assets/images/about-us/green-matcha.jpg"; // Thay bằng ảnh thật nếu có
 import avatarImg from "../assets/images/ceo/ceo-ntpthao.jpg"; // Thay bằng ảnh thật nếu có
 import missionImg from "../assets/images/about-us/matcha-green.jpg"; // Thay bằng ảnh thật nếu có
@@ -11,9 +12,8 @@ import { FaCube } from "react-icons/fa";
 const Banner = styled.section`
   width: 100%;
   min-height: 500px;
-  background: linear-gradient(rgba(30, 40, 30, 0.6), rgba(30, 40, 30, 0.6)),
-    url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80")
-      center/cover no-repeat;
+  background: linear-gradient(rgba(30, 40, 30, 0.5), rgba(30, 40, 30, 0.1)),
+    url("${banner1}") center/cover no-repeat;
   display: flex;
   flex-direction: column;
   align-items: center;
