@@ -1,29 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaUser, FaShoppingCart } from "react-icons/fa";
-import styled, { css } from "styled-components";
-import logoImg from "../assets/logo/logo1.png";
-import logoImg2 from "../assets/logo/logo-white.png";
+import styled, { css, keyframes } from "styled-components";
+import logoImg from "../assets/logo/kyo-matcha-logo.png";
+import logoImg2 from "../assets/logo/kyo-matcha-logo.png";
 import { useAppContext } from "../context/AppContext";
 
-const HeaderWrapper = styled.header`
-  font-family: "Montserrat", sans-serif;
+const HeaderFixedWrapper = styled.div`
   position: fixed;
   top: 0;
   left: 0;
+  width: 100vw;
+  z-index: 999;
+`;
+
+const Topbar = styled.div`
+  width: 100vw;
+  background: #23201b;
+  color: #fff;
+  font-size: 13px;
+  text-align: center;
+  padding: 10px 0 10px 0;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 0.2px;
+`;
+
+const HeaderWrapper = styled.header`
+  font-family: "Montserrat", sans-serif;
+  position: relative;
   width: 100vw;
   min-width: 0;
   height: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
-  z-index: 999;
-  background-color: ${({ active }) => (active ? "white" : "transparent")};
-  color: ${({ active }) => (active ? "black" : "white")};
+  background-color: #f6f6ee;
+  color: black;
   box-sizing: border-box;
-  border-bottom: ${({ active }) => (active ? "1px solid rgba(0, 0, 0, 0.1)" : "1px solid rgba(255, 255, 255, 0.1)")};
-  box-shadow: ${({ active }) => (active ? "0 2px 4px rgba(0, 0, 0, 0.05)" : "none")};
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 `;
 
 const HeaderContainer = styled.div`
@@ -34,31 +48,32 @@ const HeaderContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
+  height: 80px;
 `;
 
-const Logo = styled.img`
-  height: 60px;
-  width: auto;
-  display: block;
-  margin-right: 20px;
-`;
-
-const Nav = styled.nav`
+const LeftGroup = styled.nav`
   display: flex;
   align-items: center;
   gap: 20px;
-  flex-grow: 1;
-  justify-content: center;
 `;
 
-const IconGroup = styled.div`
+const CenterGroup = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const RightGroup = styled.div`
   display: flex;
   align-items: center;
-  gap: 15px;
-  svg {
-    font-size: 20px;
-    cursor: pointer;
-  }
+  gap: 18px;
+`;
+
+const Logo = styled.img`
+  height: 110px;
+  width: auto;
+  display: block;
 `;
 
 const NavItem = styled.div`
@@ -94,21 +109,10 @@ const NavLink = styled(Link)`
   font-size: 14px;
   cursor: pointer;
   position: relative;
-  color: ${({ active }) => (active ? "black" : "white")};
+  color: black;
   border-bottom: 3px solid transparent;
   transition: color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
     border-bottom-color 0.35s, background 0.35s;
-`;
-
-const NavSpan = styled.span`
-  ${(props) => css`
-    color: ${props.active ? "black" : "white"};
-    font-weight: 500;
-    padding: 8px 12px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: color 0.35s, border-bottom-color 0.35s, background 0.35s;
-  `}
 `;
 
 const DropdownMenu = styled.div`
@@ -140,21 +144,65 @@ const DropdownLink = styled(Link)`
   }
 `;
 
+const slideIn = keyframes`
+  from {
+    transform: translateX(-100%) scale(0.98);
+    opacity: 0.2;
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(44, 41, 36, 0.45);
+  z-index: 2001;
+  display: flex;
+`;
+
+const ModalContent = styled.div`
+  width: 50vw;
+  min-width: 340px;
+  max-width: 700px;
+  height: 100vh;
+  background: #fcfaf3;
+  color: #23201b;
+  padding: 40px 48px 32px 48px;
+  overflow-y: auto;
+  position: relative;
+  animation: ${slideIn} 0.45s cubic-bezier(0.4,0,0.2,1);
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 24px;
+  right: 32px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #23201b;
+  cursor: pointer;
+`;
+
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const location = useLocation();
-  const isTransparentPage = ["/", "/about-us"].includes(location.pathname);
-  const shouldApplyHoverStyle = isTransparentPage ? (isScrolled || isHovered) : true;
   const navigate = useNavigate();
   const {
-    selectedCategory,
     setSelectedCategory,
-    categoryMapping,
     setSelectedBlogCategory,
-    blogCategoryMapping
   } = useAppContext();
+  const [showModal, setShowModal] = useState(false);
+
+  const isLoggedIn = Boolean(localStorage.getItem("token"));
 
   useEffect(() => {
     const handleScroll = () => {
@@ -168,11 +216,6 @@ const Header = () => {
   const closeDropdown = () => setOpenDropdown(null);
   const isMenuActive = (name) => openDropdown === name;
 
-  const handleCategoryClick = (urlCategory) => {
-    setSelectedCategory(urlCategory || "");
-    closeDropdown();
-  };
-
   const handleBlogCategoryClick = (path, category) => {
     setSelectedBlogCategory(category || "");
     navigate('/blog');
@@ -180,147 +223,107 @@ const Header = () => {
   };
 
   return (
-    <HeaderWrapper
-      active={shouldApplyHoverStyle}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        closeDropdown();
-      }}
-    >
-      <HeaderContainer>
-        <Link to="/" onClick={() => setSelectedCategory("")}>
-          <Logo
-            src={shouldApplyHoverStyle ? logoImg : logoImg2}
-            alt="KyoMatcha Logo"
-          />
-        </Link>
-        <Nav>
-          <NavItem onMouseEnter={() => closeDropdown()}>
-            <NavLink
-              to="/"
-              active={shouldApplyHoverStyle}
-              onClick={() => setSelectedCategory("")}
+    <HeaderFixedWrapper>
+      <Topbar onClick={() => setShowModal(true)} style={{ cursor: 'pointer' }}>
+        Tận hưởng giao hàng miễn phí toàn quốc với hoá đơn từ 99.000 đ
+      </Topbar>
+      {showModal && (
+        <ModalOverlay onClick={() => setShowModal(false)}>
+          <ModalContent onClick={e => e.stopPropagation()}>
+            <CloseButton onClick={() => setShowModal(false)}>&times;</CloseButton>
+            <div style={{marginTop: 24}}>
+              <h3 style={{fontWeight: 600}}>Phí vận chuyển</h3>
+              <p>Với hóa đơn từ 99.000đ : miễn phí vận chuyển toàn quốc<br/>
+              Với hóa đơn dưới 99.000đ: phí vận chuyển mặc định 30.000đ áp dụng toàn quốc.</p>
+              <h3 style={{fontWeight: 600}}>Thời gian giao hàng</h3>
+              <ul>
+                <li><b>Đơn hàng nội thành TP.HCM:</b><br/>Thời gian giao hàng là 2-7 ngày sau khi đặt hàng.</li>
+                <li><b>Đơn hàng ở ngoại thành Tp.HCM và các tỉnh thành khác:</b><br/>Thời gian là 2-15 ngày đối với khu vực trung tâm tỉnh thành phố, 5-15 ngày đối với khu vực huyện, xã, thị trấn... (Không tính chủ nhật hay các ngày lễ tết) Có thể thay đổi thời gian giao hàng trong một số trường hợp bất khả kháng như: chịu ảnh hưởng của thiên tai, dịch Covid hoặc các sự kiện đặc biệt khác.</li>
+                <li><b>Lưu ý:</b> Đơn hàng đặt mua tại website: cocoonvietnam.com sẽ được chúng tôi chuyển phát đến các bạn thông qua 2 đơn vị vận chuyển chính: GIAO HÀNG TIẾT KIỆM Hoặc NETPOST. Đặc biệt, thông tin hóa đơn dán bên ngoài kiện hàng luôn luôn có logo có giá của thương hiệu để nhận biết các sản phẩm là chính hãng.</li>
+              </ul>
+              <p style={{fontStyle: 'italic', marginTop: 16}}>
+                Để kiểm tra thông tin hoặc tình trạng đơn hàng của quý khách, xin vui lòng nhắn tin vào Fanpage hoặc gọi số Hotline, cung cấp tên, số điện thoại, mã đơn hàng (nếu có) để được kiểm tra.
+              </p>
+            </div>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+      <HeaderWrapper
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          closeDropdown();
+        }}
+      >
+        <HeaderContainer>
+          <LeftGroup>
+            <NavItem onMouseEnter={() => closeDropdown()}>
+              <NavLink
+                to="/products"
+                onClick={() => setSelectedCategory("")}
+              >
+                Sản phẩm
+              </NavLink>
+            </NavItem>
+            <NavItem
+              className={`nav-animated${isMenuActive("about") ? " active" : ""}`}
+              onMouseEnter={() => handleDropdown("about")}
+              onMouseLeave={closeDropdown}
             >
-              Trang chủ
-            </NavLink>
-          </NavItem>
-          <NavItem
-            className={`nav-animated${isMenuActive("about") ? " active" : ""}`}
-            onMouseEnter={() => handleDropdown("about")}
-            onMouseLeave={closeDropdown}
-          >
-            <NavLink active={shouldApplyHoverStyle} to="/about-us">
-              Giới thiệu
-            </NavLink>
-            <DropdownMenu show={isMenuActive("about")}>
-              <DropdownLink to="/about-us" onClick={() => setSelectedCategory("")}>
-                Về chúng tôi
-              </DropdownLink>
-              <DropdownLink to="/history" onClick={() => setSelectedCategory("")}>
-                Lịch sử trà Nhật
-              </DropdownLink>
-            </DropdownMenu>
-          </NavItem>
-          <NavItem
-            className={`nav-animated${isMenuActive("product") ? " active" : ""}`}
-            onMouseEnter={() => handleDropdown("product")}
-            onMouseLeave={closeDropdown}
-          >
-            <NavSpan
-              active={shouldApplyHoverStyle}
+              <NavLink to="/about-us">
+                Giới thiệu
+              </NavLink>
+              <DropdownMenu show={isMenuActive("about")}>
+                <DropdownLink to="/about-us" onClick={() => setSelectedCategory("")}>Về chúng tôi</DropdownLink>
+                <DropdownLink to="/history" onClick={() => setSelectedCategory("")}>Lịch sử trà Nhật</DropdownLink>
+              </DropdownMenu>
+            </NavItem>
+            <NavItem
+              className={`nav-animated${isMenuActive("blog") ? " active" : ""}`}
+              onMouseEnter={() => handleDropdown("blog")}
+              onMouseLeave={closeDropdown}
+            >
+              <NavLink
+                to="/blog"
+                onClick={() => handleBlogCategoryClick("", "Tất cả")}
+              >
+                Bài viết
+              </NavLink>
+              <DropdownMenu show={isMenuActive("blog")}>
+                <DropdownLink to="/blog" onClick={() => handleBlogCategoryClick("discover-matcha", "Khám phá về Matcha")}>Khám phá về Matcha</DropdownLink>
+                <DropdownLink to="/blog" onClick={() => handleBlogCategoryClick("beauty", "Làm đẹp")}>Làm đẹp</DropdownLink>
+                <DropdownLink to="/blog" onClick={() => handleBlogCategoryClick("recipe", "Pha chế")}>Pha chế</DropdownLink>
+              </DropdownMenu>
+            </NavItem>
+          </LeftGroup>
+          <CenterGroup>
+            <Link to="/" onClick={() => setSelectedCategory("")}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Logo
+                src={isScrolled || isHovered ? logoImg : logoImg2}
+                alt="KyoMatcha Logo"
+              />
+            </Link>
+          </CenterGroup>
+          <RightGroup>
+            <NavLink
+              to={isLoggedIn ? "/profile" : "/login"}
               onClick={() => {
-                handleCategoryClick("");
-                navigate("/products");
+                if (isLoggedIn) {
+                  navigate("/profile");
+                } else {
+                  navigate("/login");
+                }
               }}
             >
-              Sản phẩm
-            </NavSpan>
-            <DropdownMenu show={isMenuActive("product")}>
-              <DropdownLink
-                to="/products"
-                onClick={() => {
-                  handleCategoryClick("Matcha");
-                  navigate("/products");
-                }}
-              >
-                Matcha
-              </DropdownLink>
-              <DropdownLink
-                to="/products"
-                onClick={() => {
-                  handleCategoryClick("tea_tools");
-                  navigate("/products");
-                }}
-              >
-                Dụng cụ trà đạo
-              </DropdownLink>
-              <DropdownLink
-                to="/products"
-                onClick={() => {
-                  handleCategoryClick("barista_tools");
-                  navigate("/products");
-                }}
-              >
-                Dụng cụ pha chế
-              </DropdownLink>
-            </DropdownMenu>
-          </NavItem>
-          <NavItem
-            className={`nav-animated${isMenuActive("blog") ? " active" : ""}`}
-            onMouseEnter={() => handleDropdown("blog")}
-            onMouseLeave={closeDropdown}
-          >
-            <NavLink
-              to="/blog"
-              active={shouldApplyHoverStyle}
-              onClick={() => handleBlogCategoryClick("", "Tất cả")}
-            >
-              Blog
+              {isLoggedIn ? "Tài khoản" : "Đăng nhập"}
             </NavLink>
-            <DropdownMenu show={isMenuActive("blog")}>
-              <DropdownLink
-                to="/blog"
-                onClick={() =>
-                  handleBlogCategoryClick("discover-matcha", "Khám phá về Matcha")
-                }
-              >
-                Khám phá về Matcha
-              </DropdownLink>
-              <DropdownLink
-                to="/blog"
-                onClick={() => handleBlogCategoryClick("beauty", "Làm đẹp")}
-              >
-                Làm đẹp
-              </DropdownLink>
-              <DropdownLink
-                to="/blog"
-                onClick={() => handleBlogCategoryClick("recipe", "Pha chế")}
-              >
-                Pha chế
-              </DropdownLink>
-            </DropdownMenu>
-          </NavItem>
-          <NavItem onMouseEnter={() => closeDropdown()}>
-            <NavLink to="/contact" active={shouldApplyHoverStyle}>
-              Liên hệ
-            </NavLink>
-          </NavItem>
-        </Nav>
-        <IconGroup>
-          <FaUser
-            onClick={() => {
-              if (localStorage.getItem("token")) {
-                navigate("/profile");
-              } else {
-                navigate("/login");
-              }
-            }}
-          />
-          <FaShoppingCart onClick={() => navigate("/cart")} />
-        </IconGroup>
-      </HeaderContainer>
-    </HeaderWrapper>
+            <NavLink to="/cart" onClick={() => navigate("/cart")}>Giỏ hàng</NavLink>
+            <NavLink to="/contact">Liên hệ</NavLink>
+          </RightGroup>
+        </HeaderContainer>
+      </HeaderWrapper>
+    </HeaderFixedWrapper>
   );
 };
 

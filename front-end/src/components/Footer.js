@@ -1,13 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import logo1 from "../assets/logo/logo1.png";
+import logo1 from "../assets/logo/kyo-matcha-logo.png";
 import { FaFacebookF, FaTwitter, FaYoutube, FaInstagram } from "react-icons/fa";
 
 const FooterWrapper = styled.footer`
-  background: #fff;
+  background: #f6f6ee;
   padding: 0;
   color: #000;
+  border-top: 1px solid #e0e0e0;
 `;
 
 const FooterContent = styled.div`
@@ -39,7 +40,7 @@ const LogoBox = styled.div`
 `;
 
 const Logo = styled.img`
-  height: 60px;
+  height: 150px;
   width: auto;
   border-radius: 4px;
 `;
@@ -72,7 +73,7 @@ const NewsletterForm = styled.form`
 `;
 
 const NewsletterInput = styled.input`
-  background: #f0f0f0;
+  background: #fff;
   color: #fff;
   padding: 8px 12px;
   border-radius: 4px;

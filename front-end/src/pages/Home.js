@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import bannerWeb from "../assets/images/banner_web.jpg";
+import bannerWeb from "../assets/images/e1df83de170ef44fef5a41025bb81813.jpg";
 import styled from "styled-components";
 import GlobalStyle from "../components/GlobalStyle";
 import axios from "axios";
@@ -12,8 +12,9 @@ import { useAppContext } from '../context/AppContext';
 const BACKEND_URL = "http://localhost:9999";
 
 const BannerWrapper = styled.div`
+  margin-top: 100px;
   width: 100%;
-  height: 100vh;
+  height: 70vh;
   position: relative;
   overflow: hidden;
 `;
@@ -33,8 +34,8 @@ const BannerOverlay = styled.div`
   height: 100%;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.45) 60%,
-    rgba(0, 0, 0, 0) 100%
+    rgba(0, 0, 0, 0.30) 50%,
+    rgba(0, 0, 0, 0.30) 100%
   );
   z-index: 1;
 `;
@@ -59,17 +60,9 @@ const BannerTextWrapper = styled.div`
   }
 `;
 
-const BannerSubText = styled.div`
-  color: #fff;
-  font-size: 0.9rem;
-  letter-spacing: 2px;
-  margin-bottom: 18px;
-  opacity: 0.85;
-`;
-
 const BannerTitle = styled.div`
   color: #fff;
-  font-size: 22px;
+  font-size: 24px;
   letter-spacing: 3px;
   margin-bottom: 32px;
   text-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
@@ -82,9 +75,9 @@ const BannerButtonGroup = styled.div`
 `;
 
 const BannerButton = styled(Link)`
-  background: #4A7C59;
+  background: #527328;
   color: #fff;
-  border: 2px solid #4A7C59;
+  border: 2px solid #527328;
   padding: 14px 38px;
   font-size: 1rem;
   font-weight: 500;
@@ -105,8 +98,8 @@ const BannerButton = styled(Link)`
 
 const Section = styled.section`
   border-top: 1px solid #e5e5e5;
-  background: #f7f6f4;
-  padding: 60px 0 40px 0;
+  background: #f6f6ee;
+  padding: 40px 0 40px 0;
 `;
 
 const SectionTitle = styled.h2`
@@ -421,17 +414,9 @@ const TeaCollection = () => {
 }
 
 const BlogSection = styled.section`
-  background: #f7f6f4;
+  background: #f6f6ee;
   padding: 60px 0 40px 0;
   border-top: 1px solid #e5e5e5;
-`;
-
-const BlogLabel = styled.div`
-  text-align: center;
-  color: #4A7C59;
-  font-size: 0.95rem;
-  letter-spacing: 2px;
-  margin-bottom: 8px;
 `;
 
 const BlogTitle = styled.h2`
@@ -559,7 +544,6 @@ const Home = () => {
         <BannerImage src={bannerWeb} alt="Banner" />
         <BannerOverlay />
         <BannerTextWrapper>
-          <BannerSubText>TU LUYỆN CHÁNH NIỆM VÀ SỰ YÊN TĨNH</BannerSubText>
           <BannerTitle>MỘT KHỞI ĐẦU MỚI</BannerTitle>
           <BannerButtonGroup>
             <BannerButton to="/products">MUA NGAY</BannerButton>
