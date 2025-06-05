@@ -16,8 +16,6 @@ import ThankYouPage from "../pages/ThankYouPage";
 import OrderHistory from "../pages/OrderHistory";
 import OrderDetail from "../pages/OrderDetail";
 import QRPaymentPage from "../pages/QRPayment";
-import PointHistory from '../pages/PointHistory';
-import ExchangePoints from '../pages/ExchangePoints';
 
 export const routes = [
     {
@@ -110,14 +108,4 @@ export const routes = [
         page: QRPaymentPage,
         isShowHeader: true
     },
-    {
-        path: '/point-history',
-        page: PointHistory,
-        isShowHeader: true
-    },
-    {
-        path: '/exchange-points',
-        page: ExchangePoints,
-        isShowHeader: true
-    }
 ]
