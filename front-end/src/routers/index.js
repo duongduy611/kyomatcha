@@ -107,6 +107,5 @@ export const routes = [
         path: '/qr-payment',
         page: QRPaymentPage,
         isShowHeader: true
-    }
-
+    },
 ]

@@ -150,7 +150,7 @@ function Login() {
     setMessage('');
     try {
       const isEmail = /@gmail\.com$/.test(loginInput);
-      const body = isEmail ? { email: loginInput, password } : { username: loginInput, password };
+      const body = { email: loginInput, password };
       const res = await fetch('http://localhost:9999/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -159,8 +159,7 @@ function Login() {
       const data = await res.json();
       if (res.ok) {
         localStorage.setItem('token', data.token);
-        localStorage.setItem('id', data.id || '');
-        localStorage.setItem('username', data.username || '');
+        localStorage.setItem('userId', data.id || '');
         localStorage.setItem('fullName', data.fullName || '');
         localStorage.setItem('email', data.email || '');
         localStorage.setItem('phone', data.phone || '');
