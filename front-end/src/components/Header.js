@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import styled, { css, keyframes } from "styled-components";
+import styled, { keyframes } from "styled-components";
 import logoImg from "../assets/logo/kyo-matcha-logo.png";
 import logoImg2 from "../assets/logo/kyo-matcha-logo.png";
 import { useAppContext } from "../context/AppContext";
