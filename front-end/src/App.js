@@ -5,6 +5,7 @@ import { routes } from "./routers/index";
 import GlobalStyle from './components/GlobalStyle';
 import { AppProvider } from './context/AppContext';
 import ScrollToTop from "./components/ScrollToTop";
+import Footer from "./components/Footer";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
                   element={
                     <Layout>
                       <route.page />
+                      {route.isShowFooter && <Footer />}
                     </Layout>
                   }
                 />
