@@ -18,99 +18,76 @@ const Banner = styled.div`
   width: 100%;
   height: 600px;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
+
 const BannerImg = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: brightness(0.7);
 `;
+
 const BannerOverlay = styled.div`
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(245,245,245,0.95);
-  padding: 40px 0 20px 0;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: rgba(30,30,30,0.25);
   text-align: center;
 `;
-const BannerDate = styled.div`
-  color: #7a7a3a;
-  font-size: 14px;
-  letter-spacing: 2px;
-  margin-bottom: 8px;
-`;
-const BannerTitle = styled.h1`
-  color: #3a3a2a;
+
+const BannerPresent = styled.div`
+  font-size: 2.2rem;
   font-weight: 400;
-  letter-spacing: 3px;
-  font-size: 28px;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  opacity: 0.95;
+`;
+
+const BannerTitle = styled.h1`
+  font-size: 4rem;
+  font-weight: 700;
+  letter-spacing: 6px;
   margin: 0;
+  line-height: 1.1;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.18);
+`;
+
+const BannerSubtitle = styled.div`
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 6px;
+  margin-top: 8px;
+  line-height: 1.1;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.18);
+`;
+
+const BannerDate = styled.div`
+  font-size: 1rem;
+  letter-spacing: 2px;
+  color: #eaeaea;
+  margin-top: 32px;
+  opacity: 0.85;
 `;
 
 const MainContent = styled.div`
-  max-width: 900px;
+  max-width: 800px;
   margin: 0 auto;
   background: #f5f5f5;
-  padding: 40px 0 0 0;
+  padding: 48px 0 0 0;
   text-align: center;
 `;
 
 const MainDesc = styled.div`
   color: #7a7a3a;
-  font-size: 16px;
+  font-size: 1.2rem;
   margin-bottom: 40px;
-`;
-
-const EndContent = styled.div`
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
-`;
-const EndImg = styled.img`
-  width: 100%;
-  border-radius: 8px;
-  margin-bottom: 24px;
-`;
-const EndDesc = styled.div`
-  color: #7a7a3a;
-  font-size: 16px;
-  margin-bottom: 32px;
-`;
-
-const CTA = styled.div`
-  text-align: center;
-  margin-bottom: 32px;
-`;
-const CTALink = styled.a`
-  color: #3a3a2a;
-  font-size: 22px;
-  letter-spacing: 3px;
-  text-decoration: underline;
-  font-weight: 400;
-`;
-
-const Author = styled.div`
-  text-align: center;
-  color: #7a7a3a;
-  font-size: 15px;
-  margin-bottom: 32px;
-`;
-
-const SocialShare = styled.div`
-  text-align: center;
-  margin-bottom: 48px;
-`;
-const SocialBtn = styled.button`
-  margin: 0 8px;
-  background: none;
-  border: 1px solid #d6d6b8;
-  border-radius: 4px;
-  padding: 8px;
-  cursor: pointer;
-`;
-const SocialIcon = styled.i`
-  color: #3a3a2a;
-  font-size: 18px;
 `;
 
 const RelatedSection = styled.div`
@@ -119,21 +96,21 @@ const RelatedSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #181818;
+  background: #000;
   padding: 60px 0;
 `;
 const RelatedWrapper = styled.div`
   display: flex;
   justify-content: center;
-  gap: 40px;
+  gap: 60px;
 `;
 const RelatedCard = styled.div`
-  width: 350px;
+  width: 500px;
   color: #fff;
 `;
 const RelatedImg = styled.img`
   width: 100%;
-  height: 220px;
+  height: 300px;
   object-fit: cover;
   margin-bottom: 16px;
 `;
@@ -145,11 +122,8 @@ const RelatedTitle = styled.div`
 
 const ProductSection = styled.section`
   max-width: 1200px;
-  margin: 48px auto;
-  padding: 0 20px;
-  background: #f9f9f9;
-  border-radius: 12px;
-  padding: 40px 20px;
+  margin: 0 auto;
+  padding: 80px 20px;
 `;
 const ProductTitle = styled.h2`
   text-align: center;
@@ -215,6 +189,56 @@ const ProductPrice = styled.p`
   font-size: 1.1rem;
 `;
 
+const Section = styled.section`
+  max-width: 900px;
+  margin: 0 auto 48px auto;
+  background: #f7f7f7;
+  padding: 48px 0 0 0;
+  text-align: center;
+`;
+const SectionTitle = styled.h2`
+  letter-spacing: 6px;
+  color: #81893f;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 32px;
+  text-transform: uppercase;
+`;
+const SectionImg = styled.img`
+  width: 500px;
+  max-width: 100%;
+  border-radius: 8px;
+  margin-bottom: 32px;
+  object-fit: cover;
+`;
+const SectionList = styled.ul`
+  list-style: disc inside;
+  text-align: left;
+  max-width: 400px;
+  margin: 0 auto 32px auto;
+  color: #6d6a4f;
+  font-size: 1rem;
+  line-height: 2;
+  padding-left: 0;
+`;
+const SectionItem = styled.li`
+  margin-bottom: 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+`;
+const ItemImg = styled.img`
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f5f5f5;
+`;
+const ItemText = styled.span`
+  display: block;
+  margin-top: 8px;
+`;
+
 const BlogDetail = () => {
   const { blogId } = useParams();
   const blog = blogs.find(b => b.id === Number(blogId));
@@ -244,55 +268,111 @@ const BlogDetail = () => {
     <>
       <GlobalStyle />
       <Wrapper>
-        {/* Banner đầu trang */}
+        {/* Banner */}
         <Banner>
-          <BannerImg src={blog.image} alt={blog.title} />
+          <BannerImg src={blog.thumbnailUrl} alt={blog.title} />
           <BannerOverlay>
-            <BannerDate>{blog.category}</BannerDate>
-            <BannerTitle>{blog.title}</BannerTitle>
+            <BannerPresent>Matchaya presents</BannerPresent>
+            <BannerTitle>
+              {blog.title.split('|')[0].toUpperCase()}
+            </BannerTitle>
+            <BannerSubtitle>
+              {blog.title.split('|')[1] ? blog.title.split('|')[1].toUpperCase() : ''}
+            </BannerSubtitle>
+            <BannerDate>
+              {blog.date || "SEPTEMBER 23, 2024"}
+            </BannerDate>
           </BannerOverlay>
         </Banner>
 
         {/* Nội dung chính */}
         <MainContent>
-          <MainDesc>{blog.desc}</MainDesc>
+          <MainDesc>{blog.summary}</MainDesc>
+          {/* Nếu có nội dung chi tiết, render ở đây */}
         </MainContent>
 
-        {/* Ảnh cuối bài và cảm ơn */}
-        <EndContent>
-          <EndImg src="https://cdn.shopify.com/s/files/1/0081/8734/7026/files/IMG_3760.jpg?v=1742390813" alt="Banner End" />
-          <EndDesc>
-            Thank you for having us and wishing everyone an empowering International Women's Day!
-          </EndDesc>
-        </EndContent>
-
-        {/* CTA */}
-        <CTA>
-          <CTALink href="#">
-            DISCOVER THE BENEFITS OF PARTNERING WITH US!
-          </CTALink>
-        </CTA>
-
-        {/* Thông tin tác giả */}
-        <Author>WRITTEN BY MATCHAYA ONLINE TEAM</Author>
+        {/* TEAWARES section */}
+        {blog.teawares && blog.teawares.length > 0 && (
+          <Section>
+            <SectionTitle>TEAWARES</SectionTitle>
+            {/* Nếu có image cho teaware đầu tiên thì hiển thị */}
+            {blog.teawares[0].image && (
+              <SectionImg src={blog.teawares[0].image} alt="Teaware" />
+            )}
+            <SectionList>
+              {blog.teawares.map((item, idx) => (
+                <SectionItem key={idx}>
+                  {/* Nếu item là object có image */}
+                  {typeof item === 'object' && item.image && (
+                    <ItemImg src={item.image} alt={item.name || item.ingredient || item.step || 'teaware'} />
+                  )}
+                  <ItemText>{typeof item === 'string' ? item : item.name || item.ingredient || item.step}</ItemText>
+                </SectionItem>
+              ))}
+            </SectionList>
+          </Section>
+        )}
+        {/* INGREDIENTS section */}
+        {blog.ingredients && blog.ingredients.length > 0 && (
+          <Section>
+            <SectionTitle>INGREDIENTS</SectionTitle>
+            {blog.ingredients[0].image && (
+              <SectionImg src={blog.ingredients[0].image} alt="Ingredient" />
+            )}
+            <SectionList>
+              {blog.ingredients.map((item, idx) => (
+                <SectionItem key={idx}>
+                  {typeof item === 'object' && item.image && (
+                    <ItemImg src={item.image} alt={item.ingredient || item.name || 'ingredient'} />
+                  )}
+                  <ItemText>{typeof item === 'string' ? item : item.ingredient || item.name}</ItemText>
+                </SectionItem>
+              ))}
+            </SectionList>
+          </Section>
+        )}
+        {/* DIRECTIONS section */}
+        {blog.directions && blog.directions.length > 0 && (
+          <Section>
+            <SectionTitle>DIRECTIONS</SectionTitle>
+            {blog.directions[0].image && (
+              <SectionImg src={blog.directions[0].image} alt="Direction" />
+            )}
+            <SectionList>
+              {blog.directions.map((item, idx) => (
+                <SectionItem key={idx}>
+                  {typeof item === 'object' && item.image && (
+                    <ItemImg src={item.image} alt={item.step || 'direction'} />
+                  )}
+                  <ItemText>{typeof item === 'string' ? item : item.step}</ItemText>
+                </SectionItem>
+              ))}
+            </SectionList>
+          </Section>
+        )}
 
         {/* Các bài viết liên quan */}
-        <RelatedSection>
-          <RelatedWrapper>
-            <RelatedCard>
-              <RelatedImg src="https://matchaya.sg/cdn/shop/articles/Webpage-without-words__1800x1200_bd231296-8111-4a9c-a04f-f8509ab2ef6b_600x.png?v=1745214204" alt="Sakura Season" />
-              <RelatedTitle>NOSTALGIA AND TRANQUILITY - SAKURA SEASON 2025</RelatedTitle>
-            </RelatedCard>
-            <RelatedCard>
-              <RelatedImg src="https://matchaya.sg/cdn/shop/articles/Untitled_design_45_600x.png?v=1738899160" alt="Revamp Packaging" />
-              <RelatedTitle>A FRESH BEGINNING | REVAMP PACKAGING</RelatedTitle>
-            </RelatedCard>
-          </RelatedWrapper>
-        </RelatedSection>
+        {blog && (
+          <RelatedSection>
+            <RelatedWrapper>
+              {blogs
+                .filter(b => b.category === blog.category && b.id !== blog.id)
+                .slice(0, 2)
+                .map((related, idx) => (
+                  <RelatedCard key={related.id}>
+                    <Link to={`/blog/${related.id}`} style={{ textDecoration: 'none' }}>
+                      <RelatedImg src={related.thumbnailUrl || related.image} alt={related.title} />
+                      <RelatedTitle>{related.title}</RelatedTitle>
+                    </Link>
+                  </RelatedCard>
+                ))}
+            </RelatedWrapper>
+          </RelatedSection>
+        )}
 
         {/* Carousel sản phẩm */}
         <ProductSection>
-          <ProductTitle>MATCHA PREMIUM</ProductTitle>
+          <ProductTitle>SẢN PHẨM LIÊN QUAN</ProductTitle>
           {loading ? (
             <div style={{ textAlign: 'center' }}>Loading...</div>
           ) : products.length === 0 ? (

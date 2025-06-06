@@ -1,6 +1,7 @@
 const Order = require('../models/OrderModel');
 const { sendMailOrderConfirmation } = require('../utils/sendMail');
 
+const User = require('../models/UserModel');
 // GET /orders/customer/:customerId
 const getOrdersByCustomer = async (req, res) => {
 	try {
@@ -39,6 +40,11 @@ const createOrder = async (req, res) => {
 		});
 
 		const savedOrder = await newOrder.save();
+		// Cộng điểm cho user
+		const pointsToAdd = Math.floor(total / 100000) * 10;
+		if (pointsToAdd > 0) {
+			await User.findByIdAndUpdate(userId, { $inc: { points: pointsToAdd } });
+		}
 		res.status(201).json(savedOrder);
 	} catch (error) {
 		console.error('Lỗi tạo đơn hàng:', error);

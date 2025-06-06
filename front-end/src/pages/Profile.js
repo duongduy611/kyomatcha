@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import GlobalStyle from '../components/GlobalStyle';
 
 const Profile = () => {
-  const [user, setUser] = useState({ username: '', fullName: '', email: '', phone: '', address: '', role: '', status: '' });
+  const [user, setUser] = useState({ fullName: '', email: '', phone: '', address: '', role: '', status: '' });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,7 +13,6 @@ const Profile = () => {
       return;
     }
     setUser({
-      username: localStorage.getItem('username') || '',
       fullName: localStorage.getItem('fullName') || '',
       email: localStorage.getItem('email') || '',
       phone: localStorage.getItem('phone') || '',
@@ -36,13 +35,10 @@ const Profile = () => {
           <span style={{ color: '#fff', fontSize: 44, fontWeight: 700 }}>
             {(user.fullName && user.fullName[0])
               ? user.fullName[0].toUpperCase()
-              : (user.username && user.username[0])
-                ? user.username[0].toUpperCase()
-                : '?'}
+              : '?'}
           </span>
         </div>
         <h2 style={{ color: '#2ecc40', margin: 0, fontWeight: 700, fontSize: 28, letterSpacing: 1 }}>{user.fullName || 'Chưa cập nhật họ tên'}</h2>
-        <div style={{ color: '#888', fontSize: 16, marginBottom: 8 }}><b>Tên đăng nhập:</b> {user.username}</div>
         <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}><b>Email:</b> {user.email || 'Chưa cập nhật'}</div>
         <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}><b>SĐT:</b> {user.phone || 'Chưa cập nhật'}</div>
         <div style={{ color: '#888', fontSize: 15, marginBottom: 8 }}><b>Địa chỉ:</b> {user.address || 'Chưa cập nhật'}</div>
