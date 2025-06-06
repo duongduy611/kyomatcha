@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { GoogleLogin } from '@react-oauth/google';
 import GlobalStyle from '../components/GlobalStyle';
 import styled   from 'styled-components';
 import logoImg from '../assets/logo/logo1.png';
@@ -138,6 +139,29 @@ const RegisterLink = styled.div`
   }
 `;
 
+const OrDivider = styled.div`
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 10px 0;
+  &::before, &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #d0d7de;
+  }
+  span {
+    padding: 0 10px;
+    color: #666;
+    font-size: 14px;
+  }
+`;
+
+const GoogleButton = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+`;
+
 function Login() {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -176,53 +200,106 @@ function Login() {
     }
   };
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      console.log('Google response:', credentialResponse);
+      if (!credentialResponse.credential) {
+        setMessage('Không nhận được thông tin xác thực từ Google');
+        return;
+      }
+      
+      const res = await fetch('http://localhost:9999/api/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: credentialResponse.credential
+        }),
+      });
+      
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('id', data.user.id || '');
+        localStorage.setItem('username', data.user.username || '');
+        localStorage.setItem('fullName', data.user.fullName || '');
+        localStorage.setItem('email', data.user.email || '');
+        localStorage.setItem('role', data.user.role || '');
+        localStorage.setItem('status', data.user.status || '');
+        setMessage('Đăng nhập thành công!');
+        setTimeout(() => navigate('/'), 1000);
+      } else {
+        setMessage(data.message || 'Đăng nhập thất bại');
+      }
+    } catch (err) {
+      console.error('Google login error:', err);
+      setMessage('Lỗi kết nối server');
+    }
+  };
+
+  const handleGoogleError = () => {
+    setMessage('Đăng nhập Google thất bại');
+  };
+
   return (
-    <>
-    <GlobalStyle />
-    <LoginWrapper>
-      <LoginContainer>
-        <LogoSide>
-          <LogoImg src={logoImg} alt="KyoMatcha Logo" />
-        </LogoSide>
-        <FormSide>
-          <LoginForm onSubmit={handleLogin}>
-            <Title>Đăng nhập</Title>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <Label htmlFor="loginInput">Tên đăng nhập hoặc Email</Label>
-              <Input
-                id="loginInput"
-                type="text"
-                placeholder="Nhập tên đăng nhập hoặc email"
-                value={loginInput}
-                onChange={e => setLoginInput(e.target.value)}
-                required
-              />
-            </div>
-            <PasswordWrapper>
-              <Label htmlFor="password">Mật khẩu</Label>
-              <Input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Nhập mật khẩu"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-              />
-              <EyeIcon onClick={() => setShowPassword(v => !v)}>
-                {!showPassword ? <FaEyeSlash /> : <FaEye />}
-              </EyeIcon>
-            </PasswordWrapper>
-            <SubmitButton type="submit">Đăng nhập</SubmitButton>
-            <Message success={message === 'Đăng nhập thành công!'}>{message}</Message>
-            <RegisterLink>
-              <span>Bạn chưa có tài khoản?</span>
-              <Link to="/register" onClick={() => window.scrollTo(0, 0)}>Đăng ký ngay</Link>
-            </RegisterLink>
-          </LoginForm>
-        </FormSide>
-      </LoginContainer>
-    </LoginWrapper>
-    </>
+      <LoginWrapper>
+        <LoginContainer>
+          <LogoSide>
+            <LogoImg src={logoImg} alt="KyoMatcha Logo" />
+          </LogoSide>
+          <FormSide>
+            <LoginForm onSubmit={handleLogin}>
+              <Title>Đăng nhập</Title>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <Label htmlFor="loginInput">Tên đăng nhập hoặc Email</Label>
+                <Input
+                  id="loginInput"
+                  type="text"
+                  placeholder="Nhập tên đăng nhập hoặc email"
+                  value={loginInput}
+                  onChange={e => setLoginInput(e.target.value)}
+                  required
+                />
+              </div>
+              <PasswordWrapper>
+                <Label htmlFor="password">Mật khẩu</Label>
+                <Input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Nhập mật khẩu"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                />
+                <EyeIcon onClick={() => setShowPassword(v => !v)}>
+                  {!showPassword ? <FaEyeSlash /> : <FaEye />}
+                </EyeIcon>
+              </PasswordWrapper>
+              <SubmitButton type="submit">Đăng nhập</SubmitButton>
+              <OrDivider>
+                <span>HOẶC</span>
+              </OrDivider>
+              <GoogleButton>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                  useOneTap
+                  theme="filled_blue"
+                  size="large"
+                  width="300"
+                  text="signin_with"
+                  shape="rectangular"
+                  locale="vi"
+                />
+              </GoogleButton>
+              <Message success={message === 'Đăng nhập thành công!'}>{message}</Message>
+              <RegisterLink>
+                <span>Bạn chưa có tài khoản?</span>
+                <Link to="/register" onClick={() => window.scrollTo(0, 0)}>Đăng ký ngay</Link>
+              </RegisterLink>
+            </LoginForm>
+          </FormSide>
+        </LoginContainer>
+      </LoginWrapper>
   );
 }
 
