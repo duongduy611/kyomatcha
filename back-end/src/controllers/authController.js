@@ -1,7 +1,8 @@
 const User = require('../models/UserModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key';
 
 exports.register = async (req, res) => {
@@ -80,3 +81,59 @@ exports.changePassword = async (req, res) => {
     res.status(500).json({ message: 'Lỗi server' });
   }
 }; 
+
+exports.GoogleLogin = async (req, res) => {
+  const { token } = req.body;
+
+  try {
+    // Xác thực token
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID
+    });
+
+    const payload = ticket.getPayload();
+    const { sub, email, name, picture } = payload;
+
+    const username = email.split('@')[0];
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = new User({
+        username,
+        email,
+        password: email, // Gán sub làm password tạm, không dùng đến
+        fullName: name,
+        status: 'ACTIVE',
+        role: 'CUSTOMER'
+      });
+
+      await user.save();
+    }
+    const accessToken = jwt.sign(
+      {
+        id: user._id,
+        email: user.email,
+        role: user.role
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.json({
+      token: accessToken,
+      user: {
+        id: user._id,
+        email: user.email,
+        username: user.username,
+        fullName: user.fullName,
+        role: user.role,
+        status: user.status
+      }
+    });
+  } catch (error) {
+    console.error('Google login error:', error);
+    res.status(401).json({ message: 'Token không hợp lệ', error: error.message });
+  }
+};
