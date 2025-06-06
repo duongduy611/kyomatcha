@@ -194,6 +194,10 @@ const handleCheckout = async () => {
 			// Xử lý COD như bình thường
 			await axios.delete(`${BACKEND_URL}/cart/clear/${userId}`);
 			setCart({ items: [] });
+			//gửi mail xác nhận đặt hàng thành công
+			await axios.post(`${BACKEND_URL}/orders/confirm-payment`,{
+				orderId: createdOrder._id
+			});
 			toast.success('Đặt hàng thành công!');
 			navigate('/thankyou'); 
 		}
