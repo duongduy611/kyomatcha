@@ -1,4 +1,7 @@
 const Order = require('../models/OrderModel');
+const { sendMailOrderConfirmation } = require('../utils/sendMail');
+
+const User = require('../models/UserModel');
 // GET /orders/customer/:customerId
 const getOrdersByCustomer = async (req, res) => {
 	try {
@@ -37,6 +40,11 @@ const createOrder = async (req, res) => {
 		});
 
 		const savedOrder = await newOrder.save();
+		// Cộng điểm cho user
+		const pointsToAdd = Math.floor(total / 100000) * 10;
+		if (pointsToAdd > 0) {
+			await User.findByIdAndUpdate(userId, { $inc: { points: pointsToAdd } });
+		}
 		res.status(201).json(savedOrder);
 	} catch (error) {
 		console.error('Lỗi tạo đơn hàng:', error);
@@ -102,10 +110,32 @@ const updateOrderStatus = async (req, res) => {
 	}
 };
 
+const confirmPayment = async (req, res) => {
+	const { orderId } = req.body;
+	const order = await Order.findById(orderId).populate('userId'); // lấy email từ user
+
+	if (!order)
+		return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+
+	order.status = 'PENDING';
+	await order.save();
+	console.log(order.userId.email);
+	
+	// Gửi email xác nhận
+	try {
+		await sendMailOrderConfirmation(order.userId.email, order);
+	} catch (err) {
+		console.error('Gửi mail thất bại:', err);
+	}
+
+	res.json({ success: true, message: 'Đã xác nhận thanh toán và gửi mail' });
+};
+
 module.exports = {
 	getOrdersByCustomer,
 	createOrder,
 	getOrderById,
 	getAllOrders,
 	updateOrderStatus,
+	confirmPayment,
 };

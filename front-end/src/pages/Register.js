@@ -141,7 +141,6 @@ const LoginPrompt = styled.div`
 `;
 
 function Register() {
-  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -156,7 +155,7 @@ function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
     setMessage('');
-    if (!username || !email || !password || !confirmPassword || !fullName) {
+    if (!email || !password || !confirmPassword || !fullName) {
       setMessage('Vui lòng nhập đầy đủ thông tin bắt buộc!');
       return;
     }
@@ -176,12 +175,12 @@ function Register() {
       const res = await fetch('http://localhost:9999/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password, fullName, phone, address }),
+        body: JSON.stringify({ email, password, fullName, phone, address }),
       });
       const data = await res.json();
       if (res.ok) {
         setMessage('Đăng ký thành công! Bạn có thể đăng nhập.');
-        setUsername(''); setEmail(''); setPassword(''); setConfirmPassword(''); setFullName(''); setPhone(''); setAddress('');
+        setEmail(''); setPassword(''); setConfirmPassword(''); setFullName(''); setPhone(''); setAddress('');
         setTimeout(() => navigate('/login'), 600);
       } else {
         setMessage(data.message || 'Đăng ký thất bại');

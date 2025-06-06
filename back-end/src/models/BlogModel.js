@@ -1,23 +1,23 @@
 const mongoose = require("mongoose");
 
 const TeawareSchema = new mongoose.Schema({
-  name: { type: String, required: true, trim: true }, // Tên dụng cụ, ví dụ: "Chawan"
-  image: { type: String, required: false }, // Ảnh minh họa dụng cụ
+  name: { type: String, required: true, trim: true }, 
+  image: { type: String, required: false },
 });
 
 const IngredientSchema = new mongoose.Schema({
-  ingredient: { type: [String], required: true, trim: true }, // Tên nguyên liệu, ví dụ: "Matcha"
-  image: { type: String, required: false }, // Ảnh minh họa nguyên liệu
+  ingredient: { type: [String], required: true, trim: true },
+  image: { type: String, required: false },
 });
 
 const DirectionSchema = new mongoose.Schema({
-  step: { type: String, required: true, trim: true }, // Nội dung bước, ví dụ: "Sieve matcha powder"
-  image: { type: String, required: false }, // Ảnh minh họa bước
+  step: { type: String, required: true, trim: true },
+  image: { type: String, required: false },
 });
 
 const ContentSchema = new mongoose.Schema({
-  content: { type: String, required: true, trim: true }, // Nội dung bước, ví dụ: "Sieve matcha powder"
-  image: { type: String, required: false }, // Ảnh minh họa bước
+  content: { type: String, required: true, trim: true },
+  image: { type: String, required: false },
 });
 
 const BlogSchema = new mongoose.Schema(
@@ -26,7 +26,7 @@ const BlogSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      enum: ["Khám phá về Matcha", "Làm đẹp", "Pha chế"], // Dựa trên mảng blogs
+      enum: ["Khám phá về Matcha", "Làm đẹp", "Pha chế"],
     },
     title: {
       type: String,
@@ -36,38 +36,38 @@ const BlogSchema = new mongoose.Schema(
     summary: {
       type: String,
       required: true,
-      trim: true, // Ánh xạ từ desc trong mảng blogs
+      trim: true,
     },
     slug: {
       type: String,
       required: true,
       unique: true,
-      trim: true, // Thêm từ schema trước
+      trim: true,
     },
     thumbnailUrl: {
       type: String,
-      required: false, // Ảnh chính, ánh xạ từ image trong mảng blogs
+      required: false,
     },
     author: {
       type: String,
       required: false,
-      default: "Kyomatcha Team", // Thêm từ schema trước
+      default: "Kyomatcha Team",
       trim: true,
     },
     content: {
-      type: [ContentSchema], // Nội dung đầy đủ cho Tea Insights
+      type: [ContentSchema],
       required: false,
     },
     teawares: {
-      type: [TeawareSchema], // Dụng cụ cho Tea Recipes
+      type: [TeawareSchema],
       required: false,
     },
     ingredients: {
-      type: [IngredientSchema], // Nguyên liệu cho Tea Recipes
+      type: [IngredientSchema],
       required: false,
     },
     directions: {
-      type: [DirectionSchema], // Hướng dẫn cho Tea Recipes
+      type: [DirectionSchema],
       required: false,
     },
   },

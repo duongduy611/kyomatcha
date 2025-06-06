@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import bannerWeb from "../assets/images/banner_web.jpg";
+import bannerWeb from "../assets/images/e1df83de170ef44fef5a41025bb81813.jpg";
 import styled from "styled-components";
 import GlobalStyle from "../components/GlobalStyle";
 import axios from "axios";
@@ -12,8 +12,9 @@ import { useAppContext } from '../context/AppContext';
 const BACKEND_URL = "http://localhost:9999";
 
 const BannerWrapper = styled.div`
+  margin-top: 100px;
   width: 100%;
-  height: 100vh;
+  height: 70vh;
   position: relative;
   overflow: hidden;
 `;
@@ -33,8 +34,8 @@ const BannerOverlay = styled.div`
   height: 100%;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.45) 60%,
-    rgba(0, 0, 0, 0) 100%
+    rgba(0, 0, 0, 0.30) 50%,
+    rgba(0, 0, 0, 0.30) 100%
   );
   z-index: 1;
 `;
@@ -59,17 +60,9 @@ const BannerTextWrapper = styled.div`
   }
 `;
 
-const BannerSubText = styled.div`
-  color: #fff;
-  font-size: 0.9rem;
-  letter-spacing: 2px;
-  margin-bottom: 18px;
-  opacity: 0.85;
-`;
-
 const BannerTitle = styled.div`
   color: #fff;
-  font-size: 22px;
+  font-size: 24px;
   letter-spacing: 3px;
   margin-bottom: 32px;
   text-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
@@ -82,9 +75,9 @@ const BannerButtonGroup = styled.div`
 `;
 
 const BannerButton = styled(Link)`
-  background: #4A7C59;
+  background: #527328;
   color: #fff;
-  border: 2px solid #4A7C59;
+  border: 2px solid #527328;
   padding: 14px 38px;
   font-size: 1rem;
   font-weight: 500;
@@ -105,15 +98,15 @@ const BannerButton = styled(Link)`
 
 const Section = styled.section`
   border-top: 1px solid #e5e5e5;
-  background: #f7f6f4;
-  padding: 60px 0 40px 0;
+  background: #f6f6ee;
+  padding: 40px 0 40px 0;
 `;
 
 const SectionTitle = styled.h2`
   text-align: center;
   font-size: 1.4rem;
   letter-spacing: 3px;
-  color: #4A7C59;
+  color: #000;
   font-weight: 500;
   margin-bottom: 48px;
 `;
@@ -175,8 +168,9 @@ const ProductInfo = styled.div`
   flex: 1;
 `;
 
-const ProductName = styled.h3`
-  font-size: 16px;
+const ProductName = styled.div`
+  font-size: 1.05rem;
+  color: #4A7C59;
   font-weight: 500;
   color: #333;
   margin: 0 0 8px 0;
@@ -278,41 +272,60 @@ const TeaCollection = () => {
   const navigate = useNavigate();
   const { toggleFavorite, isProductFavorited } = useAppContext();
 
-  const handleAddToCart = async (productId) => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        toast.info('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
-        navigate('/login');
-        return;
-      }
+ const handleAddToCart = async (productId, color = "", size = "") => {
+  try {
+    // Lấy token và id người dùng từ localStorage
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('id');
 
-      const response = await axios.post(
-        `${BACKEND_URL}/api/cart/add`, 
-        {
-          productId,
-          quantity: 1
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      if (response.data.success) {
-        toast.success('Đã thêm vào giỏ hàng!');
-      }
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      if (error.response?.status === 401) {
-        toast.error('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
-        navigate('/login');
-      } else {
-        toast.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
-      }
+    // Nếu chưa đăng nhập, điều hướng về trang login
+    if (!token || !userId) {
+      toast.info('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
+      navigate('/login');
+      return;
     }
-  };
+
+    // Chuẩn bị payload theo đúng spec của backend
+    const payload = {
+      userId: userId,
+      productId: productId,
+      quantity: 1,      // ở đây mình để mặc định 1; bạn có thể truyền vào tham số nếu muốn
+      color: color,     // truyền vào từ component hoặc để mặc định
+      size: size        // truyền vào từ component hoặc để mặc định
+    };
+
+    // Gọi API thêm vào giỏ
+    const response = await axios.post(
+      `${BACKEND_URL}/cart/add`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+  if (response.status === 200 && response.data && response.data._id) {
+      // Backend trả về obj cart mới (có _id) → coi như thành công
+      toast.success('Đã thêm vào giỏ hàng!');
+    } else {
+      console.log('Unexpected response from /cart/add:', response.data);
+      toast.error('Thêm vào giỏ hàng không thành công. Vui lòng thử lại.');
+    }
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    if (error.response?.status === 401) {
+      toast.error('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
+      navigate('/login');
+    } else if (error.response?.data?.message) {
+      // Hiển thị message lỗi do backend trả về (nếu có)
+      toast.error(error.response.data.message);
+    } else {
+      toast.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
+    }
+  }
+};
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -382,13 +395,13 @@ const TeaCollection = () => {
               </ProductInfo>
             </Link>
             <ButtonGroup>
-              <Button 
+              <Button
                 className="buy-now"
                 onClick={() => navigate(`/products/${product.slug}`)}
               >
                 Mua ngay
               </Button>
-              <Button 
+              <Button
                 className="add-to-cart"
                 onClick={(e) => {
                   e.preventDefault();
@@ -401,7 +414,7 @@ const TeaCollection = () => {
                 </svg>
               </Button>
             </ButtonGroup>
-            <FavoriteButton 
+            <FavoriteButton
               onClick={(e) => {
                 e.preventDefault();
                 toggleFavorite(product._id);
@@ -420,24 +433,16 @@ const TeaCollection = () => {
 }
 
 const BlogSection = styled.section`
-  background: #f7f6f4;
+  background: #f6f6ee;
   padding: 60px 0 40px 0;
   border-top: 1px solid #e5e5e5;
-`;
-
-const BlogLabel = styled.div`
-  text-align: center;
-  color: #4A7C59;
-  font-size: 0.95rem;
-  letter-spacing: 2px;
-  margin-bottom: 8px;
 `;
 
 const BlogTitle = styled.h2`
   text-align: center;
   font-size: 1.4rem;
   letter-spacing: 3px;
-  color: #4A7C59;
+  color: #000;
   font-weight: 500;
   margin-bottom: 48px;
 `;
@@ -461,7 +466,6 @@ const BlogImage = styled.img`
   height: 210px;
   object-fit: cover;
   margin-bottom: 18px;
-  border-radius: 4px;
   cursor: pointer;
 
   &:hover {
@@ -471,7 +475,7 @@ const BlogImage = styled.img`
 `;
 
 const BlogCategory = styled.div`
-  color: #4A7C59;
+  color: #000;
   font-size: 0.9rem;
   letter-spacing: 2px;
   margin-bottom: 8px;
@@ -533,13 +537,12 @@ function BlogList() {
 
   return (
     <BlogSection>
-      <BlogLabel>Blogs</BlogLabel>
       <BlogTitle>BLOGS MỚI NHẤT</BlogTitle>
       <BlogGrid>
         {latestBlogs.map((blog, idx) => (
           <BlogCard key={idx}>
             <Link to={`/blog/${blog.id}`} style={{ textDecoration: 'none' }}>
-              <BlogImage src={blog.image} alt={blog.title} />
+              <BlogImage src={blog.thumbnailUrl} alt={blog.title} />
               <BlogPostTitle>{blog.title}</BlogPostTitle>
             </Link>
             <BlogCategory>{blog.category}</BlogCategory>
@@ -560,7 +563,6 @@ const Home = () => {
         <BannerImage src={bannerWeb} alt="Banner" />
         <BannerOverlay />
         <BannerTextWrapper>
-          <BannerSubText>TU LUYỆN CHÁNH NIỆM VÀ SỰ YÊN TĨNH</BannerSubText>
           <BannerTitle>MỘT KHỞI ĐẦU MỚI</BannerTitle>
           <BannerButtonGroup>
             <BannerButton to="/products">MUA NGAY</BannerButton>
