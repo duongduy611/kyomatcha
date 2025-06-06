@@ -5,6 +5,7 @@ const {
 	getOrderById,
 	getAllOrders,
 	updateOrderStatus,
+	confirmPayment,
 } = require('../controllers/OrderController');
 
 const router = express.Router();
@@ -23,5 +24,8 @@ router.get('/', getAllOrders);
 
 // Cập nhật trạng thái đơn hàng (nếu có)
 router.put('/:orderId/status', updateOrderStatus);
+
+// Route: xác nhận đã thanh toán và gửi mail
+router.post('/confirm-payment', confirmPayment);
 
 module.exports = router;
