@@ -193,7 +193,7 @@ function Login() {
     try {
       const isEmail = /@gmail\.com$/.test(loginInput);
       const body = { email: loginInput, password };
-      const res = await fetch('http://localhost:9999/api/login', {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -226,7 +226,7 @@ function Login() {
         return;
       }
       
-      const res = await fetch('http://localhost:9999/api/google', {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

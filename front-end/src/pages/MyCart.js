@@ -30,9 +30,9 @@ const MyCart = () => {
 	const [selectedDistrict, setSelectedDistrict] = useState(null);
 	const [selectedWard, setSelectedWard] = useState(null);
 
-	const userId = localStorage.getItem('id');
+	const userId = localStorage.getItem('userId');
 	const navigate = useNavigate();
-	const BACKEND_URL = 'http://localhost:9999';
+	const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 	useEffect(() => {
 		const fetchProvinces = async () => {
@@ -76,6 +76,7 @@ const MyCart = () => {
 
 	useEffect(() => {
 		const fetchCart = async () => {
+			
 			try {
 				const res = await axios.get(`${BACKEND_URL}/cart/${userId}`);
 				setCart(res.data);

@@ -10,6 +10,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { FaCube } from "react-icons/fa";
 
 const Banner = styled.section`
+  margin-top: 100px;
   width: 100%;
   min-height: 500px;
   background: linear-gradient(rgba(30, 40, 30, 0.5), rgba(30, 40, 30, 0.1)),
@@ -42,7 +43,6 @@ const BannerTitle = styled.h1`
 
 const ContentSection = styled.section`
   width: 100%;
-  background: #fff;
   display: flex;
   justify-content: center;
   padding: 60px 0 80px 0;
@@ -218,7 +218,6 @@ const coreValues = [
 
 const MissionSection = styled.section`
   width: 100%;
-  background: #f0f0f0;
   display: flex;
   justify-content: center;
   padding: 60px 0 80px 0;
@@ -344,9 +343,8 @@ const AboutUs = () => (
   <>
     <GlobalStyle />
     <Banner>
-      <BannerLabel>Về KyoMatcha</BannerLabel>
       <BannerTitle>
-        VỀ CÔNG VIỆC CỦA CHÚNG TÔI
+        VỀ KYOMATCHA
       </BannerTitle>
     </Banner>
     <ContentSection>

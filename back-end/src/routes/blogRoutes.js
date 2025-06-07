@@ -3,7 +3,7 @@ const router = express.Router();
 const BlogController = require('../controllers/BlogController');
 
 // Lấy tất cả blog (có phân trang)
-router.get('/', BlogController.getAllBlogs);
+router.get('/blogs', BlogController.getAllBlogs);
 // Lấy blog theo danh mục (có phân trang)
 router.get('/category/:category', BlogController.getBlogByCategory);
 // Lấy blog nổi bật (mỗi category 1 blog mới nhất)

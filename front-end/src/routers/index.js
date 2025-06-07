@@ -48,13 +48,13 @@ export const routes = [
         isShowFooter: true
     },
     {
-        path: '/blog',
+        path: '/blogs',
         page: Blog,
         isShowHeader: true,
         isShowFooter: true
     },
     {
-        path: '/blog/:blogId',
+        path: '/blogs/:slug',
         page: BlogDetail,
         isShowHeader: true,
         isShowFooter: true

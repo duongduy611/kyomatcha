@@ -1,29 +1,27 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import GlobalStyle from '../components/GlobalStyle';
-import { useParams, Link } from 'react-router-dom';
 import { blogs } from '../data/blogs';
-import axios from 'axios';
 
-const BACKEND_URL = "http://localhost:9999";
-
-const Wrapper = styled.div`
-  padding-top: 80px;
-  background: #f5f5f5;
+const BlogDetailWrapper = styled.div`
   min-height: 100vh;
 `;
 
 const Banner = styled.div`
   position: relative;
   width: 100%;
-  height: 600px;
+  height: 100vh;
   overflow: hidden;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-const BannerImg = styled.img`
+const BannerImage = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -32,373 +30,440 @@ const BannerImg = styled.img`
 
 const BannerOverlay = styled.div`
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  background: rgba(30,30,30,0.25);
-  text-align: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.5));
+  z-index: 1;
 `;
 
-const BannerPresent = styled.div`
-  font-size: 2.2rem;
-  font-weight: 400;
-  letter-spacing: 2px;
+const BannerContent = styled.div`
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: white;
+  max-width: 800px;
+  padding: 0 20px;
+`;
+
+const BannerCategory = styled.div`
+  font-size: 1.2rem;
+  font-weight: 500;
   margin-bottom: 16px;
-  opacity: 0.95;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0.9;
 `;
 
 const BannerTitle = styled.h1`
   font-size: 4rem;
   font-weight: 700;
-  letter-spacing: 6px;
-  margin: 0;
-  line-height: 1.1;
-  text-shadow: 0 2px 16px rgba(0,0,0,0.18);
-`;
-
-const BannerSubtitle = styled.div`
-  font-size: 3rem;
-  font-weight: 700;
-  letter-spacing: 6px;
-  margin-top: 8px;
-  line-height: 1.1;
-  text-shadow: 0 2px 16px rgba(0,0,0,0.18);
-`;
-
-const BannerDate = styled.div`
-  font-size: 1rem;
-  letter-spacing: 2px;
-  color: #eaeaea;
-  margin-top: 32px;
-  opacity: 0.85;
-`;
-
-const MainContent = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-  background: #f5f5f5;
-  padding: 48px 0 0 0;
-  text-align: center;
-`;
-
-const MainDesc = styled.div`
-  color: #7a7a3a;
-  font-size: 1.2rem;
-  margin-bottom: 40px;
-`;
-
-const RelatedSection = styled.div`
-  min-height: 80vh;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #000;
-  padding: 60px 0;
-`;
-const RelatedWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 60px;
-`;
-const RelatedCard = styled.div`
-  width: 500px;
-  color: #fff;
-`;
-const RelatedImg = styled.img`
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
-  margin-bottom: 16px;
-`;
-const RelatedTitle = styled.div`
-  font-size: 20px;
-  letter-spacing: 2px;
-  margin-bottom: 8px;
-`;
-
-const ProductSection = styled.section`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 80px 20px;
-`;
-const ProductTitle = styled.h2`
-  text-align: center;
-  font-size: 1.6rem;
-  letter-spacing: 3px;
-  color: #81893f;
-  font-weight: 600;
-  margin-bottom: 40px;
-  position: relative;
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background-color: #81893f;
-    border-radius: 2px;
-  }
-`;
-const ProductGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
+  margin-bottom: 24px;
+  line-height: 1.2;
+  font-family: 'Times New Roman', serif;
   @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
+    font-size: 3rem;
   }
 `;
-const ProductCard = styled.div`
-  text-align: center;
-  cursor: pointer;
-  transition: transform 0.3s ease;
+
+const BannerMeta = styled.div`
+  font-size: 1.1rem;
+  opacity: 0.9;
+  span {
+    margin: 0 8px;
+  }
+`;
+
+const ContentSection = styled.div`
+  max-width: 2000px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 40px;
+  @media (max-width: 968px) {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+`;
+
+const LeftColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const MetaInfo = styled.div`
   background: white;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  }
-`;
-const ProductImage = styled.img`
-  width: 100%;
-  height: 250px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 20px;
-`;
-const ProductName = styled.h3`
-  font-size: 1.1rem;
-  color: #333;
-  margin-bottom: 12px;
-  font-weight: 500;
-  letter-spacing: 1px;
-`;
-const ProductPrice = styled.p`
-  color: #81893f;
-  font-weight: 600;
-  font-size: 1.1rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 `;
 
-const Section = styled.section`
-  max-width: 900px;
-  margin: 0 auto 48px auto;
-  background: #f7f7f7;
-  padding: 48px 0 0 0;
-  text-align: center;
-`;
-const SectionTitle = styled.h2`
-  letter-spacing: 6px;
-  color: #81893f;
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin-bottom: 32px;
+const CategoryTag = styled.div`
+  color: #e74c3c;
+  font-weight: 600;
+  font-size: 0.9rem;
   text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
 `;
-const SectionImg = styled.img`
-  width: 500px;
-  max-width: 100%;
+
+const DateInfo = styled.div`
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+`;
+
+const Title = styled.h2`
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #333;
+  font-family: 'Times New Roman', serif;
+  margin-bottom: 15px;
+`;
+
+const AuthorInfo = styled.div`
+  color: #666;
+  font-size: 0.9rem;
+`;
+
+const AuthorName = styled.span`
+  color: #333;
+  font-weight: 600;
+`;
+
+const MiddleColumn = styled.div`
+  background: white;
   border-radius: 8px;
-  margin-bottom: 32px;
-  object-fit: cover;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  overflow: hidden;
 `;
-const SectionList = styled.ul`
-  list-style: disc inside;
-  text-align: left;
-  max-width: 400px;
-  margin: 0 auto 32px auto;
-  color: #6d6a4f;
-  font-size: 1rem;
-  line-height: 2;
-  padding-left: 0;
-`;
-const SectionItem = styled.li`
-  margin-bottom: 18px;
+
+const ShareSection = styled.div`
+  padding: 20px;
+  border-bottom: 1px solid #eee;
   display: flex;
-  align-items: flex-start;
-  gap: 16px;
+  align-items: center;
+  gap: 15px;
 `;
-const ItemImg = styled.img`
-  width: 60px;
+
+const ShareText = styled.span`
+  font-weight: 600;
+  color: #333;
+`;
+
+const ShareButton = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  text-decoration: none;
+  color: white;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &.facebook {
+    background: #3b5998;
+  }
+
+  &.twitter {
+    background: #1da1f2;
+  }
+`;
+
+const ArticleContent = styled.div`
+  padding: 20px;
+`;
+
+const Summary = styled.p`
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 25px;
+  font-style: italic;
+  padding: 20px;
+  background: #f8f9fa;
+  border-left: 4px solid #e74c3c;
+`;
+
+const ContentText = styled.div`
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #333;
+  margin-bottom: 25px;
+
+  p {
+    margin-bottom: 18px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 30px 0 15px;
+    color: #333;
+  }
+
+  ul {
+    margin: 15px 0;
+    padding-left: 20px;
+
+    li {
+      margin-bottom: 8px;
+    }
+  }
+`;
+
+const ArticleImage = styled.img`
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 20px 0;
+`;
+
+const RightColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+`;
+
+const SidebarSection = styled.div`
+  background: white;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+`;
+
+const SidebarTitle = styled.h3`
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #333;
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+`;
+
+const RelatedArticle = styled.a`
+  display: flex;
+  gap: 15px;
+  text-decoration: none;
+  color: inherit;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f9f9f9;
+    margin: 0 -15px;
+    padding: 15px;
+    border-radius: 4px;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+const RelatedImage = styled.img`
+  width: 80px;
   height: 60px;
   object-fit: cover;
-  border-radius: 8px;
-  background: #f5f5f5;
+  border-radius: 4px;
+  flex-shrink: 0;
 `;
-const ItemText = styled.span`
-  display: block;
-  margin-top: 8px;
+
+const RelatedContent = styled.div`
+  flex: 1;
+`;
+
+const RelatedTitle = styled.h4`
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 8px;
+  color: #333;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
+
+const RelatedMeta = styled.div`
+  font-size: 0.8rem;
+  color: #999;
+`;
+
+const RelatedCategory = styled.div`
+  font-size: 0.75rem;
+  color: #e74c3c;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
 `;
 
 const BlogDetail = () => {
-  const { blogId } = useParams();
-  const blog = blogs.find(b => b.id === Number(blogId));
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { slug } = useParams();
+  const [blog, setBlog] = useState(null);
+  const [relatedBlogs, setRelatedBlogs] = useState([]);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get(`${BACKEND_URL}/api/products`, {
-          params: { limit: 3 },
-        });
-        if (response.data && response.data.data) {
-          setProducts(response.data.data.slice(0, 3));
-        }
-      } catch (error) {
-        setProducts([]);
-      }
-      setLoading(false);
-    };
-    fetchProducts();
-  }, []);
+    const currentBlog = blogs.find(b => b.slug === slug);
+    if (currentBlog) {
+      setBlog(currentBlog);
+      // Get related blogs from same category
+      const related = blogs
+        .filter(b => b.category === currentBlog.category && b.slug !== currentBlog.slug)
+        .slice(0, 3);
+      console.log('relatedBlogs:', related);
+      setRelatedBlogs(related);
+    }
+  }, [slug]);
 
-  if (!blog) return <div style={{paddingTop: 180, textAlign: 'center'}}>Blog không tồn tại!</div>;
+  if (!blog) {
+    return <div>Loading...</div>;
+  }
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear().toString().slice(-2);
+    return `${day}.${month}.${year}`;
+  };
 
   return (
-    <>
-      <GlobalStyle />
-      <Wrapper>
-        {/* Banner */}
-        <Banner>
-          <BannerImg src={blog.thumbnailUrl} alt={blog.title} />
-          <BannerOverlay>
-            <BannerPresent>Matchaya presents</BannerPresent>
-            <BannerTitle>
-              {blog.title.split('|')[0].toUpperCase()}
-            </BannerTitle>
-            <BannerSubtitle>
-              {blog.title.split('|')[1] ? blog.title.split('|')[1].toUpperCase() : ''}
-            </BannerSubtitle>
-            <BannerDate>
-              {blog.date || "SEPTEMBER 23, 2024"}
-            </BannerDate>
-          </BannerOverlay>
-        </Banner>
+    <BlogDetailWrapper>
+      <Banner>
+        <BannerImage src={blog.thumbnailUrl} alt={blog.title} />
+        <BannerOverlay />
+        <BannerContent>
+          <BannerCategory>{blog.category}</BannerCategory>
+          <BannerTitle>{blog.title}</BannerTitle>
+          <BannerMeta>
+            <span>By {blog.author}</span>
+            <span>•</span>
+            <span>{formatDate(blog.createdAt)}</span>
+          </BannerMeta>
+        </BannerContent>
+      </Banner>
 
-        {/* Nội dung chính */}
-        <MainContent>
-          <MainDesc>{blog.summary}</MainDesc>
-          {/* Nếu có nội dung chi tiết, render ở đây */}
-        </MainContent>
+      <ContentSection>
+        <LeftColumn>
+          <MetaInfo>
+            <CategoryTag>{blog.category}</CategoryTag>
+              <DateInfo>{formatDate(blog.createdAt)}</DateInfo>
+            <Title>{blog.title}</Title>
+            <AuthorInfo>
+              By <AuthorName>{blog.author}</AuthorName>
+            </AuthorInfo>
+          </MetaInfo>
+        </LeftColumn>
 
-        {/* TEAWARES section */}
-        {blog.teawares && blog.teawares.length > 0 && (
-          <Section>
-            <SectionTitle>TEAWARES</SectionTitle>
-            {/* Nếu có image cho teaware đầu tiên thì hiển thị */}
-            {blog.teawares[0].image && (
-              <SectionImg src={blog.teawares[0].image} alt="Teaware" />
-            )}
-            <SectionList>
-              {blog.teawares.map((item, idx) => (
-                <SectionItem key={idx}>
-                  {/* Nếu item là object có image */}
-                  {typeof item === 'object' && item.image && (
-                    <ItemImg src={item.image} alt={item.name || item.ingredient || item.step || 'teaware'} />
-                  )}
-                  <ItemText>{typeof item === 'string' ? item : item.name || item.ingredient || item.step}</ItemText>
-                </SectionItem>
-              ))}
-            </SectionList>
-          </Section>
-        )}
-        {/* INGREDIENTS section */}
-        {blog.ingredients && blog.ingredients.length > 0 && (
-          <Section>
-            <SectionTitle>INGREDIENTS</SectionTitle>
-            {blog.ingredients[0].image && (
-              <SectionImg src={blog.ingredients[0].image} alt="Ingredient" />
-            )}
-            <SectionList>
-              {blog.ingredients.map((item, idx) => (
-                <SectionItem key={idx}>
-                  {typeof item === 'object' && item.image && (
-                    <ItemImg src={item.image} alt={item.ingredient || item.name || 'ingredient'} />
-                  )}
-                  <ItemText>{typeof item === 'string' ? item : item.ingredient || item.name}</ItemText>
-                </SectionItem>
-              ))}
-            </SectionList>
-          </Section>
-        )}
-        {/* DIRECTIONS section */}
-        {blog.directions && blog.directions.length > 0 && (
-          <Section>
-            <SectionTitle>DIRECTIONS</SectionTitle>
-            {blog.directions[0].image && (
-              <SectionImg src={blog.directions[0].image} alt="Direction" />
-            )}
-            <SectionList>
-              {blog.directions.map((item, idx) => (
-                <SectionItem key={idx}>
-                  {typeof item === 'object' && item.image && (
-                    <ItemImg src={item.image} alt={item.step || 'direction'} />
-                  )}
-                  <ItemText>{typeof item === 'string' ? item : item.step}</ItemText>
-                </SectionItem>
-              ))}
-            </SectionList>
-          </Section>
-        )}
+        <MiddleColumn>
+          <ShareSection>
+            <ShareText>Chia sẻ</ShareText>
+            <ShareButton href="#" className="facebook">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </ShareButton>
+            <ShareButton href="#" className="twitter">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+              </svg>
+            </ShareButton>
+          </ShareSection>
 
-        {/* Các bài viết liên quan */}
-        {blog && (
-          <RelatedSection>
-            <RelatedWrapper>
-              {blogs
-                .filter(b => b.category === blog.category && b.id !== blog.id)
-                .slice(0, 2)
-                .map((related, idx) => (
-                  <RelatedCard key={related.id}>
-                    <Link to={`/blog/${related.id}`} style={{ textDecoration: 'none' }}>
-                      <RelatedImg src={related.thumbnailUrl || related.image} alt={related.title} />
-                      <RelatedTitle>{related.title}</RelatedTitle>
-                    </Link>
-                  </RelatedCard>
-                ))}
-            </RelatedWrapper>
-          </RelatedSection>
-        )}
+          <ArticleContent>
+            <Summary>{blog.summary}</Summary>
 
-        {/* Carousel sản phẩm */}
-        <ProductSection>
-          <ProductTitle>SẢN PHẨM LIÊN QUAN</ProductTitle>
-          {loading ? (
-            <div style={{ textAlign: 'center' }}>Loading...</div>
-          ) : products.length === 0 ? (
-            <div style={{ textAlign: 'center' }}>No products found.</div>
-          ) : (
-            <ProductGrid>
-              {products.map(product => (
-                <ProductCard key={product._id}>
-                  <Link to={`/products/${product.slug}`} style={{ textDecoration: 'none' }}>
-                    <ProductImage
-                      src={product.images && product.images.length > 0 ? `${BACKEND_URL}${product.images[0]}` : "/placeholder.jpg"}
-                      alt={product.name}
-                      onError={e => { e.target.onerror = null; e.target.src = "/placeholder.jpg"; }}
-                    />
-                    <ProductName>{product.name}</ProductName>
-                    <ProductPrice>
-                      {product.price ? `Chỉ từ ${product.price.toLocaleString()}đ` : ''}
-                    </ProductPrice>
-                  </Link>
-                </ProductCard>
+            <ContentText>
+              {blog.content.map((paragraph, index) => {
+                if (typeof paragraph === "string") {
+                  return <p key={index}>{paragraph}</p>;
+                }
+                if (typeof paragraph === "object" && paragraph !== null) {
+                  return (
+                    <div key={index}>
+                      {paragraph.content && <p>{paragraph.content}</p>}
+                      {paragraph.image && <img src={paragraph.image} alt="" style={{maxWidth: '100%', margin: '16px 0'}} />}
+                    </div>
+                  );
+                }
+                return null;
+              })}
+
+              {blog.ingredients && blog.ingredients.length > 0 && (
+                <>
+                  <h2>Nguyên liệu</h2>
+                  {blog.ingredients.map((item, idx) => (
+                    <div key={idx} style={{marginBottom: '16px'}}>
+                      {item.ingredient && Array.isArray(item.ingredient) && (
+                        <ul>
+                          {item.ingredient.map((ing, i) => (
+                            <li key={i}>{ing}</li>
+                          ))}
+                        </ul>
+                      )}
+                      {item.image && (
+                        <img src={item.image} alt="Nguyên liệu" style={{maxWidth: '100%', margin: '8px 0'}} />
+                      )}
+                    </div>
+                  ))}
+                </>
+              )}
+
+              {blog.directions && blog.directions.length > 0 && (
+                <>
+                  <h2>Hướng dẫn thực hiện</h2>
+                  <ul>
+                    {blog.directions.map((item, idx) => (
+                      <li key={idx} style={{marginBottom: '16px'}}>
+                        {item.step && <span>{item.step}</span>}
+                        {item.image && (
+                          <div>
+                            <img src={item.image} alt="Bước thực hiện" style={{maxWidth: '100%', margin: '8px 0'}} />
+                          </div>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </ContentText>
+
+            <ArticleImage src={blog.thumbnailUrl} alt={blog.title} />
+          </ArticleContent>
+        </MiddleColumn>
+
+        <RightColumn>
+          {relatedBlogs.length > 0 && (
+            <SidebarSection>
+              <SidebarTitle>Bài viết phổ biến</SidebarTitle>
+              {relatedBlogs.map((related, index) => (
+                <RelatedArticle key={related.slug} href={`/blogs/${related.slug}`}>
+                  <RelatedImage src={related.thumbnailUrl} alt={related.title} />
+                  <RelatedContent>
+                    <RelatedCategory>{related.category}</RelatedCategory>
+                    <RelatedTitle>{related.title}</RelatedTitle>
+                    <RelatedMeta>{formatDate(related.createdAt)}</RelatedMeta>
+                  </RelatedContent>
+                </RelatedArticle>
               ))}
-            </ProductGrid>
+            </SidebarSection>
           )}
-        </ProductSection>
-      </Wrapper>
-    </>
+        </RightColumn>
+      </ContentSection>
+    </BlogDetailWrapper>
   );
 };
 

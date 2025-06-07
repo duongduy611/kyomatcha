@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const TeawareSchema = new mongoose.Schema({
-  name: { type: String, required: true, trim: true }, 
+  name: { type: String, required: true, trim: true },
   image: { type: String, required: false },
 });
 
@@ -26,7 +26,7 @@ const BlogSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      enum: ["Khám phá về Matcha", "Làm đẹp", "Pha chế"],
+      enum: ["Khám phá", "Làm đẹp", "Pha chế"],
     },
     title: {
       type: String,
@@ -51,7 +51,7 @@ const BlogSchema = new mongoose.Schema(
     author: {
       type: String,
       required: false,
-      default: "Kyomatcha Team",
+      default: "Duong Duy",
       trim: true,
     },
     content: {
