@@ -108,12 +108,6 @@ export const routes = [
         isShowFooter: true
     },
     {
-        path: '/my-orders',
-        page: OrderHistory,
-        isShowHeader: true,
-        isShowFooter: true
-    },
-    {
         path: '/my-orders/:orderId',
         page: OrderDetail,
         isShowHeader: true,
