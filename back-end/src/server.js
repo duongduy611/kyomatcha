@@ -13,6 +13,8 @@ app.use(express.json());
 
 app.use(cors({
     origin: 'https://kyomatcha-phi.vercel.app/',
+    origin: 'localhost:3000',
+    origin: 'https://kyomatcha-liard.vercel.app/'
     origin: 'https://kyomatcha-27kz1pmqh-zanhducs-projects.vercel.app/',// đổi theo domain thật
     credentials: true
   }));
