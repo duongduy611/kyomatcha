@@ -4,12 +4,14 @@ import Default from "./components/Default";
 import { routes } from "./routers/index";
 import GlobalStyle from './components/GlobalStyle';
 import { AppProvider } from './context/AppContext';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import ScrollToTop from "./components/ScrollToTop";
 import Footer from "./components/Footer";
 
 const App = () => {
   return (
     <div className="App">
+      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
       <Router>
         <ScrollToTop />
         <AppProvider>
@@ -33,8 +35,9 @@ const App = () => {
           </Routes>
         </AppProvider>
       </Router>
+      </GoogleOAuthProvider>
     </div>
   );
-}
+};
 
 export default App;

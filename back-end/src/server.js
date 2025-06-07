@@ -10,8 +10,10 @@ const routes = require("./routes");
 
 
 app.use(express.json());
-app.use(cors());
-
+app.use(cors({
+  origin: '*',         // <-- Mở cho toàn bộ origin
+  credentials: false   // ⚠️ Không dùng credentials khi dùng origin: '*'
+}));
 // Serve static files from the front-end public directory
 app.use('/assets', express.static(path.join(__dirname, '../../front-end/src/assets')));
 

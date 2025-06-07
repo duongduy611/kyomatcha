@@ -13,7 +13,6 @@ import AllProducts from '../pages/AllProducts';
 import ProductDetail from '../pages/ProductDetail';
 import MyCart from '../pages/MyCart';
 import ThankYouPage from "../pages/ThankYouPage";
-import OrderHistory from "../pages/OrderHistory";
 import OrderDetail from "../pages/OrderDetail";
 import QRPaymentPage from "../pages/QRPayment";
 
