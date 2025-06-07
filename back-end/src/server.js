@@ -10,8 +10,11 @@ const routes = require("./routes");
 
 
 app.use(express.json());
-app.use(cors());
-
+app.use(cors({
+    origin: 'https://kyomatcha.onrender.com',
+    origin: 'http://localhost:3000', // đổi theo domain thật
+    credentials: true
+  }));
 // Serve static files from the front-end public directory
 app.use('/assets', express.static(path.join(__dirname, '../../front-end/src/assets')));
 

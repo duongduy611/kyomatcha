@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { useAppContext } from '../context/AppContext';
 
-const BACKEND_URL = "http://localhost:9999";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const BannerWrapper = styled.div`
   margin-top: 100px;
