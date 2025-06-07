@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { useAppContext } from '../context/AppContext';
 
-const BACKEND_URL = {process.env.REACT_APP_GOOGLE_CLIENT_ID};
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const BannerWrapper = styled.div`
   margin-top: 100px;
