@@ -6,32 +6,34 @@ import styled from 'styled-components';
 import logoImg from '../assets/logo/logo1.png';
 
 const RegisterWrapper = styled.div`
-  margin-top: 150px;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f0f0f0;
+  background: #F6F6EE;
+  margin-top: 0;
+  padding: 160px 0 80px 0;
+
 `;
 
 const RegisterContainer = styled.div`
   display: flex;
   background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px 0 rgba(64, 64, 64, 0.10);
   overflow: hidden;
-  max-width: 900px;
+  max-width: 800px;
   width: 100%;
-  min-height: 500px;
+  min-height: 440px;
 `;
 
 const LogoSide = styled.div`
-  background: linear-gradient(135deg, #e8f8f5 0%, #d4efdf 100%);
+  background: linear-gradient(135deg, rgb(250, 253, 225) 0%, rgb(251, 249, 239) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 340px;
-  min-width: 220px;
+  width: 320px;
+  min-width: 200px;
   padding: 32px 16px;
   @media (max-width: 700px) {
     display: none;
@@ -39,9 +41,10 @@ const LogoSide = styled.div`
 `;
 
 const LogoImg = styled.img`
-  width: 180px;
+  width: 160px;
   height: auto;
   border-radius: 20%;
+  box-shadow: 0 2px 12px #b9bf9e44;
 `;
 
 const FormSide = styled.div`
@@ -49,7 +52,8 @@ const FormSide = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 40px 32px;
+  padding: 48px 36px;
+  background: #fff;
   @media (max-width: 700px) {
     width: 100%;
     padding: 32px 12px;
@@ -62,29 +66,38 @@ const RegisterForm = styled.form`
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 `;
 
 const Title = styled.h2`
   text-align: center;
   margin-bottom: 8px;
-  color: #2ecc40;
+  color: #527328;
   letter-spacing: 1px;
+  font-size: 2rem;
+  font-weight: 700;
 `;
 
 const Label = styled.label`
   font-weight: 500;
-  color: #222;
+  color: #404040;
+  margin-bottom: 4px;
 `;
 
 const Input = styled.input`
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #d0d7de;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #B9BF9E;
   font-size: 16px;
   outline: none;
+  background: #F6F6EE;
+  color: #404040;
   transition: border 0.2s;
   width: 100%;
+  &:focus {
+    border: 1.5px solid #527328;
+    background: #fff;
+  }
 `;
 
 const PasswordWrapper = styled.div`
@@ -92,51 +105,55 @@ const PasswordWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-bottom: 16px;
+  margin-bottom: 0;
 `;
 
 const EyeIcon = styled.span`
   position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
+  right: 14px;
+  top: 38px;
   cursor: pointer;
-  color: #888;
+  color: #6A6649;
 `;
 
 const SubmitButton = styled.button`
   margin-top: 8px;
   padding: 12px 0;
-  border-radius: 8px;
+  border-radius: 10px;
   border: none;
-  background: linear-gradient(90deg, #2ecc40 0%, #27ae60 100%);
+  background: linear-gradient(90deg, rgb(112, 146, 68) 0%, rgb(191, 178, 81) 100%);
   color: #fff;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 18px;
   letter-spacing: 1px;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(46,204,64,0.10);
+  box-shadow: 0 2px 8px #b9bf9e33;
   transition: background 0.2s;
 `;
 
 const Message = styled.div`
-  color: ${({ success }) => (success ? '#27ae60' : 'red')};
+  color: ${({ success }) => (success ? '#527328' : '#d32f2f')};
   min-height: 24px;
   text-align: center;
   font-weight: 500;
+  margin-top: 4px;
 `;
 
 const LoginPrompt = styled.div`
   text-align: center;
   margin-top: 16px;
   span {
-    color: #222;
+    color: #404040;
   }
   a {
-    color: #2ecc40;
-    font-weight: 500;
+    color: #527328;
+    font-weight: 600;
     text-decoration: underline;
     margin-left: 4px;
+    transition: color 0.2s;
+    &:hover {
+      color: #6A6649;
+    }
   }
 `;
 
@@ -159,12 +176,12 @@ function Register() {
       setMessage('Vui lòng nhập đầy đủ thông tin bắt buộc!');
       return;
     }
-    if (!/^\w+@gmail\.com$/.test(email)) {
-      setMessage('Email phải là địa chỉ @gmail.com hợp lệ!');
+    if (!/^\w+([\.-]?\w+)*@[\w-]+(\.[\w-]+)+$/.test(email)) {
+      setMessage('Email không hợp lệ!');
       return;
     }
-    if (phone && !/^0\d{8}$/.test(phone)) {
-      setMessage('Số điện thoại phải có 9 số và bắt đầu bằng số 0!');
+    if (phone && !/^0\d{9}$/.test(phone)) {
+      setMessage('Số điện thoại phải có 10 số và bắt đầu bằng số 0!');
       return;
     }
     if (password !== confirmPassword) {
