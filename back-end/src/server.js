@@ -10,13 +10,11 @@ const routes = require("./routes");
 
 
 app.use(express.json());
-
 app.use(cors({
-    origin: 'https://kyomatcha-one.vercel.app/',
-    origin: 'https://kyomatcha-27kz1pmqh-zanhducs-projects.vercel.app/',// đổi theo domain thật
+    origin: 'https://kyomatcha.onrender.com',
+    origin: 'http://localhost:3000', // đổi theo domain thật
     credentials: true
   }));
-
 // Serve static files from the front-end public directory
 app.use('/assets', express.static(path.join(__dirname, '../../front-end/src/assets')));
 
