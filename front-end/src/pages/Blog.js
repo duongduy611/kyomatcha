@@ -1,524 +1,404 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
-import GlobalStyle from "../components/GlobalStyle";
-import { useNavigate } from "react-router-dom";
 import { blogs } from "../data/blogs";
-import { useAppContext } from "../context/AppContext";
-import axios from "axios";
+import { Link } from "react-router-dom";
 
-const BACKEND_URL = "http://localhost:9999";
-
-const tabs = [
-  { label: "Tất cả" },
-  { label: "Khám phá về Matcha" },
-  { label: "Làm đẹp" },
-  { label: "Pha chế" },
-];
-
-const ITEMS_PER_PAGE = 6;
-
-const PageWrapper = styled.div`
-  background: #f4f4f4;
+const BlogWrapper = styled.div`
   min-height: 100vh;
-  padding-top: 100px;
-  padding-bottom: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  @media (max-width: 900px) {
+    flex-direction: column;
+  }
+`;
+
+const LeftCol = styled.div`
+  flex: 0 0 33.3333%; /* 4/12 */
+  max-width: 33.3333%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 40px 40px 100px;
+  @media (max-width: 1200px) {
+    padding: 60px 24px 24px 40px;
+  }
+  @media (max-width: 900px) {
+    padding: 32px 16px 0 16px;
+    align-items: center;
+    text-align: center;
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+`;
+
+const RightCol = styled.div`
+  flex: 0 0 66.6667%; /* 8/12 */
+  max-width: 66.6667%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  @media (max-width: 900px) {
+    padding: 0 0 32px 0;
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+`;
+
+const Title = styled.h1`
+  font-size: 3.2rem;
+  font-family: "Vollkorn", serif;
+  font-weight: 600;
+  color: #23201b;
+  margin-bottom: 32px;
+  line-height: 1.2;
+  @media (max-width: 600px) {
+    font-size: 2.1rem;
+  }
+`;
+
+const Description = styled.p`
+  font-size: 1.18rem;
+  color: #6b665b;
+  margin-bottom: 40px;
+  max-width: 480px;
+  @media (max-width: 900px) {
+    max-width: 100%;
+  }
+`;
+
+const ReadButton = styled.a`
+  display: inline-flex;
+  align-items: center;
+  color: #23201b;
+  border: 1px solid #527328;
+  border-radius: 5px;
+  padding: 16px 32px;
+  font-size: 1.15rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  &:hover {
+    background: #527328;
+    color: #fff;
+    border-color: #527328;
+  }
+  svg {
+    margin-left: 12px;
+    font-size: 1.4em;
+    transition: transform 0.2s;
+  }
+  &:hover svg {
+    transform: translateX(4px);
+  }
+`;
+
+const BlogImage = styled.img`
+  width: 100%;
+  max-width: 1000px;
+  height: 80%;
+  border-radius: 10px;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08);
+  object-fit: cover;
+  @media (max-width: 900px) {
+    width: 100%;
+    max-width: 100vw;
+    border-radius: 12px;
+  }
 `;
 
 const Section = styled.section`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding-top: 48px;
-`;
-
-const Title = styled.h2`
-  text-align: center;
-  font-size: 1.3rem;
-  letter-spacing: 2px;
-  color: #6d6a4f;
-  font-weight: 500;
-  margin-bottom: 32px;
-`;
-
-const TabList = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 32px;
-  margin-bottom: 32px;
-`;
-
-const Tab = styled.button`
-  font-family: "Montserrat", sans-serif;
-  background: none;
-  border: none;
-  font-size: 1rem;
-  color: ${({ active }) => (active ? "#81893f" : "#bdbdbd")};
-  border-bottom: 2px solid
-    ${({ active }) => (active ? "#81893f" : "transparent")};
-  padding: 8px 0;
-  cursor: pointer;
-  font-weight: 500;
-  letter-spacing: 1px;
-  transition: color 0.2s, border-bottom 0.2s;
-  outline: none;
-
-  &:hover {
-    color: #81893f;
-  }
-`;
-
-const FeaturedWrapper = styled.div`
-  background: #fff;
-  overflow: hidden;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-`;
-
-const FeaturedImage = styled.img`
   width: 100%;
-  max-height: 400px;
-  object-fit: cover;
-  background: #f7f6f4;
+  padding: 60px 0 0 0;
+  margin-top: 100px;
 `;
 
-const FeaturedContent = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 48px 32px 32px 48px;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+const SectionTitle = styled.h2`
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 32px 100px;
+  text-align: left;
+  letter-spacing: 1px;
   @media (max-width: 900px) {
-    padding: 32px 16px 24px 16px;
+    margin-left: 16px;
+    font-size: 1.5rem;
   }
 `;
 
-const FeaturedTitle = styled.h3`
-  font-size: 1.4rem;
-  font-weight: 500;
-  letter-spacing: 2px;
-  margin-bottom: 18px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-`;
-
-const ReadMoreBtn = styled.button`
-  background: #fff;
-  color: black;
-  border: 2px solid #fff;
-  padding: 14px 38px;
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: 2px;
-  border-radius: 2px;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s, border 0.2s;
-  font-family: "Montserrat", sans-serif;
-  &:hover {
-    background: transparent;
-    color: #fff;
-    border: 2px solid #fff;
+const BeautySection = styled.section`
+  width: 100%;
+  padding: 40px 100px;
+  @media (max-width: 900px) {
+    padding: 40px 20px;
   }
 `;
 
-const BlogListSection = styled.section`
-  max-width: 1300px;
-  margin: 56px auto 0 auto;
-`;
-const BlogGrid = styled.div`
+const SectionHeader = styled.div`
   display: flex;
-  justify-content: center;
-  gap: 48px;
-  flex-wrap: wrap;
-  margin-bottom: 48px;
-  @media (max-width: 1100px) {
-    gap: 24px;
-  }
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+`;
+
+const BeautyTitle = styled.h2`
+  font-size: 2rem;
+  font-weight: 600;
+  color: #23201b;
+  font-family: "Vollkorn", serif;
+`;
+
+const CardContainer = styled.div`
+  display: flex;
+  gap: 24px;
   @media (max-width: 900px) {
     flex-direction: column;
-    align-items: center;
   }
 `;
-const BlogCard = styled.div`
-  width: 370px;
+
+const Card = styled.div`
+  flex: 1;
   background: transparent;
-  text-align: left;
 `;
-const BlogImage = styled.img`
+
+const CardImageWrapper = styled.div`
   width: 100%;
-  height: 210px;
-  object-fit: cover;
-  margin-bottom: 18px;
-  border-radius: 2px;
-`;
-const BlogCategory = styled.div`
-  color: #81893f;
-  font-size: 0.95rem;
-  letter-spacing: 2px;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-`;
-const BlogDate = styled.div`
-  color: #81893f;
-  font-size: 0.9rem;
-  margin-bottom: 8px;
-  font-style: italic;
-`;
-const BlogTitle = styled.h2`
-  font-size: 1.25rem;
-  letter-spacing: 2px;
-  color: #6d6a4f;
-  font-weight: 500;
-  margin-bottom: 18px;
-  text-transform: uppercase;
-`;
-const BlogDesc = styled.div`
-  color: #6d6a4f;
-  font-size: 1rem;
-  margin-bottom: 18px;
-`;
-const BlogReadMore = styled.a`
-  color: #81893f;
-  font-size: 1rem;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 0.2s;
-  cursor: pointer;
-  &:hover {
-    color: #6d7a44;
-  }
-`;
-const Pagination = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 32px;
-  margin-top: 24px;
-  font-size: 1.1rem;
-  color: #6d6a4f;
-  user-select: none;
-`;
-const PageArrow = styled.button`
-  background: none;
-  border: none;
-  color: ${props => props.disabled ? '#bdbdbd' : '#81893f'};
-  font-size: 1.2rem;
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  padding: 0 12px;
-  transition: color 0.2s;
-
-  &:hover {
-    color: ${props => props.disabled ? '#bdbdbd' : '#6d7a44'};
-  }
-`;
-const PageNum = styled.span`
-  padding: 2px 12px 4px 12px;
-  border-bottom: 3px solid ${(props) => (props.active ? "#81893f" : "transparent")};
-  color: ${(props) => {
-    if (props.isEllipsis) return '#bdbdbd';
-    return props.active ? "#81893f" : "#6d6a4f";
-  }};
-  cursor: ${props => props.isEllipsis ? 'default' : 'pointer'};
-  transition: border 0.2s, color 0.2s;
-  user-select: none;
-
-  &:hover {
-    color: ${props => props.isEllipsis ? '#bdbdbd' : '#81893f'};
-  }
-`;
-
-const ProductSection = styled.section`
-  max-width: 1200px;
-  margin: 48px auto;
-  padding: 0 20px;
-  background: #f9f9f9;
-  border-radius: 12px;
-  padding: 40px 20px;
-`;
-
-const ProductTitle = styled.h2`
-  text-align: center;
-  font-size: 1.6rem;
-  letter-spacing: 3px;
-  color: #81893f;
-  font-weight: 600;
-  margin-bottom: 40px;
   position: relative;
-
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background-color: #81893f;
-    border-radius: 2px;
-  }
+  overflow: hidden;
+  border-radius: 4px;
+  margin-bottom: 16px;
 `;
 
-const ProductGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const ProductCard = styled.div`
-  text-align: center;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  }
-`;
-
-const ProductImage = styled.img`
+const CardImage = styled.img`
   width: 100%;
-  height: 250px;
+  aspect-ratio: 1;
   object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 20px;
+  transition: transform 0.5s ease;
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
-const ProductName = styled.h3`
-  font-size: 1.1rem;
-  color: #333;
-  margin-bottom: 12px;
-  font-weight: 500;
-  letter-spacing: 1px;
-`;
-
-const ProductPrice = styled.p`
-  color: #81893f;
+const CardMeta = styled.p`
+  font-size: 0.9rem;
   font-weight: 600;
-  font-size: 1.1rem;
+  color: #23201b;
+  margin-bottom: 8px;
+  span {
+    color: #527328;
+  }
+`;
+
+const CardTitle = styled.h3`
+  font-size: 1.4rem;
+  color: #23201b;
+  margin-bottom: 12px;
+  font-family: "Vollkorn", serif;
+  line-height: 1.4;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const CardDescription = styled.p`
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.5;
 `;
 
 const Blog = () => {
-  const [page, setPage] = useState(1);
-  const navigate = useNavigate();
-  const { selectedBlogCategory, setSelectedBlogCategory } = useAppContext();
-  const [featuredProducts, setFeaturedProducts] = useState([]);
-
-  // Get featured blog based on selected category
-  const getFeaturedBlog = () => {
-    let filteredBlogs;
-    if (selectedBlogCategory === "Tất cả") {
-      filteredBlogs = [...blogs];
-    } else {
-      filteredBlogs = blogs.filter((b) => b.category === selectedBlogCategory);
-    }
-    return filteredBlogs.sort(
-      (a, b) => new Date(b.publishDate) - new Date(a.publishDate)
-    )[0];
+  // Filter blogs by category and sort by date
+  const getLatestBlogsByCategory = (category) => {
+    return blogs
+      .filter((blog) => blog.category === category)
+      .sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate))
+      .slice(0, 3);
   };
 
-  // Get featured content from latest blog
-  const featured = getFeaturedBlog();
+  const beautyBlogs = getLatestBlogsByCategory("Làm đẹp");
+  const brewingBlogs = getLatestBlogsByCategory("Pha chế");
+  const explorationBlogs = getLatestBlogsByCategory("Khám phá");
 
-  // Lọc và sắp xếp blog
-  const getFilteredBlogs = () => {
-    if (selectedBlogCategory === "Tất cả") {
-      return [...blogs].sort(
-        (a, b) => new Date(b.publishDate) - new Date(a.publishDate)
-      );
-    } else {
-      return blogs
-        .filter((b) => b.category === selectedBlogCategory)
-        .sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
-    }
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear().toString().slice(-2);
+    return `${day}.${month}.${year}`;
   };
 
-  // Fetch featured Matcha products
-  useEffect(() => {
-    const fetchFeaturedProducts = async () => {
-      try {
-        const response = await axios.get(`${BACKEND_URL}/api/products`, {
-          params: {
-            limit: 3,
-          }
-        });
-
-        if (response.data && response.data.data) {
-          setFeaturedProducts(response.data.data.slice(0, 3));
-        }
-      } catch (error) {
-        console.error('Error fetching Matcha products:', error);
-      }
-    };
-
-    fetchFeaturedProducts();
-  }, []);
-
-  const filteredBlogs = getFilteredBlogs();
-  const totalPages = Math.ceil(filteredBlogs.length / ITEMS_PER_PAGE);
-
-  // Reset page to 1 when category changes
-  useEffect(() => {
-    setPage(1);
-  }, [selectedBlogCategory]);
-
-  // Get current page blogs
-  const getCurrentPageBlogs = () => {
-    const startIndex = (page - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    return filteredBlogs.slice(startIndex, endIndex);
-  };
-
-  // Generate page numbers for pagination
-  const getPageNumbers = () => {
-    const pageNumbers = [];
-    const maxVisiblePages = 5;
-
-    if (totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= totalPages; i++) {
-        pageNumbers.push(i);
-      }
-    } else {
-      pageNumbers.push(1);
-
-      if (page <= 3) {
-        pageNumbers.push(2, 3, 4, '...', totalPages);
-      } else if (page >= totalPages - 2) {
-        pageNumbers.push('...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
-      } else {
-        pageNumbers.push('...', page - 1, page, page + 1, '...', totalPages);
-      }
-    }
-
-    return pageNumbers;
-  };
-
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setPage(newPage);
-    }
-  };
-
-  const handleBlogClick = (id) => {
-    navigate(`/blog/${id}`);
-  };
-
-  const handleProductClick = (slug) => {
-    navigate(`/products/${slug}`);
-  };
+  // Lấy blog đầu tiên của category Khám phá (hoặc bài đầu tiên toàn bộ nếu không có)
+  const firstExplorationBlog = explorationBlogs[0] || blogs[0];
 
   return (
     <>
-      <GlobalStyle />
-      <PageWrapper>
-        <Section>
-        <Title>BLOG CỦA CHÚNG TÔI</Title>
-          <TabList>
-            {tabs.map((tab, idx) => (
-              <Tab
-                key={tab.label}
-                active={selectedBlogCategory === tab.label}
-                onClick={() => setSelectedBlogCategory(tab.label)}
-              >
-                {tab.label}
-              </Tab>
-            ))}
-          </TabList>
-          <FeaturedWrapper>
-            <FeaturedImage src={featured.thumbnailUrl} alt={featured.title} />
-            <FeaturedContent>
-              <FeaturedTitle>{featured.title}</FeaturedTitle>
-              <ReadMoreBtn onClick={() => handleBlogClick(featured.id)}>
-                XEM THÊM
-              </ReadMoreBtn>
-            </FeaturedContent>
-          </FeaturedWrapper>
-        </Section>
-        <BlogListSection>
-          <BlogGrid>
-            {getCurrentPageBlogs().map((b, idx) => (
-              <BlogCard key={idx}>
-                <BlogImage
-                  src={b.thumbnailUrl}
-                  alt={b.title}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleBlogClick(b.id)}
-                />
-                <BlogCategory>{b.category}</BlogCategory>
-                <BlogTitle
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleBlogClick(b.id)}
+      <Section>
+        <SectionTitle>BÀI VIẾT</SectionTitle>
+        <BlogWrapper>
+          <LeftCol>
+            <Title>
+              Chương trình
+              <br />
+              "Khám Phá Matcha - Sống Xanh Từ Lá Trà" năm 2025
+            </Title>
+            <Description>
+              Bắt đầu từ ngày 10/5, chương trình "Khám Phá Matcha - Sống Xanh
+              Từ Lá Trà" chính thức được phát động. Với hơn 160 điểm trải
+              nghiệm trên toàn quốc, chương trình mang đến cho cộng đồng cơ hội
+              tìm hiểu về quy trình trồng, chế biến và tận hưởng matcha nguyên
+              chất. Chúng tôi hy vọng bạn sẽ cùng đồng hành để lan tỏa lối sống
+              lành mạnh, yêu thiên nhiên và yêu từng lá trà xanh tinh khiết.
+            </Description>
+            <ReadButton as={Link} to={firstExplorationBlog ? `/blogs/${firstExplorationBlog.slug}` : '#'}>
+              Đọc bài viết
+              <span style={{ display: "inline-block", marginLeft: 8 }}>
+                <svg
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  viewBox="0 0 24 24"
                 >
-                  {b.title}
-                </BlogTitle>
-                <BlogDesc>{b.desc}</BlogDesc>
-                <BlogReadMore onClick={() => handleBlogClick(b.id)}>
-                  Xem thêm
-                </BlogReadMore>
-              </BlogCard>
-            ))}
-          </BlogGrid>
-          {totalPages > 1 && (
-            <Pagination>
-              <PageArrow
-                onClick={() => handlePageChange(page - 1)}
-                disabled={page === 1}
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </span>
+            </ReadButton>
+          </LeftCol>
+          <RightCol>
+            <BlogImage
+              src="https://i.pinimg.com/736x/6c/f7/b2/6cf7b2cc6d7a63e99b7f520ba3b33fb9.jpg"
+              alt="Khám Phá Matcha"
+            />
+          </RightCol>
+        </BlogWrapper>
+      </Section>
+
+      <BeautySection>
+        <SectionHeader>
+          <BeautyTitle>Làm đẹp</BeautyTitle>
+          <ReadButton href="/blogs/category/lam-dep">
+            Tất cả bài viết
+            <span style={{ display: "inline-block", marginLeft: 8 }}>
+              <svg
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
               >
-                &larr;
-              </PageArrow>
-              {getPageNumbers().map((pageNum, idx) => (
-                <PageNum
-                  key={idx}
-                  active={page === pageNum}
-                  onClick={() => typeof pageNum === 'number' ? handlePageChange(pageNum) : null}
-                  isEllipsis={pageNum === '...'}
-                >
-                  {pageNum}
-                </PageNum>
-              ))}
-              <PageArrow
-                onClick={() => handlePageChange(page + 1)}
-                disabled={page === totalPages}
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </ReadButton>
+        </SectionHeader>
+        <CardContainer>
+          {beautyBlogs.map((blog, index) => (
+            <Card key={index}>
+              <CardImageWrapper>
+                <CardImage src={blog.thumbnailUrl} alt={blog.title} />
+              </CardImageWrapper>
+              <CardMeta>
+                Làm đẹp | <span>{formatDate(blog.createdAt)}</span>
+              </CardMeta>
+              <CardTitle as={Link} to={`/blogs/${blog.slug}`}>
+                {blog.title}
+              </CardTitle>
+              <CardDescription>{blog.summary}</CardDescription>
+            </Card>
+          ))}
+        </CardContainer>
+      </BeautySection>
+
+      <BeautySection>
+        <SectionHeader>
+          <BeautyTitle>Pha chế</BeautyTitle>
+          <ReadButton href="/blogs/category/pha-che">
+            Tất cả bài viết
+            <span style={{ display: "inline-block", marginLeft: 8 }}>
+              <svg
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
               >
-                &rarr;
-              </PageArrow>
-            </Pagination>
-          )}
-        </BlogListSection>
-        <ProductSection>
-        <ProductTitle>SẢN PHẨM LIÊN QUAN</ProductTitle>
-          <ProductGrid>
-            {featuredProducts.map((product) => (
-              <ProductCard key={product._id}>
-                <ProductImage
-                  src={`${BACKEND_URL}${product.images[0]}`}
-                  alt={product.name}
-                  onClick={() => handleProductClick(product.slug)}
-                />
-                <ProductName>{product.name}</ProductName>
-                <ProductPrice>
-                  Chỉ từ {product.price.toLocaleString()}đ
-                </ProductPrice>
-              </ProductCard>
-            ))}
-          </ProductGrid>
-        </ProductSection>
-      </PageWrapper>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </ReadButton>
+        </SectionHeader>
+        <CardContainer>
+          {brewingBlogs.map((blog, index) => (
+            <Card key={index}>
+              <CardImageWrapper>
+                <CardImage src={blog.thumbnailUrl} alt={blog.title} />
+              </CardImageWrapper>
+              <CardMeta>
+                Pha chế | <span>{formatDate(blog.createdAt)}</span>
+              </CardMeta>
+              <CardTitle as={Link} to={`/blogs/${blog.slug}`}>
+                {blog.title}
+              </CardTitle>
+              <CardDescription>{blog.summary}</CardDescription>
+            </Card>
+          ))}
+        </CardContainer>
+      </BeautySection>
+
+      <BeautySection>
+        <SectionHeader>
+          <BeautyTitle>Khám phá</BeautyTitle>
+          <ReadButton href="/blogs/category/kham-pha">
+            Tất cả bài viết
+            <span style={{ display: "inline-block", marginLeft: 8 }}>
+              <svg
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </ReadButton>
+        </SectionHeader>
+        <CardContainer>
+          {explorationBlogs.map((blog, index) => (
+            <Card key={index}>
+              <CardImageWrapper>
+                <CardImage src={blog.thumbnailUrl} alt={blog.title} />
+              </CardImageWrapper>
+              <CardMeta>
+                Khám phá | <span>{formatDate(blog.createdAt)}</span>
+              </CardMeta>
+              <CardTitle as={Link} to={`/blogs/${blog.slug}`}>
+                {blog.title}
+              </CardTitle>
+              <CardDescription>{blog.summary}</CardDescription>
+            </Card>
+          ))}
+        </CardContainer>
+      </BeautySection>
     </>
   );
 };

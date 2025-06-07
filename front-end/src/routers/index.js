@@ -48,13 +48,13 @@ export const routes = [
         isShowFooter: true
     },
     {
-        path: '/blog',
+        path: '/blogs',
         page: Blog,
         isShowHeader: true,
         isShowFooter: true
     },
     {
-        path: '/blog/:blogId',
+        path: '/blogs/:slug',
         page: BlogDetail,
         isShowHeader: true,
         isShowFooter: true
@@ -104,6 +104,12 @@ export const routes = [
     {
         path: '/thankyou',
         page: ThankYouPage,
+        isShowHeader: true,
+        isShowFooter: true
+    },
+    {
+        path: '/my-orders',
+        page: OrderHistory,
         isShowHeader: true,
         isShowFooter: true
     },

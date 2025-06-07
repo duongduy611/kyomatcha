@@ -1,180 +1,335 @@
 export const blogs = [
   {
-    id: 1,
-    category: "Khám phá về Matcha",
-    title: "Tìm hiểu về Matcha Nhật Bản",
-    summary: "Matcha là loại trà xanh truyền thống của Nhật Bản, nổi tiếng với hương vị đặc trưng và lợi ích sức khỏe vượt trội...",
-    slug: "tim-hieu-ve-matcha-nhat-ban",
-    thumbnailUrl: "https://matchaya.sg/cdn/shop/articles/Koicha_Prep_1600x.jpg?v=1620115090",
-    author: "Kyomatcha Team",
-    content: [],
-    teawares: [],
-    ingredients: [],
-    directions: [],
-    publishDate: "2024-03-15"
+    "category": "Khám phá",
+    "title": "Nguồn gốc và lịch sử của matcha Nhật Bản",
+    "summary": "Tìm hiểu về hành trình matcha từ trà đạo Nhật Bản đến toàn cầu",
+    "slug": "nguon-goc-va-lich-su-cua-matcha-nhat-ban",
+    "thumbnailUrl": "https://thoidaicoffee.vn/wp-content/uploads/2024/08/tim-hieu-ve-matcha-la-gi-nguon-goc-lich-su-phan-loai-va-cach-nhan-biet-4-700x393.webp",
+    "author": "Duong Duy",
+    "content": [
+      {
+        "content": "Matcha bắt nguồn từ Nhật Bản vào thế kỷ 12, được sử dụng trong trà đạo.",
+        "image": "https://example.com/images/matcha-history.jpg"
+      },
+      {
+        "content": "Quy trình sản xuất matcha đòi hỏi sự tỉ mỉ, từ che nắng đến xay bột.",
+        "image": "https://example.com/images/matcha-process.jpg"
+      }
+    ],
+    "teawares": [
+      {
+        "name": "Chawan (bát trà)",
+        "image": "https://example.com/images/chawan.jpg"
+      },
+      {
+        "name": "Chasen (chổi tre)",
+        "image": "https://example.com/images/chasen.jpg"
+      }
+    ],
+    "ingredients": [],
+    "directions": [],
+    "createdAt": "2025-06-06T22:32:00.000Z",
+    "updatedAt": "2025-06-06T22:32:00.000Z"
   },
   {
-    id: 2,
-    category: "Khám phá về Matcha",
-    title: "Lịch sử phát triển của Matcha",
-    summary: "Từ những nghi lễ trà đạo cổ xưa đến hiện đại, Matcha luôn giữ vị trí quan trọng trong văn hóa Nhật Bản...",
-    slug: "lich-su-phat-trien-cua-matcha",
-    thumbnailUrl: "https://matchaya.sg/cdn/shop/articles/shutterstock_1765855043_1600x.jpg?v=1619602966",
-    author: "Kyomatcha Team",
-    content: [],
-    teawares: [],
-    ingredients: [],
-    directions: [],
-    publishDate: "2024-03-10"
+    "category": "Khám phá",
+    "title": "Văn hóa trà đạo matcha ở Kyoto",
+    "summary": "Khám phá nghệ thuật trà đạo matcha tại cố đô Nhật Bản",
+    "slug": "van-hoa-tra-dao-matcha-o-kyoto",
+    "thumbnailUrl": "https://suntravelgroup.vn/media/3974/tra-dao-3.jpg",
+    "author": "Duong Duy",
+    "content": [
+      {
+        "content": "Kyoto là trung tâm của trà đạo, nơi matcha được tôn vinh.",
+        "image": "https://example.com/images/kyoto-tea.jpg"
+      },
+      {
+        "content": "Nghi thức trà đạo thể hiện sự tĩnh lặng và tôn trọng.",
+        "image": "https://example.com/images/tea-ceremony.jpg"
+      }
+    ],
+    "teawares": [
+      {
+        "name": "Chawan truyền thống",
+        "image": "https://example.com/images/chawan-kyoto.jpg"
+      }
+    ],
+    "ingredients": [],
+    "directions": [],
+    "createdAt": "2025-06-06T22:32:00.000Z",
+    "updatedAt": "2025-06-06T22:32:00.000Z"
   },
   {
-    id: 3,
-    category: "Khám phá về Matcha",
-    title: "Cách chọn Matcha chất lượng",
-    summary: "Để thưởng thức Matcha ngon, việc chọn đúng loại bột trà là rất quan trọng. Hãy cùng tìm hiểu các tiêu chí chọn Matcha...",
-    slug: "cach-chon-matcha-chat-luong",
-    thumbnailUrl: "https://matchaya.sg/cdn/shop/articles/Untitled_design_45_400x.png?v=1738899160",
-    author: "Kyomatcha Team",
-    content: [],
-    teawares: [],
-    ingredients: [],
-    directions: [],
-    publishDate: "2024-03-05"
+    "category": "Khám phá",
+    "title": "Matcha và thiền: Sự kết nối tâm linh",
+    "summary": "Tìm hiểu cách matcha hỗ trợ thiền định và tĩnh tâm",
+    "slug": "matcha-va-thien-su-ket-noi-tam-linh",
+    "thumbnailUrl": "https://hoithankinhhocvietnam.com.vn/vnna-media/24/8/30/uong-matcha-co-mat-ngu-khong--su-dung-nhu-the-nao.jpg",
+    "author": "Duong Duy",
+    "content": [
+      {
+        "content": "Matcha được các thiền sư sử dụng để tăng cường sự tập trung.",
+        "image": "https://example.com/images/zen-matcha.jpg"
+      },
+      {
+        "content": "Uống matcha trước thiền giúp tâm trí tỉnh táo và bình an.",
+        "image": "https://example.com/images/meditation.jpg"
+      }
+    ],
+    "teawares": [
+      {
+        "name": "Bát trà thiền",
+        "image": "https://example.com/images/zen-bowl.jpg"
+      }
+    ],
+    "ingredients": [],
+    "directions": [],
+    "createdAt": "2025-06-06T22:32:00.000Z",
+    "updatedAt": "2025-06-06T22:32:00.000Z"
   },
   {
-    id: 4,
-    category: "Làm đẹp",
-    title: "Làm đẹp da với Matcha",
-    summary: "Matcha chứa nhiều chất chống oxy hóa giúp làm sáng da, giảm mụn và chống lão hóa hiệu quả...",
-    slug: "lam-dep-da-voi-matcha",
-    thumbnailUrl: "https://cdn.shopify.com/s/files/1/0081/8734/7026/files/andrea-lacasse-o4r21WG-VKw-unsplash.jpg?v=1746153594",
-    author: "Kyomatcha Team",
-    content: [
-      "Matcha là nguồn giàu chất chống oxy hóa, đặc biệt là catechin EGCG, giúp làm chậm quá trình lão hóa.",
-      "Khi sử dụng đều đặn, Matcha giúp làm sáng da, cải thiện độ đàn hồi và giảm sự xuất hiện của mụn.",
-      "Có thể dùng Matcha làm mặt nạ, toner, hoặc kết hợp trong chế độ ăn uống hàng ngày để tăng hiệu quả chăm sóc da."
+    "category": "Làm đẹp",
+    "title": "Mặt nạ matcha giúp làm sáng da",
+    "summary": "Cách làm mặt nạ matcha tự nhiên cho làn da rạng rỡ",
+    "slug": "mat-na-matcha-giup-lam-sang-da",
+    "thumbnailUrl": "https://cdn.nhathuoclongchau.com.vn/unsafe/https://cms-prod.s3-sgn09.fptcloud.com/cong_dung_cua_mat_na_tra_xanh_1_e482112677.jpg",
+    "author": "Duong Duy",
+    "content": [
+      {
+        "content": "Matcha chứa chất chống oxy hóa giúp làm sáng và bảo vệ da.",
+        "image": "https://example.com/images/matcha-benefits.jpg"
+      },
+      {
+        "content": "Kết hợp matcha với mật ong và sữa chua để tạo mặt nạ dưỡng da.",
+        "image": "https://example.com/images/mask-recipe.jpg"
+      }
     ],
-    teawares: [],
-    ingredients: ["1 thìa bột Matcha nguyên chất", "1 thìa sữa chua không đường", "1 thìa mật ong nguyên chất"],
-    directions: [
-      "Trộn đều bột Matcha, sữa chua và mật ong thành hỗn hợp sệt.",
-      "Thoa đều hỗn hợp lên mặt đã làm sạch.",
-      "Để khoảng 15 phút rồi rửa lại bằng nước ấm."
-    ],publishDate: "2024-03-18"
+    "teawares": [],
+    "ingredients": [
+      {
+        "ingredient": ["Bột matcha", "Mật ong", "Sữa chua"],
+        "image": "https://example.com/images/mask-ingredients.jpg"
+      }
+    ],
+    "directions": [
+      {
+        "step": "Trộn 1 muỗng bột matcha với 1 muỗng mật ong và 2 muỗng sữa chua.",
+        "image": "https://example.com/images/mask-step1.jpg"
+      },
+      {
+        "step": "Đắp hỗn hợp lên mặt trong 15 phút, sau đó rửa sạch.",
+        "image": "https://example.com/images/mask-step2.jpg"
+      }
+    ],
+    "createdAt": "2025-06-06T22:32:00.000Z",
+    "updatedAt": "2025-06-06T22:32:00.000Z"
   },
   {
-    id: 5,
-    category: "Làm đẹp",
-    title: "Mặt nạ Matcha tự nhiên",
-    summary: "Cách làm mặt nạ dưỡng da từ Matcha đơn giản tại nhà, an toàn và tiết kiệm...",
-    slug: "mat-na-matcha-tu-nhien",
-    thumbnailUrl: "https://fujiocha.com/wp-content/uploads/2018/07/1-47.jpg",
-    author: "Kyomatcha Team",
-    content: [
-      "Mặt nạ Matcha tự nhiên là giải pháp an toàn cho làn da nhạy cảm.",
-      "Sử dụng nguyên liệu từ thiên nhiên, mặt nạ giúp dưỡng ẩm, làm sáng và mịn da.",
-      "Thích hợp sử dụng 2-3 lần mỗi tuần để đạt hiệu quả tối ưu."
+    "category": "Làm đẹp",
+    "title": "Matcha trong chăm sóc tóc tự nhiên",
+    "summary": "Sử dụng matcha để nuôi dưỡng tóc chắc khỏe và bóng mượt",
+    "slug": "matcha-trong-cham-soc-toc-tu-nhien",
+    "thumbnailUrl": "http://file.hstatic.net/1000135323/article/toc1.jpg",
+    "author": "Duong Duy",
+    "content": [
+      {
+        "content": "Matcha giúp kích thích mọc tóc nhờ các chất chống oxy hóa.",
+        "image": "https://example.com/images/hair-benefits.jpg"
+      },
+      {
+        "content": "Kết hợp matcha với dầu dừa để tạo mặt nạ tóc tự nhiên.",
+        "image": "https://example.com/images/hair-mask.jpg"
+      }
     ],
-    teawares: [],
-    ingredients: ["1 thìa bột Matcha", "2 thìa gel nha đam", "1 vài giọt tinh dầu tràm trà (tuỳ chọn)"],
-    directions: [
-      "Trộn bột Matcha với gel nha đam cho đến khi tạo thành hỗn hợp mịn.",
-      "Thêm tinh dầu tràm trà nếu muốn tăng khả năng kháng khuẩn.",
-      "Thoa hỗn hợp lên mặt và giữ trong 10-15 phút.",
-      "Rửa sạch với nước mát."
+    "teawares": [],
+    "ingredients": [
+      {
+        "ingredient": ["Bột matcha", "Dầu dừa"],
+        "image": "https://example.com/images/hair-ingredients.jpg"
+      }
     ],
-    publishDate: "2024-03-12"
+    "directions": [
+      {
+        "step": "Trộn 1 muỗng matcha với 2 muỗng dầu dừa ấm.",
+        "image": "https://example.com/images/hair-step1.jpg"
+      },
+      {
+        "step": "Thoa hỗn hợp lên tóc, ủ trong 30 phút rồi gội sạch.",
+        "image": "https://example.com/images/hair-step2.jpg"
+      }
+    ],
+    "createdAt": "2025-06-06T22:32:00.000Z",
+    "updatedAt": "2025-06-06T22:32:00.000Z"
   },
   {
-    id: 6,
-    category: "Làm đẹp",
-    title: "Matcha và sức khỏe tóc",
-    summary: "Không chỉ tốt cho da, Matcha còn giúp tóc chắc khỏe, giảm gãy rụng nhờ các dưỡng chất tự nhiên...",
-    slug: "matcha-va-suc-khoe-toc",
-    thumbnailUrl: "https://uji-matcha.vn/wp-content/uploads/2017/08/amt-na-tri-nam-dau-xanh-nuoc-hoa-hong.jpg",
-    author: "Kyomatcha Team",
-    content: [
-      "Matcha giúp kích thích mọc tóc, cải thiện độ chắc khỏe của chân tóc.",
-      "Chất chống oxy hóa trong Matcha giúp da đầu khỏe mạnh và hạn chế gàu.",
-      "Có thể kết hợp Matcha trong dầu gội hoặc làm mặt nạ dưỡng tóc."
+    "category": "Làm đẹp",
+    "title": "Tẩy tế bào chết với matcha và đường",
+    "summary": "Công thức tẩy tế bào chết tự nhiên với matcha cho làn da mịn màng",
+    "slug": "tay-te-bao-chet-voi-matcha-va-duong",
+    "thumbnailUrl": "https://file.hstatic.net/200000591917/file/chia-se-3-cach-tay-te-bao-chet-bang-bot-tra-xanh-vo-cung-hieu-qua__2__e77551f7ef7043b0acd08e0a525d31e6_grande.jpg",
+    "author": "Duong Duy",
+    "content": [
+      {
+        "content": "Matcha giúp làm sạch da, kết hợp đường để tẩy tế bào chết hiệu quả.",
+        "image": "https://example.com/images/scrub-benefits.jpg"
+      },
+      {
+        "content": "Hỗn hợp matcha và đường nhẹ nhàng làm sạch lỗ chân lông.",
+        "image": "https://example.com/images/scrub-recipe.jpg"
+      }
     ],
-    teawares: [],
-    ingredients: ["1 thìa bột Matcha", "2 thìa dầu dừa", "1 lòng đỏ trứng gà"],
-    directions: [
-      "Trộn tất cả nguyên liệu lại với nhau.",
-      "Thoa đều lên tóc và da đầu, massage nhẹ nhàng.",
-      "Ủ trong vòng 30 phút rồi gội sạch bằng nước ấm và dầu gội nhẹ."
-    ]
-    ,
-    publishDate: "2024-03-08"
+    "teawares": [],
+    "ingredients": [
+      {
+        "ingredient": ["Bột matcha", "Đường nâu", "Dầu ô liu"],
+        "image": "https://example.com/images/scrub-ingredients.jpg"
+      }
+    ],
+    "directions": [
+      {
+        "step": "Trộn 1 muỗng matcha, 2 muỗng đường nâu, và 1 muỗng dầu ô liu.",
+        "image": "https://example.com/images/scrub-step1.jpg"
+      },
+      {
+        "step": "Massage hỗn hợp lên da ướt, sau đó rửa sạch.",
+        "image": "https://example.com/images/scrub-step2.jpg"
+      }
+    ],
+    "createdAt": "2025-06-06T22:32:00.000Z",
+    "updatedAt": "2025-06-06T22:32:00.000Z"
   },
   {
-    id: 7,
-    category: "Pha chế",
-    title: "Matcha Chocolate | Uji Matcha 8 and Chocolate",
-    summary: "Hướng dẫn từng bước pha Matcha đúng chuẩn Nhật Bản, giữ trọn hương vị và dinh dưỡng...",
-    slug: "matcha-chocolate-uji-matcha-8-and-chocolate",
-    thumbnailUrl: "https://matchaya.sg/cdn/shop/articles/Screenshot_2024-09-24_at_9.24.17_PM_1600x.png?v=1727186272",
-    author: "Kyomatcha Team",
-    content: [
-      "Sự kết hợp giữa Matcha và Chocolate tạo nên một loại thức uống thơm béo, độc đáo.",
-      "Matcha giúp cân bằng vị ngọt đậm của Chocolate, tạo cảm giác tươi mới.",
-      "Thích hợp dùng vào buổi sáng hoặc khi cần năng lượng."
+    "category": "Pha chế",
+    "title": "Cách pha latte matcha chuẩn vị",
+    "summary": "Hướng dẫn pha latte matcha thơm ngon, béo ngậy tại nhà",
+    "slug": "cach-pha-latte-matcha-chuan-vi",
+    "thumbnailUrl": "https://i.pinimg.com/736x/57/15/f7/5715f7671707d2cefd112bdabc226c6c.jpg",
+    "author": "Duong Duy",
+    "content": [
+      {
+        "content": "Latte matcha là sự kết hợp hoàn hảo giữa matcha và sữa.",
+        "image": "https://example.com/images/latte-intro.jpg"
+      },
+      {
+        "content": "Sử dụng matcha chất lượng cao để có hương vị tốt nhất.",
+        "image": "https://example.com/images/latte-tips.jpg"
+      }
     ],
-    teawares: ["Chén trà", "Whisk (chasen)", "Ly thủy tinh", "Bình lắc"],
-    ingredients: ["1 thìa bột Matcha", "80ml nước nóng", "30g socola đen", "150ml sữa tươi", "Đá viên"],
-    directions: [
-      "Đánh tan bột Matcha với nước nóng bằng chasen.",
-      "Làm chảy socola đen và trộn với sữa nóng.",
-      "Cho hỗn hợp sữa socola vào ly, thêm đá rồi rót Matcha lên trên.",
-      "Khuấy đều trước khi thưởng thức."
+    "teawares": [
+      {
+        "name": "Chasen",
+        "image": "https://example.com/images/chasen-latte.jpg"
+      },
+      {
+        "name": "Cốc latte",
+        "image": "https://example.com/images/latte-cup.jpg"
+      }
     ],
-    publishDate: "2024-03-20"
+    "ingredients": [
+      {
+        "ingredient": ["Bột matcha", "Sữa tươi", "Đường"],
+        "image": "https://example.com/images/latte-ingredients.jpg"
+      }
+    ],
+    "directions": [
+      {
+        "step": "Đánh tan 1 muỗng matcha với 50ml nước nóng bằng chasen.",
+        "image": "https://example.com/images/latte-step1.jpg"
+      },
+      {
+        "step": "Đun nóng 150ml sữa tươi, thêm đường, đổ matcha vào và khuấy đều.",
+        "image": "https://example.com/images/latte-step2.jpg"
+      }
+    ],
+    "createdAt": "2025-06-06T22:32:00.000Z",
+    "updatedAt": "2025-06-06T22:32:00.000Z"
   },
   {
-    id: 8,
-    category: "Pha chế",
-    title: "Dirty Matcha | Uji Matcha 8 and Espresso",
-    summary: "Công thức pha Matcha Latte thơm ngon, dễ làm, phù hợp cho mọi lứa tuổi...",
-    slug: "dirty-matcha-uji-matcha-8-and-espresso",
-    thumbnailUrl: "https://matchaya.sg/cdn/shop/articles/Screenshot_2024-09-24_at_10.17.27_AM_1600x.png?v=1727149169",
-    author: "Kyomatcha Team",
-    content: [
-      "Dirty Matcha là sự hòa quyện giữa vị đắng của espresso và vị thanh của Matcha.",
-      "Là thức uống lý tưởng cho những ai yêu thích sự cân bằng giữa cà phê và trà.",
-      "Dễ pha chế tại nhà, phù hợp cho cả người mới bắt đầu."
+    "category": "Pha chế",
+    "title": "Matcha smoothie giải nhiệt mùa hè",
+    "summary": "Công thức matcha smoothie tươi mát, dễ làm cho ngày nóng",
+    "slug": "matcha-smoothie-giai-nhiet-mua-he",
+    "thumbnailUrl": "https://i.pinimg.com/736x/7d/80/aa/7d80aa7063e5d151e8a7818941586f33.jpg",
+    "author": "Duong Duy",
+    "content": [
+      {
+        "content": "Matcha smoothie kết hợp vị trà xanh và trái cây tươi mát.",
+        "image": "https://example.com/images/smoothie-intro.jpg"
+      },
+      {
+        "content": "Dùng máy xay sinh tố để có kết cấu mịn màng.",
+        "image": "https://example.com/images/smoothie-tips.jpg"
+      }
     ],
-    teawares: ["Ly thủy tinh", "Dụng cụ pha espresso", "Whisk"],
-    ingredients: ["1 shot espresso", "1 thìa Matcha", "100ml sữa tươi", "50ml nước nóng", "Đá viên"],
-    directions: [
-      "Đánh tan bột Matcha với nước nóng.",
-      "Rót sữa vào ly cùng đá viên.",
-      "Thêm lớp Matcha đã pha lên trên.",
-      "Cuối cùng rót espresso lên, tạo hiệu ứng “dirty”."
+    "teawares": [
+      {
+        "name": "Máy xay sinh tố",
+        "image": "https://example.com/images/blender.jpg"
+      },
+      {
+        "name": "Ly cao",
+        "image": "https://example.com/images/tall-glass.jpg"
+      }
     ],
-    publishDate: "2024-03-16"
+    "ingredients": [
+      {
+        "ingredient": ["Bột matcha", "Chuối", "Sữa hạnh nhân", "Mật ong"],
+        "image": "https://example.com/images/smoothie-ingredients.jpg"
+      }
+    ],
+    "directions": [
+      {
+        "step": "Xay 1 muỗng matcha, 1 quả chuối, 200ml sữa hạnh nhân, 1 muỗng mật ong.",
+        "image": "https://example.com/images/smoothie-step1.jpg"
+      },
+      {
+        "step": "Đổ ra ly, thêm đá và thưởng thức ngay.",
+        "image": "https://example.com/images/smoothie-step2.jpg"
+      }
+    ],
+    "createdAt": "2025-06-06T22:32:00.000Z",
+    "updatedAt": "2025-06-06T22:32:00.000Z"
   },
   {
-    id: 9,
-    category: "Pha chế",
-    title: "Sparkling Matcha Yuzu | Uji Matcha 8 and Yuzu",
-    summary: "Thưởng thức Matcha đá xay giải nhiệt mùa hè, công thức đơn giản mà hấp dẫn...",
-    slug: "sparkling-matcha-yuzu-uji-matcha-8-and-yuzu",
-    thumbnailUrl: "https://matchaya.sg/cdn/shop/articles/Screenshot_2024-09-23_at_7.21.07_PM_1600x.png?v=1727091641",
-    author: "Kyomatcha Team",
-    content: [
-      "Matcha đá xay kết hợp cùng yuzu tạo cảm giác mát lạnh, sảng khoái.",
-      "Yuzu mang lại vị chua nhẹ, hài hòa với hương Matcha tự nhiên.",
-      "Thức uống thích hợp cho mùa hè hoặc sau khi tập luyện thể thao."
+    "category": "Pha chế",
+    "title": "Matcha soda sảng khoái",
+    "summary": "Cách làm matcha soda mát lạnh, dễ uống cho mọi dịp",
+    "slug": "matcha-soda-sang-khoai",
+    "thumbnailUrl": "https://i.pinimg.com/736x/28/bb/16/28bb160aa35547151161d1f42b00967d.jpg",
+    "author": "Duong Duy",
+    "content": [
+      {
+        "content": "Matcha soda là thức uống lý tưởng cho ngày hè.",
+        "image": "https://example.com/images/soda-intro.jpg"
+      },
+      {
+        "content": "Kết hợp matcha với soda và chanh để có vị tươi mới.",
+        "image": "https://example.com/images/soda-tips.jpg"
+      }
     ],
-    teawares: ["Máy xay sinh tố", "Ly cao", "Ống hút tre"],
-    ingredients: ["1 thìa Matcha", "100ml soda không đường", "1 thìa siro yuzu", "Đá xay", "Vỏ yuzu bào (tuỳ chọn)"],
-    directions: [
-      "Pha Matcha với một ít nước nóng, để nguội.",
-      "Cho Matcha, đá xay, soda và siro yuzu vào máy xay sinh tố.",
-      "Xay nhuyễn đến khi tạo thành hỗn hợp bọt nhẹ.",
-      "Rót ra ly và trang trí với vỏ yuzu nếu muốn."
+    "teawares": [
+      {
+        "name": "Ly thủy tinh",
+        "image": "https://example.com/images/glass-soda.jpg"
+      }
     ],
-    publishDate: "2024-03-14"
-  },
+    "ingredients": [
+      {
+        "ingredient": ["Bột matcha", "Nước soda", "Nước cốt chanh", "Đường"],
+        "image": "https://example.com/images/soda-ingredients.jpg"
+      }
+    ],
+    "directions": [
+      {
+        "step": "Hòa tan 1 muỗng matcha với 50ml nước nóng và 1 muỗng đường.",
+        "image": "https://example.com/images/soda-step1.jpg"
+      },
+      {
+        "step": "Đổ matcha vào ly đá, thêm nước cốt chanh và soda, khuấy nhẹ.",
+        "image": "https://example.com/images/soda-step2.jpg"
+      }
+    ],
+    "createdAt": "2025-06-06T22:32:00.000Z",
+    "updatedAt": "2025-06-06T22:32:00.000Z"
+  }
 ];

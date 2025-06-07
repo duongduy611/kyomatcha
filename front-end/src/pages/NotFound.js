@@ -10,7 +10,6 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f4f4f4;
 `;
 const Code = styled.div`
   font-size: 1rem;
