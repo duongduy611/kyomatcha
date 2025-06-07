@@ -28,102 +28,102 @@ export const routes = [
         path: "/login",
         page: Login,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
     {
         path: "/register",
         page: Register,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
     {
         path: '/profile',
         page: Profile,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
     {
         path: '/edit-profile',
         page: EditProfile,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
     {
-        path: '/blog',
+        path: '/blogs',
         page: Blog,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
     {
-        path: '/blog/:blogId',
+        path: '/blogs/:slug',
         page: BlogDetail,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
     {
         path: '/contact',
         page: Contact,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
     {
         path: '/about-us',
         page: AboutUs,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
     {
         path: '/history',
         page: History,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
     {
         path: '*',
         page: NotFound,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
     {
         path: '/products',
         page: AllProducts,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
     {
         path: '/products/:slug',
         page: ProductDetail,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
     {
         path: '/cart',
         page: MyCart,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
     {
         path: '/thankyou',
         page: ThankYouPage,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
     {
         path: '/my-orders',
         page: OrderHistory,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
     {
         path: '/my-orders/:orderId',
         page: OrderDetail,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
      {
         path: '/qr-payment',
         page: QRPaymentPage,
         isShowHeader: true,
-        isShowFooter: false
+        isShowFooter: true
     },
 ]

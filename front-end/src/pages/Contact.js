@@ -8,8 +8,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ContactWrapper = styled.div`
+  margin-top: 100px;
   padding-top: 100px;
-  background: #f4f4f4;
   padding-bottom: 20px;
 `;
 

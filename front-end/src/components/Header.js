@@ -24,6 +24,29 @@ const Topbar = styled.div`
   letter-spacing: 0.2px;
 `;
 
+const TopbarContent = styled.div`
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    width: 0%;
+    height: 1px;
+    background: #fff;
+    transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 0 auto;
+  }
+
+  &:hover::after {
+    width: 100%;
+  }
+`;
+
 const HeaderWrapper = styled.header`
   font-family: "Montserrat", sans-serif;
   position: relative;
@@ -31,7 +54,7 @@ const HeaderWrapper = styled.header`
   min-width: 0;
   height: 80px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   background-color: #f6f6ee;
   color: black;
@@ -84,25 +107,24 @@ const NavItem = styled.div`
   &.nav-animated::after {
     content: "";
     position: absolute;
-    left: 20%;
-    right: 20%;
-    bottom: -6px;
+    left: 0;
+    right: 0;
+    bottom: -2px;
     width: 0%;
-    height: 3px;
+    height: 2px;
     background: #4A7C59;
-    border-radius: 2px;
     transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 0;
+    margin: 0 auto;
   }
 
   &.nav-animated.active::after,
   &.nav-animated:hover::after {
-    width: 60%;
+    width: calc(100% - 24px); /* Trừ đi padding của NavLink */
   }
 `;
 
 const NavLink = styled(Link)`
-  margin: 0 10px;
+  margin: 0;
   text-decoration: none;
   font-weight: 500;
   padding: 8px 12px;
@@ -110,9 +132,8 @@ const NavLink = styled(Link)`
   cursor: pointer;
   position: relative;
   color: black;
-  border-bottom: 3px solid transparent;
-  transition: color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    border-bottom-color 0.35s, background 0.35s;
+  transition: color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
 `;
 
 const DropdownMenu = styled.div`
@@ -216,16 +237,12 @@ const Header = () => {
   const closeDropdown = () => setOpenDropdown(null);
   const isMenuActive = (name) => openDropdown === name;
 
-  const handleBlogCategoryClick = (path, category) => {
-    setSelectedBlogCategory(category || "");
-    navigate('/blog');
-    closeDropdown();
-  };
-
   return (
     <HeaderFixedWrapper>
-      <Topbar onClick={() => setShowModal(true)} style={{ cursor: 'pointer' }}>
-        Tận hưởng giao hàng miễn phí toàn quốc với hoá đơn từ 99.000 đ
+      <Topbar>
+        <TopbarContent onClick={() => setShowModal(true)}>
+          Tận hưởng giao hàng miễn phí toàn quốc với hoá đơn từ 99.000 đ
+        </TopbarContent>
       </Topbar>
       {showModal && (
         <ModalOverlay onClick={() => setShowModal(false)}>
@@ -257,7 +274,7 @@ const Header = () => {
       >
         <HeaderContainer>
           <LeftGroup>
-            <NavItem onMouseEnter={() => closeDropdown()}>
+            <NavItem className="nav-animated">
               <NavLink
                 to="/products"
                 onClick={() => setSelectedCategory("")}
@@ -278,22 +295,10 @@ const Header = () => {
                 <DropdownLink to="/history" onClick={() => setSelectedCategory("")}>Lịch sử trà Nhật</DropdownLink>
               </DropdownMenu>
             </NavItem>
-            <NavItem
-              className={`nav-animated${isMenuActive("blog") ? " active" : ""}`}
-              onMouseEnter={() => handleDropdown("blog")}
-              onMouseLeave={closeDropdown}
-            >
-              <NavLink
-                to="/blog"
-                onClick={() => handleBlogCategoryClick("", "Tất cả")}
-              >
+            <NavItem className="nav-animated">
+              <NavLink to="/blogs">
                 Bài viết
               </NavLink>
-              <DropdownMenu show={isMenuActive("blog")}>
-                <DropdownLink to="/blog" onClick={() => handleBlogCategoryClick("discover-matcha", "Khám phá về Matcha")}>Khám phá về Matcha</DropdownLink>
-                <DropdownLink to="/blog" onClick={() => handleBlogCategoryClick("beauty", "Làm đẹp")}>Làm đẹp</DropdownLink>
-                <DropdownLink to="/blog" onClick={() => handleBlogCategoryClick("recipe", "Pha chế")}>Pha chế</DropdownLink>
-              </DropdownMenu>
             </NavItem>
           </LeftGroup>
           <CenterGroup>
@@ -306,20 +311,26 @@ const Header = () => {
             </Link>
           </CenterGroup>
           <RightGroup>
-            <NavLink
-              to={isLoggedIn ? "/profile" : "/login"}
-              onClick={() => {
-                if (isLoggedIn) {
-                  navigate("/profile");
-                } else {
-                  navigate("/login");
-                }
-              }}
-            >
-              {isLoggedIn ? "Tài khoản" : "Đăng nhập"}
-            </NavLink>
-            <NavLink to="/cart" onClick={() => navigate("/cart")}>Giỏ hàng</NavLink>
-            <NavLink to="/contact">Liên hệ</NavLink>
+            <NavItem className="nav-animated">
+              <NavLink
+                to={isLoggedIn ? "/profile" : "/login"}
+                onClick={() => {
+                  if (isLoggedIn) {
+                    navigate("/profile");
+                  } else {
+                    navigate("/login");
+                  }
+                }}
+              >
+                {isLoggedIn ? "Tài khoản" : "Đăng nhập"}
+              </NavLink>
+            </NavItem>
+            <NavItem className="nav-animated">
+              <NavLink to="/cart" onClick={() => navigate("/cart")}>Giỏ hàng</NavLink>
+            </NavItem>
+            <NavItem className="nav-animated">
+              <NavLink to="/contact">Liên hệ</NavLink>
+            </NavItem>
           </RightGroup>
         </HeaderContainer>
       </HeaderWrapper>

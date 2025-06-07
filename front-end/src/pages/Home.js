@@ -498,7 +498,7 @@ const BlogReadMore = styled(Link)`
 
 function BlogList() {
   const getLatestBlogsByCategory = () => {
-    const categories = ["Khám phá về Matcha", "Làm đẹp", "Pha chế"];
+    const categories = ["Khám phá", "Làm đẹp", "Pha chế"];
     const latestBlogs = [];
 
     categories.forEach((category) => {
