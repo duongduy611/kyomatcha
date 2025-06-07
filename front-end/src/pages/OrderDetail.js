@@ -12,7 +12,7 @@ import {
 import OrderProgressBar from '../components/OrderProgressBar';
 
 
-const BACKEND_URL = 'http://localhost:9999';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const OrderDetail = () => {
 	const { orderId } = useParams();
@@ -138,7 +138,7 @@ const OrderDetail = () => {
 
 				{/* NÚT */}
 				<div className='text-end mt-3'>
-					<Button variant='outline-secondary' href='/my-orders'>
+					<Button variant='outline-secondary' href='/profile'>
 						← Trở về lịch sử đơn hàng
 					</Button>
 				</div>
