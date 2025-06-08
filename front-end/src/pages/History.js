@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import GlobalStyle from '../components/GlobalStyle';
 import banner2 from '../assets/images/about-us/banner-2-history.jpg';
-import banner1 from '../assets/images/about-us/banner-1.jpg';
 import banner3 from '../assets/images/about-us/tra-dao.jpg';
 
 const fadeInUp = keyframes`

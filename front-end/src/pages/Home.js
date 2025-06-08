@@ -126,7 +126,7 @@ const ProductCard = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 280px;
+  width: 450px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   &:hover {
@@ -213,8 +213,8 @@ const Button = styled.button`
   font-weight: 600;
   cursor: pointer;
   border: none;
-  background: #eddfcb;
-  color: #231b10;
+  background: #527328;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -222,8 +222,9 @@ const Button = styled.button`
    width: 40%;
   height: 120%;
   &:hover {
-    background: #6a6649;
-    color: #fff;
+    border: 1px solid #527328;
+    background: #f6f6ee;
+    color: #527328;
   }
 `;
 
@@ -231,15 +232,15 @@ const TeaCollection = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { toggleFavorite, isProductFavorited } = useAppContext();
+  const { toggleFavorite, isProductFavorited, user } = useAppContext();
 
  const handleAddToCart = async (productId, color = "", size = "") => {
   try {
-    // Lấy token và id người dùng từ localStorage
+    // Lấy token từ localStorage và userId từ context
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
 
-    // Nếu chưa đăng nhập, điều hướng về trang login
+    // Nếu chưa đăng nhập hoặc chưa có userId, điều hướng về trang login
     if (!token || !userId) {
       toast.info('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
       navigate('/login');
@@ -431,6 +432,7 @@ const BlogPostTitle = styled.div`
   margin-bottom: 12px;
   line-height: 1.4;
   cursor: pointer;
+
   &:hover {
     color: #4A7C59;
   }
@@ -446,49 +448,53 @@ const BlogDesc = styled.div`
 const BlogReadMore = styled(Link)`
   color: #4A7C59;
   font-size: 0.95rem;
-  text-decoration: underline;
+  text-decoration: none;
   text-underline-offset: 3px;
   transition: color 0.2s;
   font-weight: 500;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    width: 0%;
+    height: 2px;
+    background: #4A7C59;
+    transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 0 auto;
+  }
 
   &:hover {
     color: #4A7C59;
   }
+  &:hover::after {
+    width: 100%;
+  }
 `;
 
 function BlogList() {
-  const getLatestBlogsByCategory = () => {
-    const categories = ["Khám phá", "Làm đẹp", "Pha chế"];
-    const latestBlogs = [];
-
-    categories.forEach((category) => {
-      const categoryBlogs = blogs
-        .filter((blog) => blog.category === category)
-        .sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
-
-      if (categoryBlogs.length > 0) {
-        latestBlogs.push(categoryBlogs[0]);
-      }
-    });
-
-    return latestBlogs;
-  };
-
-  const latestBlogs = getLatestBlogsByCategory();
+  // Lấy 6 blog mới nhất, sắp xếp theo ngày tạo hoặc cập nhật mới nhất
+  const latestBlogs = blogs
+    .slice() // copy mảng để không ảnh hưởng gốc
+    .sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt))
+    .slice(0, 4);
 
   return (
     <BlogSection>
-      <BlogTitle>BLOGS MỚI NHẤT</BlogTitle>
+      <BlogTitle>BÀI VIẾT MỚI NHẤT</BlogTitle>
       <BlogGrid>
         {latestBlogs.map((blog, idx) => (
           <BlogCard key={idx}>
-            <Link to={`/blog/${blog.id}`} style={{ textDecoration: 'none' }}>
+            <Link to={`/blogs/${blog.slug}`} style={{ textDecoration: 'none' }}>
               <BlogImage src={blog.thumbnailUrl} alt={blog.title} />
               <BlogPostTitle>{blog.title}</BlogPostTitle>
             </Link>
             <BlogCategory>{blog.category}</BlogCategory>
-            <BlogDesc>{blog.desc}</BlogDesc>
-            <BlogReadMore to={`/blog/${blog.id}`}>Xem thêm</BlogReadMore>
+            <BlogDesc>{blog.summary || blog.desc}</BlogDesc>
+            <BlogReadMore to={`/blogs/${blog.slug}`}>XEM THÊM</BlogReadMore>
           </BlogCard>
         ))}
       </BlogGrid>
@@ -507,7 +513,7 @@ const Home = () => {
           <BannerTitle>MỘT KHỞI ĐẦU MỚI</BannerTitle>
           <BannerButtonGroup>
             <BannerButton to="/products">MUA NGAY</BannerButton>
-            <BannerButton to="/blog">XEM THÊM</BannerButton>
+            <BannerButton to="/blogs">XEM THÊM</BannerButton>
           </BannerButtonGroup>
         </BannerTextWrapper>
       </BannerWrapper>

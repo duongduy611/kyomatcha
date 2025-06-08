@@ -206,7 +206,7 @@ const Profile = () => {
   const [tab, setTab] = useState(0);
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
-  const userId = localStorage.getItem('id');
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     setUser({
@@ -233,8 +233,8 @@ const Profile = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate('/login');  
-  };  
+    navigate('/login');
+  };
 
   return (
     <Wrapper>
