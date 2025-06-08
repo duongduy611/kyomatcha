@@ -6,7 +6,7 @@ import { useAppContext } from "../context/AppContext";
 import bannerImage from "../assets/images/banner_product.jpg";
 import GlobalStyle from "../components/GlobalStyle";
 import { toast } from "react-toastify";
-const BACKEND_URL = "http://localhost:9999";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const KingofTea = styled.div`
   width: 100%;
