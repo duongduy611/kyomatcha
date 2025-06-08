@@ -112,27 +112,27 @@ const SectionTitle = styled.h2`
 `;
 
 const ProductGrid = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 32px;
-  flex-wrap: wrap;
-  padding: 0 32px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2.5rem;
 `;
 
 const ProductCard = styled.div`
-  background: #f6f6ee;
+  background: white;
   border-radius: 8px;
   overflow: hidden;
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 450px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  height: 100%;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #f6f6ee;
+
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.18);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   }
+
   a {
     text-decoration: none;
     color: inherit;
@@ -147,7 +147,7 @@ const ProductImage = styled.div`
   padding-top: 100%;
   background-color: #f8f8f8;
   overflow: hidden;
-  border-radius: 8px;
+  height: 320px;
   img {
     position: absolute;
     top: 0;
@@ -156,6 +156,43 @@ const ProductImage = styled.div`
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
+  }
+`;
+
+const FavoriteButton = styled.button`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    color: #666;
+  }
+
+  &.active {
+    background-color: #ff4d4f;
+    svg {
+      color: white;
+    }
+  }
+
+  &:hover {
+    transform: scale(1.1);
+    background: ${(props) =>
+      props.className === "active" ? "#ff4d4f" : "#fff"};
   }
 `;
 
@@ -191,21 +228,6 @@ const ProductPrice = styled.div`
   color: #527328;
 `;
 
-const ShippingInfo = styled.span`
-  font-size: 14px;
-  color: #666;
-  font-weight: normal;
-  margin-left: 4px;
-`;
-
-const ButtonGroup = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 8px;
-  padding: 16px;
-  padding-top: 0;
-`;
-
 const Button = styled.button`
   padding: 10px 14px;
   border-radius: 10px;
@@ -213,18 +235,17 @@ const Button = styled.button`
   font-weight: 600;
   cursor: pointer;
   border: none;
-  background: #527328;
-  color: #fff;
+  background: #eddfcb;
+  color: #231b10;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.2s, color 0.2s;
-   width: 40%;
+  width: 40%;
   height: 120%;
   &:hover {
-    border: 1px solid #527328;
-    background: #f6f6ee;
-    color: #527328;
+    background: #6a6649;
+    color: #fff;
   }
 `;
 
