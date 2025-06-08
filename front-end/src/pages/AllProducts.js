@@ -276,7 +276,7 @@ const Button = styled.button`
   height: 120%;
   &:hover {
     background: white ;
-    color: black ;
+    color: rgb(82, 115, 40) ;
     border: 1px solid rgb(82, 115, 40);
   }
 `;
