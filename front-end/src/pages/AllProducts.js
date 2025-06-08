@@ -267,7 +267,7 @@ const Button = styled.button`
   cursor: pointer;
   border: none;
   background: #537328;
-  color: #231b10;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -275,8 +275,8 @@ const Button = styled.button`
   width: 40%;
   height: 120%;
   &:hover {
-    background: #6a6649;
-    color: #fff;
+    background: black;
+    color: white;
   }
 `;
 
