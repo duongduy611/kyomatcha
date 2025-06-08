@@ -237,7 +237,7 @@ const TeaCollection = () => {
   try {
     // Lấy token và id người dùng từ localStorage
     const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('id');
+    const userId = localStorage.getItem('userId');
 
     // Nếu chưa đăng nhập, điều hướng về trang login
     if (!token || !userId) {
