@@ -61,6 +61,9 @@ const HeaderWrapper = styled.header`
   box-sizing: border-box;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  @media (max-width: 900px) {
+    height: 60px;
+  }
 `;
 
 const HeaderContainer = styled.div`
@@ -72,12 +75,19 @@ const HeaderContainer = styled.div`
   justify-content: space-between;
   padding: 0 20px;
   height: 80px;
+  @media (max-width: 900px) {
+    padding: 0 10px;
+    height: 60px;
+  }
 `;
 
 const LeftGroup = styled.nav`
   display: flex;
   align-items: center;
   gap: 20px;
+  @media (max-width: 900px) {
+    display: none;
+  }
 `;
 
 const CenterGroup = styled.div`
@@ -85,18 +95,27 @@ const CenterGroup = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  @media (max-width: 900px) {
+    justify-content: flex-start;
+  }
 `;
 
 const RightGroup = styled.div`
   display: flex;
   align-items: center;
   gap: 18px;
+  @media (max-width: 900px) {
+    display: none;
+  }
 `;
 
 const Logo = styled.img`
   height: 110px;
   width: auto;
   display: block;
+  @media (max-width: 900px) {
+    height: 48px;
+  }
 `;
 
 const NavItem = styled.div`
@@ -146,7 +165,7 @@ const DropdownMenu = styled.div`
   box-shadow: 0 4px 16px rgba(46, 204, 64, 0.1);
   padding: 10px 0 6px 0;
   font-size: 16px;
-  margin-top: 6px;
+  margin-top: 3px;
   display: ${({ show }) => (show ? "block" : "none")};
   z-index: 1000;
 `;
@@ -190,7 +209,7 @@ const ModalOverlay = styled.div`
 const ModalContent = styled.div`
   width: 50vw;
   min-width: 340px;
-  max-width: 700px;
+  max-width: 50%;
   height: 100vh;
   background: #fcfaf3;
   color: #23201b;
@@ -211,6 +230,72 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
+const HamburgerButton = styled.button`
+  display: none;
+  position: relative;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1201;
+  @media (max-width: 900px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  span {
+    display: block;
+    width: 24px;
+    height: 3px;
+    background: #23201b;
+    margin: 4px 0;
+    border-radius: 2px;
+    transition: 0.3s;
+  }
+`;
+
+const MobileMenuOverlay = styled.div`
+  display: ${({ open }) => (open ? 'block' : 'none')};
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(44, 41, 36, 0.25);
+  z-index: 1200;
+`;
+
+const MobileMenu = styled.nav`
+  position: fixed;
+  top: 0;
+  left: ${({ open }) => (open ? '0' : '-80vw')};
+  width: 80vw;
+  max-width: 340px;
+  height: 100vh;
+  background: #f6f6ee;
+  box-shadow: 2px 0 16px rgba(0,0,0,0.08);
+  z-index: 1201;
+  transition: left 0.35s cubic-bezier(0.4,0,0.2,1);
+  display: flex;
+  flex-direction: column;
+  padding: 32px 24px 24px 24px;
+  @media (min-width: 901px) {
+    display: none;
+  }
+`;
+
+const MobileMenuLink = styled(Link)`
+  font-size: 1.1rem;
+  color: #23201b;
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+  &:last-child { margin-bottom: 0; }
+  &:hover { color: #4A7C59; }
+`;
+
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -222,6 +307,7 @@ const Header = () => {
     setSelectedBlogCategory,
   } = useAppContext();
   const [showModal, setShowModal] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isLoggedIn = Boolean(localStorage.getItem("token"));
 
@@ -254,9 +340,9 @@ const Header = () => {
               Với hóa đơn dưới 99.000đ: phí vận chuyển mặc định 30.000đ áp dụng toàn quốc.</p>
               <h3 style={{fontWeight: 600}}>Thời gian giao hàng</h3>
               <ul>
-                <li><b>Đơn hàng nội thành TP.HCM:</b><br/>Thời gian giao hàng là 2-7 ngày sau khi đặt hàng.</li>
-                <li><b>Đơn hàng ở ngoại thành Tp.HCM và các tỉnh thành khác:</b><br/>Thời gian là 2-15 ngày đối với khu vực trung tâm tỉnh thành phố, 5-15 ngày đối với khu vực huyện, xã, thị trấn... (Không tính chủ nhật hay các ngày lễ tết) Có thể thay đổi thời gian giao hàng trong một số trường hợp bất khả kháng như: chịu ảnh hưởng của thiên tai, dịch Covid hoặc các sự kiện đặc biệt khác.</li>
-                <li><b>Lưu ý:</b> Đơn hàng đặt mua tại website: cocoonvietnam.com sẽ được chúng tôi chuyển phát đến các bạn thông qua 2 đơn vị vận chuyển chính: GIAO HÀNG TIẾT KIỆM Hoặc NETPOST. Đặc biệt, thông tin hóa đơn dán bên ngoài kiện hàng luôn luôn có logo có giá của thương hiệu để nhận biết các sản phẩm là chính hãng.</li>
+                <li><b>Đơn hàng nội thành TP.Hà Nội:</b><br/>Thời gian giao hàng là 2-7 ngày sau khi đặt hàng.</li>
+                <li><b>Đơn hàng ở ngoại thành TP.Hà Nội và các tỉnh thành khác:</b><br/>Thời gian là 2-15 ngày đối với khu vực trung tâm tỉnh thành phố, 5-15 ngày đối với khu vực huyện, xã, thị trấn... (Không tính chủ nhật hay các ngày lễ tết) Có thể thay đổi thời gian giao hàng trong một số trường hợp bất khả kháng như: chịu ảnh hưởng của thiên tai, dịch Covid hoặc các sự kiện đặc biệt khác.</li>
+                <li><b>Lưu ý:</b> Đơn hàng đặt mua tại website: kyomatchavn.com sẽ được chúng tôi chuyển phát đến các bạn thông qua 2 đơn vị vận chuyển chính: GIAO HÀNG TIẾT KIỆM Hoặc NETPOST. Đặc biệt, thông tin hóa đơn dán bên ngoài kiện hàng luôn luôn có logo có giá của thương hiệu để nhận biết các sản phẩm là chính hãng.</li>
               </ul>
               <p style={{fontStyle: 'italic', marginTop: 16}}>
                 Để kiểm tra thông tin hoặc tình trạng đơn hàng của quý khách, xin vui lòng nhắn tin vào Fanpage hoặc gọi số Hotline, cung cấp tên, số điện thoại, mã đơn hàng (nếu có) để được kiểm tra.
@@ -273,6 +359,14 @@ const Header = () => {
         }}
       >
         <HeaderContainer>
+          <HamburgerButton
+            onClick={() => setMobileMenuOpen((open) => !open)}
+            aria-label="Mở menu"
+          >
+            <span />
+            <span />
+            <span />
+          </HamburgerButton>
           <LeftGroup>
             <NavItem className="nav-animated">
               <NavLink
@@ -333,6 +427,18 @@ const Header = () => {
             </NavItem>
           </RightGroup>
         </HeaderContainer>
+        <MobileMenuOverlay open={mobileMenuOpen} onClick={() => setMobileMenuOpen(false)} />
+        <MobileMenu open={mobileMenuOpen}>
+          <MobileMenuLink to="/products" onClick={() => setMobileMenuOpen(false)}>Sản phẩm</MobileMenuLink>
+          <MobileMenuLink to="/about-us" onClick={() => setMobileMenuOpen(false)}>Giới thiệu</MobileMenuLink>
+          <MobileMenuLink to="/history" onClick={() => setMobileMenuOpen(false)}>Lịch sử trà Nhật</MobileMenuLink>
+          <MobileMenuLink to="/blogs" onClick={() => setMobileMenuOpen(false)}>Bài viết</MobileMenuLink>
+          <MobileMenuLink to={isLoggedIn ? "/profile" : "/login"} onClick={() => setMobileMenuOpen(false)}>
+            {isLoggedIn ? "Tài khoản" : "Đăng nhập"}
+          </MobileMenuLink>
+          <MobileMenuLink to="/cart" onClick={() => setMobileMenuOpen(false)}>Giỏ hàng</MobileMenuLink>
+          <MobileMenuLink to="/contact" onClick={() => setMobileMenuOpen(false)}>Liên hệ</MobileMenuLink>
+        </MobileMenu>
       </HeaderWrapper>
     </HeaderFixedWrapper>
   );

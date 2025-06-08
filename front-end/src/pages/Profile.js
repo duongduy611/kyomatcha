@@ -4,7 +4,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-const BACKEND_URL = 'http://localhost:9999';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 
 const TABS = [
@@ -206,7 +206,7 @@ const Profile = () => {
   const [tab, setTab] = useState(0);
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
-  const userId = localStorage.getItem('id');
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     setUser({
@@ -233,8 +233,8 @@ const Profile = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate('/login');  
-  };  
+    navigate('/login');
+  };
 
   return (
     <Wrapper>
