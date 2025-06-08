@@ -266,8 +266,8 @@ const Button = styled.button`
   font-weight: 600;
   cursor: pointer;
   border: none;
-  background: #eddfcb;
-  color: #231b10;
+  background: #537328;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -275,8 +275,9 @@ const Button = styled.button`
   width: 40%;
   height: 120%;
   &:hover {
-    background: #6a6649;
-    color: #fff;
+    background: white ;
+    color: rgb(82, 115, 40) ;
+    border: 1px solid rgb(82, 115, 40);
   }
 `;
 
@@ -473,10 +474,10 @@ const AllProducts = () => {
                         <ProductPrice>{product.price.toLocaleString('vi-VN')}₫</ProductPrice>
                         <Button
                           className="add-to-cart"
-                         onClick={(e) => {
-    e.preventDefault(); // Ngăn hành vi mặc định nếu cần
-    navigate(`/products/${product.slug}`);
-  }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleAddToCart(product._id);
+                          }}
                         >
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />

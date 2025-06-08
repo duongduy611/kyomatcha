@@ -342,7 +342,7 @@ const Header = () => {
               <ul>
                 <li><b>Đơn hàng nội thành TP.Hà Nội:</b><br/>Thời gian giao hàng là 2-7 ngày sau khi đặt hàng.</li>
                 <li><b>Đơn hàng ở ngoại thành TP.Hà Nội và các tỉnh thành khác:</b><br/>Thời gian là 2-15 ngày đối với khu vực trung tâm tỉnh thành phố, 5-15 ngày đối với khu vực huyện, xã, thị trấn... (Không tính chủ nhật hay các ngày lễ tết) Có thể thay đổi thời gian giao hàng trong một số trường hợp bất khả kháng như: chịu ảnh hưởng của thiên tai, dịch Covid hoặc các sự kiện đặc biệt khác.</li>
-                <li><b>Lưu ý:</b> Đơn hàng đặt mua tại website: kyomatchavn.com sẽ được chúng tôi chuyển phát đến các bạn thông qua 2 đơn vị vận chuyển chính: GIAO HÀNG TIẾT KIỆM Hoặc NETPOST. Đặc biệt, thông tin hóa đơn dán bên ngoài kiện hàng luôn luôn có logo có giá của thương hiệu để nhận biết các sản phẩm là chính hãng.</li>
+                <li><b>Lưu ý:</b> Đơn hàng đặt mua tại website: kyomatcha.id.vn sẽ được chúng tôi chuyển phát đến các bạn thông qua 2 đơn vị vận chuyển chính: GIAO HÀNG TIẾT KIỆM Hoặc NETPOST. Đặc biệt, thông tin hóa đơn dán bên ngoài kiện hàng luôn luôn có logo có giá của thương hiệu để nhận biết các sản phẩm là chính hãng.</li>
               </ul>
               <p style={{fontStyle: 'italic', marginTop: 16}}>
                 Để kiểm tra thông tin hoặc tình trạng đơn hàng của quý khách, xin vui lòng nhắn tin vào Fanpage hoặc gọi số Hotline, cung cấp tên, số điện thoại, mã đơn hàng (nếu có) để được kiểm tra.
