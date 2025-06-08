@@ -277,6 +277,7 @@ const Button = styled.button`
   &:hover {
     background: white ;
     color: black ;
+    border: 1px solid rgb(82, 115, 40);
   }
 `;
 
