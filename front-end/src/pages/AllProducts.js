@@ -266,7 +266,7 @@ const Button = styled.button`
   font-weight: 600;
   cursor: pointer;
   border: none;
-  background: #eddfcb;
+  background: #537328;
   color: #231b10;
   display: flex;
   align-items: center;
