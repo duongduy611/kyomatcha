@@ -332,44 +332,45 @@ const TeaCollection = () => {
     <Section>
       <SectionTitle>MATCHA CỦA CHÚNG TÔI</SectionTitle>
       <ProductGrid>
-        {products.map((product) => (
-          <ProductCard key={product._id}>
-            <Link to={`/products/${product.slug}`}>
-              <ProductImage>
-                <img
-                  src={product.images && product.images.length > 0
-                    ? `${BACKEND_URL}${product.images[0]}`
-                    : "/placeholder.jpg"
-                  }
-                  alt={product.name}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "/placeholder.jpg";
-                  }}
-                />
-              </ProductImage>
-              <ProductInfo>
-                <ProductName>{product.name}</ProductName>
-                <ProductBottom>
-                  <ProductPrice>{product.price.toLocaleString('vi-VN')}₫</ProductPrice>
-                  <Button
-                    className="add-to-cart"
-                    onClick={(e) => {
-                            e.preventDefault();
-                            handleAddToCart(product._id);
-                          }}
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                      <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
-                    </svg>
-                  </Button>
-                </ProductBottom>
-              </ProductInfo>
-            </Link>
-          </ProductCard>
-        ))}
-      </ProductGrid>
+              {products.map((product) => (
+                <ProductCard key={product._id}>
+                  <Link to={`/products/${product.slug}`}>
+                    <ProductImage>
+                      <img
+                        src={
+                          product.images && product.images.length > 0
+                            ? `${BACKEND_URL}${product.images[0]}`
+                            : "/placeholder.jpg"
+                        }
+                        alt={product.name}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "/placeholder.jpg";
+                        }}
+                      />
+                    </ProductImage>
+                    <ProductInfo>
+                      <ProductName>{product.name}</ProductName>
+                      <ProductBottom>
+                        <ProductPrice>{product.price.toLocaleString('vi-VN')}₫</ProductPrice>
+                        <Button
+                          className="add-to-cart"
+                         onClick={(e) => {
+    e.preventDefault(); // Ngăn hành vi mặc định nếu cần
+    navigate(`/products/${product.slug}`);
+  }}
+                        >
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                            <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                          </svg>
+                        </Button>
+                      </ProductBottom>
+                    </ProductInfo>
+                  </Link>
+                </ProductCard>
+              ))}
+            </ProductGrid>
     </Section>
   );
 }
