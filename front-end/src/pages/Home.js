@@ -239,7 +239,7 @@ const TeaCollection = () => {
     // Lấy token từ localStorage và userId từ context
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
-
+   console.log(userId);
     // Nếu chưa đăng nhập hoặc chưa có userId, điều hướng về trang login
     if (!token || !userId) {
       toast.info('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
@@ -354,10 +354,10 @@ const TeaCollection = () => {
                   <ProductPrice>{product.price.toLocaleString('vi-VN')}₫</ProductPrice>
                   <Button
                     className="add-to-cart"
-                   onClick={(e) => {
-    e.preventDefault(); // Ngăn hành vi mặc định nếu cần
-    navigate(`/products/${product.slug}`);
-  }}
+                    onClick={(e) => {
+                            e.preventDefault();
+                            handleAddToCart(product._id);
+                          }}
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
