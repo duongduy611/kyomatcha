@@ -275,8 +275,8 @@ const Button = styled.button`
   width: 40%;
   height: 120%;
   &:hover {
-    background: black;
-    color: white;
+    background: white ;
+    color: black ;
   }
 `;
 
