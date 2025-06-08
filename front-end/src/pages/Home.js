@@ -112,27 +112,27 @@ const SectionTitle = styled.h2`
 `;
 
 const ProductGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 2.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  padding: 0 32px;
 `;
 
 const ProductCard = styled.div`
-  background: white;
+  background: #f6f6ee;
   border-radius: 8px;
   overflow: hidden;
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  width: 450px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: #f6f6ee;
-
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.18);
   }
-
   a {
     text-decoration: none;
     color: inherit;
@@ -147,7 +147,7 @@ const ProductImage = styled.div`
   padding-top: 100%;
   background-color: #f8f8f8;
   overflow: hidden;
-  height: 320px;
+  border-radius: 8px;
   img {
     position: absolute;
     top: 0;
@@ -156,43 +156,6 @@ const ProductImage = styled.div`
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
-  }
-`;
-
-const FavoriteButton = styled.button`
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: white;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 2;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-
-  svg {
-    width: 18px;
-    height: 18px;
-    color: #666;
-  }
-
-  &.active {
-    background-color: #ff4d4f;
-    svg {
-      color: white;
-    }
-  }
-
-  &:hover {
-    transform: scale(1.1);
-    background: ${(props) =>
-      props.className === "active" ? "#ff4d4f" : "#fff"};
   }
 `;
 
@@ -228,6 +191,21 @@ const ProductPrice = styled.div`
   color: #527328;
 `;
 
+const ShippingInfo = styled.span`
+  font-size: 14px;
+  color: #666;
+  font-weight: normal;
+  margin-left: 4px;
+`;
+
+const ButtonGroup = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 8px;
+  padding: 16px;
+  padding-top: 0;
+`;
+
 const Button = styled.button`
   padding: 10px 14px;
   border-radius: 10px;
@@ -235,17 +213,18 @@ const Button = styled.button`
   font-weight: 600;
   cursor: pointer;
   border: none;
-  background: #eddfcb;
-  color: #231b10;
+  background: #527328;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.2s, color 0.2s;
-  width: 40%;
+   width: 40%;
   height: 120%;
   &:hover {
-    background: #6a6649;
-    color: #fff;
+    border: 1px solid #527328;
+    background: #f6f6ee;
+    color: #527328;
   }
 `;
 
@@ -260,7 +239,7 @@ const TeaCollection = () => {
     // Lấy token từ localStorage và userId từ context
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
-   console.log(userId);
+
     // Nếu chưa đăng nhập hoặc chưa có userId, điều hướng về trang login
     if (!token || !userId) {
       toast.info('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
@@ -353,45 +332,44 @@ const TeaCollection = () => {
     <Section>
       <SectionTitle>MATCHA CỦA CHÚNG TÔI</SectionTitle>
       <ProductGrid>
-              {products.map((product) => (
-                <ProductCard key={product._id}>
-                  <Link to={`/products/${product.slug}`}>
-                    <ProductImage>
-                      <img
-                        src={
-                          product.images && product.images.length > 0
-                            ? `${BACKEND_URL}${product.images[0]}`
-                            : "/placeholder.jpg"
-                        }
-                        alt={product.name}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = "/placeholder.jpg";
-                        }}
-                      />
-                    </ProductImage>
-                    <ProductInfo>
-                      <ProductName>{product.name}</ProductName>
-                      <ProductBottom>
-                        <ProductPrice>{product.price.toLocaleString('vi-VN')}₫</ProductPrice>
-                        <Button
-                          className="add-to-cart"
-                         onClick={(e) => {
+        {products.map((product) => (
+          <ProductCard key={product._id}>
+            <Link to={`/products/${product.slug}`}>
+              <ProductImage>
+                <img
+                  src={product.images && product.images.length > 0
+                    ? `${BACKEND_URL}${product.images[0]}`
+                    : "/placeholder.jpg"
+                  }
+                  alt={product.name}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "/placeholder.jpg";
+                  }}
+                />
+              </ProductImage>
+              <ProductInfo>
+                <ProductName>{product.name}</ProductName>
+                <ProductBottom>
+                  <ProductPrice>{product.price.toLocaleString('vi-VN')}₫</ProductPrice>
+                  <Button
+                    className="add-to-cart"
+                   onClick={(e) => {
     e.preventDefault(); // Ngăn hành vi mặc định nếu cần
     navigate(`/products/${product.slug}`);
   }}
-                        >
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                            <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
-                          </svg>
-                        </Button>
-                      </ProductBottom>
-                    </ProductInfo>
-                  </Link>
-                </ProductCard>
-              ))}
-            </ProductGrid>
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                      <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                    </svg>
+                  </Button>
+                </ProductBottom>
+              </ProductInfo>
+            </Link>
+          </ProductCard>
+        ))}
+      </ProductGrid>
     </Section>
   );
 }
