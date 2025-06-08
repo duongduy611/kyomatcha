@@ -122,7 +122,7 @@ const ProductDetail = () => {
     size,
     stock,
   }) => {
-    const userId = localStorage.getItem("id");
+    const userId = localStorage.getItem("userId");
 
     if (stock <= 0) {
       toast.info("Sản phẩm đã hết hàng!");
