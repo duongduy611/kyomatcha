@@ -5,7 +5,7 @@ import axios from "axios";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-const BACKEND_URL = "http://localhost:9999"; // Add backend URL
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL; // Add backend URL
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -122,7 +122,7 @@ const ProductDetail = () => {
     size,
     stock,
   }) => {
-    const userId = localStorage.getItem("id");
+    const userId = localStorage.getItem("userId");
 
     if (stock <= 0) {
       toast.info("Sản phẩm đã hết hàng!");

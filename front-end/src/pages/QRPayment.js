@@ -8,7 +8,8 @@ const QRPaymentPage = () => {
 	const navigate = useNavigate();
 	const [qrData, setQrData] = useState(null);
 	const [loading, setLoading] = useState(true);
-
+	const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+	
 	useEffect(() => {
 		const stored = localStorage.getItem('qrCheckout');
 		if (stored) {
@@ -25,7 +26,7 @@ const QRPaymentPage = () => {
 	const handleConfirmPayment = async () => {
 		try {
 			const res = await axios.post(
-				'http://localhost:9999/orders/confirm-payment',
+				`${BACKEND_URL}/orders/confirm-payment`,
 				{
 					orderId: qrData.orderId,
 				}

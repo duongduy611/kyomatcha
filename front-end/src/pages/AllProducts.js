@@ -6,7 +6,7 @@ import { useAppContext } from "../context/AppContext";
 import bannerImage from "../assets/images/banner_product.jpg";
 import GlobalStyle from "../components/GlobalStyle";
 import { toast } from "react-toastify";
-const BACKEND_URL = "http://localhost:9999";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const KingofTea = styled.div`
   width: 100%;
@@ -302,7 +302,7 @@ const AllProducts = () => {
     try {
       // Lấy token và id người dùng từ localStorage
       const token = localStorage.getItem("token");
-      const userId = localStorage.getItem("id");
+      const userId = localStorage.getItem("userId");
 
       // Nếu chưa đăng nhập, điều hướng về trang login
       if (!token || !userId) {
@@ -473,10 +473,10 @@ const AllProducts = () => {
                         <ProductPrice>{product.price.toLocaleString('vi-VN')}₫</ProductPrice>
                         <Button
                           className="add-to-cart"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleAddToCart(product._id);
-                          }}
+                         onClick={(e) => {
+    e.preventDefault(); // Ngăn hành vi mặc định nếu cần
+    navigate(`/products/${product.slug}`);
+  }}
                         >
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />

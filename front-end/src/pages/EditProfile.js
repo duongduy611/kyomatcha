@@ -67,7 +67,7 @@ function EditProfile() {
     e.preventDefault();
     setMessageProfile("");
     try {
-      const res = await fetch("http://localhost:9999/api/update-profile", {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/update-profile`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -98,7 +98,7 @@ function EditProfile() {
       return;
     }
     try {
-      const res = await fetch("http://localhost:9999/api/change-password", {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/change-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
