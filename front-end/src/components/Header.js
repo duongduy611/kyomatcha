@@ -287,7 +287,7 @@ const MobileMenu = styled.nav`
 `;
 
 const MobileMenuLink = styled(Link)`
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #23201b;
   text-decoration: none;
   font-weight: 500;
@@ -533,7 +533,6 @@ const Header = () => {
                 navigate("/login");
                 return;
               }
-
               setMobileMenuOpen(false);
             }}
           >
