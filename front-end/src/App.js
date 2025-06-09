@@ -27,7 +27,7 @@ const App = () => {
                   element={
                     <Layout>
                       <route.page />
-                      {route.isShowFooter && <FloatingContactButton />}
+                      {route.isShowHeader && <FloatingContactButton />}
                       {route.isShowFooter && <Footer />}
                     </Layout>
                   }

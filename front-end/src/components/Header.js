@@ -287,18 +287,12 @@ const MobileMenu = styled.nav`
 `;
 
 const MobileMenuLink = styled(Link)`
-  font-size: 1rem;
-  color: #23201b;
+  font-size: 14px;
+  color: #000000;
   text-decoration: none;
   font-weight: 500;
   margin-bottom: 24px;
   letter-spacing: 1px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-  &:hover {
-    color: #4a7c59;
-  }
 `;
 
 const Header = () => {
@@ -463,7 +457,7 @@ const Header = () => {
               </NavLink>
             </NavItem>
             <NavItem className="nav-animated">
-              <MobileMenuLink
+              <NavLink
                 to="/cart"
                 onClick={(e) => {
                   const token = localStorage.getItem("token");
@@ -482,7 +476,7 @@ const Header = () => {
                 }}
               >
                 Giỏ hàng
-              </MobileMenuLink>
+              </NavLink>
             </NavItem>
             <NavItem className="nav-animated">
               <NavLink to="/contact">Liên hệ</NavLink>

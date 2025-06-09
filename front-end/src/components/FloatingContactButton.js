@@ -65,7 +65,7 @@ const LinkItem = styled.a`
   font-weight: 600;
   text-decoration: none;
   transition: color 0.2s;
-  width: 100%;  
+  width: 100%;
   &:hover {
     color: #6A6649;
     text-decoration: underline;
@@ -98,7 +98,7 @@ const FloatingContactButton = () => {
     <FloatingWrapper>
       {open && (
         <Popup>
-          <LinkItem href="https://www.facebook.com/profile.php?id=61576877652764" target="_blank" rel="noopener noreferrer">
+          <LinkItem href="https://www.facebook.com/kyomatchavn/" target="_blank" rel="noopener noreferrer">
             <FacebookIcon src={fbIcon} alt="Facebook" />
           </LinkItem>
           <LinkItem href="https://www.tiktok.com/@yourtiktok" target="_blank" rel="noopener noreferrer" >

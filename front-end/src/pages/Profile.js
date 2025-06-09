@@ -8,8 +8,8 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 
 const TABS = [
-  { label: 'Thông tin tài khoản', icon: '👤' },
-  { label: 'Lịch sử mua hàng', icon: '📦' },
+  { label: 'Thông tin tài khoản', icon: '' },
+  { label: 'Lịch sử mua hàng', icon: '' },
 ];
 
 const Wrapper = styled.div`
@@ -254,7 +254,7 @@ const Profile = () => {
               <InfoRow>
                 <Label>Email</Label>
                 <Value>{user.email || 'Chưa cập nhật'}</Value>
-                <EditLink onClick={() => navigate('/edit-profile')}>✏️ Đổi Thông Tin</EditLink>
+                <EditLink onClick={() => navigate('/edit-profile')}>Đổi Thông Tin</EditLink>
                 <EditLink onClick={handleLogout}>Đăng xuất</EditLink>
               </InfoRow>
               <hr style={{ border: 'none', borderTop: '1px solid #e0d9c3', margin: '18px 0' }} />
