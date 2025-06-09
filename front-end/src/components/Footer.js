@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import logo1 from "../assets/logo/kyo-matcha-logo.png";
-import { FaFacebookF, FaTwitter, FaYoutube, FaInstagram } from "react-icons/fa";
+import { FaFacebookF, FaTwitter, FaYoutube, FaInstagram, FaTiktok } from "react-icons/fa";
 
 const FooterWrapper = styled.footer`
   background: #f6f6ee;
@@ -142,7 +142,7 @@ const SocialIcons = styled.div`
   }
 `;
 
-const SocialIcon = styled.a`
+const SocialIcon = styled(Link)`
   color: #000;
   background: #fff;
   border-radius: 50%;
@@ -197,8 +197,8 @@ const Footer = () => {
         <FooterCol>
           <FooterTitle>Liên hệ</FooterTitle>
           <ContactText>Trường Đại học FPT</ContactText>
-          <ContactText>Điện thoại: 0987 65 4321 – 0123 45 6789</ContactText>
-          <ContactText>Email: kyomatcha@gmail.com</ContactText>
+          <ContactText>Điện thoại: 0982 826 438</ContactText>
+          <ContactText>Email: info.kyomatcha@gmail.com</ContactText>
         </FooterCol>
         <FooterCol>
           <FooterTitle>Đăng ký</FooterTitle>
@@ -207,10 +207,9 @@ const Footer = () => {
             <SubscribeButton type="submit">Đăng ký</SubscribeButton>
           </NewsletterForm>
           <SocialIcons>
-            <SocialIcon href="#" aria-label="Facebook"><FaFacebookF /></SocialIcon>
-            <SocialIcon href="#" aria-label="Twitter"><FaTwitter /></SocialIcon>
-            <SocialIcon href="#" aria-label="YouTube"><FaYoutube /></SocialIcon>
-            <SocialIcon href="#" aria-label="Instagram"><FaInstagram /></SocialIcon>
+            <SocialIcon to={"https://www.facebook.com/kyomatchavn/"} target="_blank" aria-label="Facebook"><FaFacebookF /></SocialIcon>
+            <SocialIcon to={""} aria-label="Tiktok"><FaTiktok /></SocialIcon>
+            <SocialIcon to={"https://www.youtube.com/"} target="_blank" aria-label="YouTube"><FaYoutube /></SocialIcon>
           </SocialIcons>
         </FooterCol>
       </FooterContent>
