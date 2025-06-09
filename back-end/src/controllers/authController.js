@@ -4,6 +4,14 @@ const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key';
+const nodemailer = require('nodemailer');
+
+
+let otpStore = {};       // { [email]: { otp, expires } }
+let cooldownStore = {};
+
+const OTP_EXPIRATION_MS = 10 * 60 * 1000; // 5 phút
+const COOLDOWN_MS = 30 * 1000; 
 
 exports.register = async (req, res) => {
   const { email, password, fullName, phone, address } = req.body;
@@ -127,3 +135,91 @@ exports.GoogleLogin = async (req, res) => {
     res.status(401).json({ message: 'Token không hợp lệ', error: error.message });
   }
 };
+
+exports.sendOtp = async (req, res) => {
+  const { email } = req.body;
+  const now = Date.now();
+
+  // 🔁 Kiểm tra cooldown
+  if (cooldownStore[email] && cooldownStore[email] > now) {
+    return res.status(429).json({ message: 'Vui lòng đợi 30s trước khi gửi lại OTP.' });
+  }
+
+  // 🎲 Tạo OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const expires = now + OTP_EXPIRATION_MS;
+
+  // 📧 Gửi email
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USERNAME,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: `"KyoMatcha Xác thực" <${process.env.EMAIL_USERNAME}>`,
+    to: email,
+    subject: 'Xác thực tài khoản - Mã OTP từ KyoMatcha',
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: auto;text-align: center;">
+        <h2 style="color: #527328;">Xin chào từ KyoMatcha 🍵</h2>
+        <p>Bạn vừa thực hiện đăng ký tài khoản với địa chỉ email: <b>${email}</b>.</p>
+        <p>Để hoàn tất, vui lòng sử dụng mã OTP dưới đây để xác thực tài khoản:</p>
+        <div style="font-size: 24px; font-weight: bold; background-color: #f6f6ee; padding: 12px 24px; text-align: center; border-radius: 8px; border: 1px dashed #ccc; width: fit-content; margin: 16px auto;">
+          ${otp}
+        </div>
+        <p>Mã OTP này sẽ hết hạn trong <b>10 phút</b>. Không chia sẻ mã này cho bất kỳ ai.</p>
+        <p>Nếu bạn không yêu cầu thao tác này, vui lòng bỏ qua email này.</p>
+        <p style="margin-top: 24px;">Trân trọng,<br/>Đội ngũ <b>KyoMatcha</b></p>
+      </div>
+    `,
+  };
+  
+
+  try {
+    await transporter.sendMail(mailOptions);
+
+    // 💾 Lưu OTP và cooldown
+    otpStore[email] = { otp, expires };
+    cooldownStore[email] = now + COOLDOWN_MS;
+
+    res.json({ success: true, message: 'Đã gửi OTP.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi gửi mail', error: err.message });
+  }
+};
+
+exports.verifyOtp = (req, res) => {
+  const { email, otp } = req.body;
+  const record = otpStore[email];
+  const now = Date.now();
+
+  if (!record) {
+    return res.status(400).json({ success: false, message: 'OTP chưa được gửi hoặc đã hết hạn.' });
+  }
+
+  if (now > record.expires) {
+    delete otpStore[email];
+    return res.status(400).json({ success: false, message: 'OTP đã hết hạn.' });
+  }
+
+  if (record.otp !== otp) {
+    return res.status(400).json({ success: false, message: 'OTP không đúng.' });
+  }
+
+  // ✅ Xác minh thành công
+  delete otpStore[email];
+  delete cooldownStore[email];
+  return res.json({ success: true, message: 'Xác thực thành công.' });
+};
+
+
+exports.checkEmail = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  res.json({ exists: !!user });
+};
+
+

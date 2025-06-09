@@ -7,6 +7,7 @@ import { AppProvider } from './context/AppContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import ScrollToTop from "./components/ScrollToTop";
 import Footer from "./components/Footer";
+import FloatingContactButton from "./components/FloatingContactButton";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
                   element={
                     <Layout>
                       <route.page />
+                      {route.isShowFooter && <FloatingContactButton />}
                       {route.isShowFooter && <Footer />}
                     </Layout>
                   }
