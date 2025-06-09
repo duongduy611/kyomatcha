@@ -3,8 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import GlobalStyle from "../components/GlobalStyle";
 import styled from "styled-components";
-import logoImg from "../assets/logo/logo1.png";
-import { toast, ToastContainer } from "react-toastify";
+import logoImg from "../assets/logo/kyo-matcha-logo.png";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const RegisterWrapper = styled.div`
@@ -464,7 +464,7 @@ function Register() {
                         cursor: "pointer",
                       }}
                     >
-                      Quay lại đăng ký
+                      Tôi muốn sửa lại thông tin
                     </button>
                   </div>
                 </>
