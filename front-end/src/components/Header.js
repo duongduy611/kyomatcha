@@ -110,7 +110,7 @@ const RightGroup = styled.div`
 `;
 
 const Logo = styled.img`
-  height: 110px;
+  height: 80px;
   width: auto;
   display: block;
   @media (max-width: 900px) {
@@ -146,7 +146,7 @@ const NavLink = styled(Link)`
   margin: 0;
   text-decoration: none;
   font-weight: 500;
-  padding: 8px 12px;
+  padding: 4px 12px;
   font-size: 14px;
   cursor: pointer;
   position: relative;
@@ -163,7 +163,7 @@ const DropdownMenu = styled.div`
   color: black;
   min-width: 180px;
   box-shadow: 0 4px 16px rgba(46, 204, 64, 0.1);
-  padding: 10px 0 6px 0;
+  ${'' /* padding: 10px 0 6px 0; */}
   font-size: 16px;
   margin-top: 3px;
   display: ${({ show }) => (show ? "block" : "none")};
@@ -176,7 +176,7 @@ const DropdownLink = styled(Link)`
   color: black;
   text-decoration: none;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   white-space: nowrap;
 
   &:hover {
