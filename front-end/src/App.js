@@ -8,6 +8,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import ScrollToTop from "./components/ScrollToTop";
 import Footer from "./components/Footer";
 import FloatingContactButton from "./components/FloatingContactButton";
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const App = () => {
   return (
@@ -38,6 +39,7 @@ const App = () => {
         </AppProvider>
       </Router>
       </GoogleOAuthProvider>
+      <SpeedInsights />
     </div>
   );
 };
