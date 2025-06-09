@@ -151,16 +151,31 @@ const BeautyTitle = styled.h2`
 `;
 
 const CardContainer = styled.div`
-  display: flex;
-  gap: 24px;
-  @media (max-width: 900px) {
-    flex-direction: column;
-  }
+  display: grid;
+  grid-template-columns: repeat(3, 33%);
+  justify-content: center;
+  gap: 32px;
+  padding: 0 32px;
 `;
 
 const Card = styled.div`
-  flex: 1;
-  background: transparent;
+  background: #f6f6ee;
+  border-radius: 8px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #f6f6ee;
+  padding: 10px;
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
 `;
 
 const CardImageWrapper = styled.div`
@@ -176,9 +191,6 @@ const CardImage = styled.img`
   aspect-ratio: 1;
   object-fit: cover;
   transition: transform 0.5s ease;
-  &:hover {
-    transform: scale(1.1);
-  }
 `;
 
 const CardMeta = styled.p`
@@ -245,14 +257,21 @@ const Blog = () => {
               "Khám Phá Matcha - Sống Xanh Từ Lá Trà" năm 2025
             </Title>
             <Description>
-              Bắt đầu từ ngày 10/5, chương trình "Khám Phá Matcha - Sống Xanh
-              Từ Lá Trà" chính thức được phát động. Với hơn 160 điểm trải
-              nghiệm trên toàn quốc, chương trình mang đến cho cộng đồng cơ hội
-              tìm hiểu về quy trình trồng, chế biến và tận hưởng matcha nguyên
-              chất. Chúng tôi hy vọng bạn sẽ cùng đồng hành để lan tỏa lối sống
-              lành mạnh, yêu thiên nhiên và yêu từng lá trà xanh tinh khiết.
+              Bắt đầu từ ngày 10/5, chương trình "Khám Phá Matcha - Sống Xanh Từ
+              Lá Trà" chính thức được phát động. Với hơn 160 điểm trải nghiệm
+              trên toàn quốc, chương trình mang đến cho cộng đồng cơ hội tìm
+              hiểu về quy trình trồng, chế biến và tận hưởng matcha nguyên chất.
+              Chúng tôi hy vọng bạn sẽ cùng đồng hành để lan tỏa lối sống lành
+              mạnh, yêu thiên nhiên và yêu từng lá trà xanh tinh khiết.
             </Description>
-            <ReadButton as={Link} to={firstExplorationBlog ? `/blogs/${firstExplorationBlog.slug}` : '#'}>
+            <ReadButton
+              as={Link}
+              to={
+                firstExplorationBlog
+                  ? `/blogs/${firstExplorationBlog.slug}`
+                  : "#"
+              }
+            >
               Đọc bài viết
               <span style={{ display: "inline-block", marginLeft: 8 }}>
                 <svg
@@ -305,16 +324,19 @@ const Blog = () => {
         <CardContainer>
           {beautyBlogs.map((blog, index) => (
             <Card key={index}>
-              <CardImageWrapper>
-                <CardImage src={blog.thumbnailUrl} alt={blog.title} />
-              </CardImageWrapper>
-              <CardMeta>
-                Làm đẹp | <span>{formatDate(blog.createdAt)}</span>
-              </CardMeta>
-              <CardTitle as={Link} to={`/blogs/${blog.slug}`}>
-                {blog.title}
-              </CardTitle>
-              <CardDescription>{blog.summary}</CardDescription>
+              <Link
+                to={`/blogs/${blog.slug}`}
+                style={{ textDecoration: "none" }}
+              >
+                <CardImageWrapper>
+                  <CardImage src={blog.thumbnailUrl} alt={blog.title} />
+                </CardImageWrapper>
+                <CardMeta>
+                  Làm đẹp | <span>{formatDate(blog.createdAt)}</span>
+                </CardMeta>
+                <CardTitle>{blog.title}</CardTitle>
+                <CardDescription>{blog.summary}</CardDescription>
+              </Link>
             </Card>
           ))}
         </CardContainer>
@@ -345,16 +367,19 @@ const Blog = () => {
         <CardContainer>
           {brewingBlogs.map((blog, index) => (
             <Card key={index}>
-              <CardImageWrapper>
-                <CardImage src={blog.thumbnailUrl} alt={blog.title} />
-              </CardImageWrapper>
-              <CardMeta>
-                Pha chế | <span>{formatDate(blog.createdAt)}</span>
-              </CardMeta>
-              <CardTitle as={Link} to={`/blogs/${blog.slug}`}>
-                {blog.title}
-              </CardTitle>
-              <CardDescription>{blog.summary}</CardDescription>
+              <Link
+                to={`/blogs/${blog.slug}`}
+                style={{ textDecoration: "none" }}
+              >
+                <CardImageWrapper>
+                  <CardImage src={blog.thumbnailUrl} alt={blog.title} />
+                </CardImageWrapper>
+                <CardMeta>
+                  Pha chế | <span>{formatDate(blog.createdAt)}</span>
+                </CardMeta>
+                <CardTitle>{blog.title}</CardTitle>
+                <CardDescription>{blog.summary}</CardDescription>
+              </Link>
             </Card>
           ))}
         </CardContainer>
@@ -385,16 +410,19 @@ const Blog = () => {
         <CardContainer>
           {explorationBlogs.map((blog, index) => (
             <Card key={index}>
-              <CardImageWrapper>
-                <CardImage src={blog.thumbnailUrl} alt={blog.title} />
-              </CardImageWrapper>
-              <CardMeta>
-                Khám phá | <span>{formatDate(blog.createdAt)}</span>
-              </CardMeta>
-              <CardTitle as={Link} to={`/blogs/${blog.slug}`}>
-                {blog.title}
-              </CardTitle>
-              <CardDescription>{blog.summary}</CardDescription>
+              <Link
+                to={`/blogs/${blog.slug}`}
+                style={{ textDecoration: "none" }}
+              >
+                <CardImageWrapper>
+                  <CardImage src={blog.thumbnailUrl} alt={blog.title} />
+                </CardImageWrapper>
+                <CardMeta>
+                  Khám phá | <span>{formatDate(blog.createdAt)}</span>
+                </CardMeta>
+                <CardTitle>{blog.title}</CardTitle>
+                <CardDescription>{blog.summary}</CardDescription>
+              </Link>
             </Card>
           ))}
         </CardContainer>
