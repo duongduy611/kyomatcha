@@ -190,43 +190,6 @@ const ProductImage = styled.div`
   }
 `;
 
-const FavoriteButton = styled.button`
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: white;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 2;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-
-  svg {
-    width: 18px;
-    height: 18px;
-    color: #666;
-  }
-
-  &.active {
-    background-color: #ff4d4f;
-    svg {
-      color: white;
-    }
-  }
-
-  &:hover {
-    transform: scale(1.1);
-    background: ${(props) =>
-      props.className === "active" ? "#ff4d4f" : "#fff"};
-  }
-`;
-
 const ProductInfo = styled.div`
   padding: 16px;
   display: flex;

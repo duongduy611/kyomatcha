@@ -112,27 +112,33 @@ const SectionTitle = styled.h2`
 `;
 
 const ProductGrid = styled.div`
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 20%);
+  justify-content: center; 
   gap: 32px;
-  flex-wrap: wrap;
   padding: 0 32px;
 `;
 
+
 const ProductCard = styled.div`
   background: #f6f6ee;
+  border-radius: 8px;
+  background: white;
   border-radius: 8px;
   overflow: hidden;
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 450px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  width: 100%; 
+  height: 100%;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #f6f6ee;
+
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.18);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   }
+
   a {
     text-decoration: none;
     color: inherit;
@@ -147,7 +153,7 @@ const ProductImage = styled.div`
   padding-top: 100%;
   background-color: #f8f8f8;
   overflow: hidden;
-  border-radius: 8px;
+  height: 320px;
   img {
     position: absolute;
     top: 0;
@@ -189,21 +195,6 @@ const ProductPrice = styled.div`
   font-size: 1.1rem;
   font-weight: 700;
   color: #527328;
-`;
-
-const ShippingInfo = styled.span`
-  font-size: 14px;
-  color: #666;
-  font-weight: normal;
-  margin-left: 4px;
-`;
-
-const ButtonGroup = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 8px;
-  padding: 16px;
-  padding-top: 0;
 `;
 
 const Button = styled.button`
@@ -390,17 +381,31 @@ const BlogTitle = styled.h2`
 `;
 
 const BlogGrid = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 48px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 25%);
+  justify-content: center; 
+  gap: 32px;
+  padding: 0 32px;
 `;
 
 const BlogCard = styled.div`
-  width: 370px;
-  text-align: left;
-  padding: 20px;
-  transition: transform 0.3s ease;
+  background: #f6f6ee;
+  border-radius: 8px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%; 
+  height: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #f6f6ee;
+  padding: 10px;
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
 `;
 
 const BlogImage = styled.img`
@@ -408,12 +413,7 @@ const BlogImage = styled.img`
   height: 210px;
   object-fit: cover;
   margin-bottom: 18px;
-  cursor: pointer;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  }
+  cursor: pointer;  
 `;
 
 const BlogCategory = styled.div`
@@ -453,7 +453,7 @@ const BlogReadMore = styled(Link)`
   transition: color 0.2s;
   font-weight: 500;
   position: relative;
-
+  width:86px;
   &::after {
     content: "";
     position: absolute;
@@ -480,7 +480,7 @@ function BlogList() {
   const latestBlogs = blogs
     .slice() // copy mảng để không ảnh hưởng gốc
     .sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt))
-    .slice(0, 4);
+    .slice(0, 3);
 
   return (
     <BlogSection>
@@ -491,10 +491,10 @@ function BlogList() {
             <Link to={`/blogs/${blog.slug}`} style={{ textDecoration: 'none' }}>
               <BlogImage src={blog.thumbnailUrl} alt={blog.title} />
               <BlogPostTitle>{blog.title}</BlogPostTitle>
-            </Link>
             <BlogCategory>{blog.category}</BlogCategory>
             <BlogDesc>{blog.summary || blog.desc}</BlogDesc>
             <BlogReadMore to={`/blogs/${blog.slug}`}>XEM THÊM</BlogReadMore>
+            </Link>
           </BlogCard>
         ))}
       </BlogGrid>
