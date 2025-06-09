@@ -114,7 +114,7 @@ const SectionTitle = styled.h2`
 const ProductGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 20%);
-  justify-content: center; 
+  justify-content: center;
   gap: 32px;
   padding: 0 32px;
 `;
@@ -129,7 +129,7 @@ const ProductCard = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 100%; 
+  width: 100%;
   height: 100%;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   background-color: #f6f6ee;
@@ -292,9 +292,10 @@ const TeaCollection = () => {
                 (product.name.includes("Matcha Natsu") ||
                   product.name.includes("Matcha Aki") ||
                   product.name.includes("Matcha Haru") ||
-                  product.name.includes("Matcha Fuji 02") ||
-                  product.name.includes("Matcha Fuji 03") ||
-                  product.name.includes("Matcha Fuji 05"))
+                  product.name.includes("Chổi Chasen") ||
+                  product.name.includes("Combo 2 Món Matcha") ||
+                  product.name.includes("Đế Sứ Cắm Chổi")
+                )
             )
             .slice(0, 6);
           console.log("Filtered Products:", filteredProducts); // Debug log
@@ -383,7 +384,7 @@ const BlogTitle = styled.h2`
 const BlogGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 25%);
-  justify-content: center; 
+  justify-content: center;
   gap: 32px;
   padding: 0 32px;
 `;
@@ -397,7 +398,7 @@ const BlogCard = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 100%; 
+  width: 100%;
   height: 100%;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   background-color: #f6f6ee;
@@ -413,7 +414,7 @@ const BlogImage = styled.img`
   height: 210px;
   object-fit: cover;
   margin-bottom: 18px;
-  cursor: pointer;  
+  cursor: pointer;
 `;
 
 const BlogCategory = styled.div`
