@@ -9,5 +9,8 @@ router.get('/protected', authMiddleware, authController.protected);
 router.post('/update-profile', authMiddleware, authController.updateProfile);
 router.post('/change-password', authMiddleware, authController.changePassword);
 router.post('/google', authController.GoogleLogin);
+router.post('/send-otp', authController.sendOtp);
+router.post('/verify-otp', authController.verifyOtp);
+router.post('/check-email', authController.checkEmail);
 
 module.exports = router; 
