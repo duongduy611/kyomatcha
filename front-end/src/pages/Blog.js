@@ -178,6 +178,25 @@ const Card = styled.div`
   }
 `;
 
+const CardTitle = styled.h3`
+  font-size: 1.4rem;
+  color: #23201b;
+  margin-bottom: 12px;
+  font-family: "Vollkorn", serif;
+  line-height: 1.4;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const CardLink= styled(Link)`
+  text-decoration: none;
+  &:hover ${CardTitle}{
+    text-decoration: underline;
+  }
+`
+
 const CardImageWrapper = styled.div`
   width: 100%;
   position: relative;
@@ -203,17 +222,6 @@ const CardMeta = styled.p`
   }
 `;
 
-const CardTitle = styled.h3`
-  font-size: 1.4rem;
-  color: #23201b;
-  margin-bottom: 12px;
-  font-family: "Vollkorn", serif;
-  line-height: 1.4;
-  text-decoration: none;
-  &:hover {
-    text-decoration: underline;
-  }
-`;
 
 const CardDescription = styled.p`
   font-size: 0.9rem;
@@ -324,7 +332,7 @@ const Blog = () => {
         <CardContainer>
           {beautyBlogs.map((blog, index) => (
             <Card key={index}>
-              <Link
+              <CardLink
                 to={`/blogs/${blog.slug}`}
                 style={{ textDecoration: "none" }}
               >
@@ -336,7 +344,7 @@ const Blog = () => {
                 </CardMeta>
                 <CardTitle>{blog.title}</CardTitle>
                 <CardDescription>{blog.summary}</CardDescription>
-              </Link>
+              </CardLink>
             </Card>
           ))}
         </CardContainer>
@@ -367,7 +375,7 @@ const Blog = () => {
         <CardContainer>
           {brewingBlogs.map((blog, index) => (
             <Card key={index}>
-              <Link
+              <CardLink
                 to={`/blogs/${blog.slug}`}
                 style={{ textDecoration: "none" }}
               >
@@ -379,7 +387,7 @@ const Blog = () => {
                 </CardMeta>
                 <CardTitle>{blog.title}</CardTitle>
                 <CardDescription>{blog.summary}</CardDescription>
-              </Link>
+              </CardLink>
             </Card>
           ))}
         </CardContainer>
@@ -410,7 +418,7 @@ const Blog = () => {
         <CardContainer>
           {explorationBlogs.map((blog, index) => (
             <Card key={index}>
-              <Link
+              <CardLink
                 to={`/blogs/${blog.slug}`}
                 style={{ textDecoration: "none" }}
               >
@@ -422,7 +430,7 @@ const Blog = () => {
                 </CardMeta>
                 <CardTitle>{blog.title}</CardTitle>
                 <CardDescription>{blog.summary}</CardDescription>
-              </Link>
+              </CardLink>
             </Card>
           ))}
         </CardContainer>
