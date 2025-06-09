@@ -4,6 +4,7 @@ import styled, { keyframes } from "styled-components";
 import logoImg from "../assets/logo/kyo-matcha-logo.png";
 import logoImg2 from "../assets/logo/kyo-matcha-logo.png";
 import { useAppContext } from "../context/AppContext";
+import { toast } from "react-toastify";
 
 const HeaderFixedWrapper = styled.div`
   position: fixed;
@@ -20,7 +21,7 @@ const Topbar = styled.div`
   font-size: 13px;
   text-align: center;
   padding: 10px 0 10px 0;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   letter-spacing: 0.2px;
 `;
 
@@ -131,7 +132,7 @@ const NavItem = styled.div`
     bottom: -2px;
     width: 0%;
     height: 2px;
-    background: #4A7C59;
+    background: #4a7c59;
     transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     margin: 0 auto;
   }
@@ -216,7 +217,7 @@ const ModalContent = styled.div`
   padding: 40px 48px 32px 48px;
   overflow-y: auto;
   position: relative;
-  animation: ${slideIn} 0.45s cubic-bezier(0.4,0,0.2,1);
+  animation: ${slideIn} 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
 const CloseButton = styled.button`
@@ -256,7 +257,7 @@ const HamburgerButton = styled.button`
 `;
 
 const MobileMenuOverlay = styled.div`
-  display: ${({ open }) => (open ? 'block' : 'none')};
+  display: ${({ open }) => (open ? "block" : "none")};
   position: fixed;
   top: 0;
   left: 0;
@@ -269,14 +270,14 @@ const MobileMenuOverlay = styled.div`
 const MobileMenu = styled.nav`
   position: fixed;
   top: 0;
-  left: ${({ open }) => (open ? '0' : '-80vw')};
+  left: ${({ open }) => (open ? "0" : "-80vw")};
   width: 80vw;
   max-width: 340px;
   height: 100vh;
   background: #f6f6ee;
-  box-shadow: 2px 0 16px rgba(0,0,0,0.08);
+  box-shadow: 2px 0 16px rgba(0, 0, 0, 0.08);
   z-index: 1201;
-  transition: left 0.35s cubic-bezier(0.4,0,0.2,1);
+  transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   padding: 32px 24px 24px 24px;
@@ -292,8 +293,12 @@ const MobileMenuLink = styled(Link)`
   font-weight: 500;
   margin-bottom: 24px;
   letter-spacing: 1px;
-  &:last-child { margin-bottom: 0; }
-  &:hover { color: #4A7C59; }
+  &:last-child {
+    margin-bottom: 0;
+  }
+  &:hover {
+    color: #4a7c59;
+  }
 `;
 
 const Header = () => {
@@ -302,10 +307,7 @@ const Header = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const {
-    setSelectedCategory,
-    setSelectedBlogCategory,
-  } = useAppContext();
+  const { setSelectedCategory, setSelectedBlogCategory } = useAppContext();
   const [showModal, setShowModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -332,20 +334,49 @@ const Header = () => {
       </Topbar>
       {showModal && (
         <ModalOverlay onClick={() => setShowModal(false)}>
-          <ModalContent onClick={e => e.stopPropagation()}>
-            <CloseButton onClick={() => setShowModal(false)}>&times;</CloseButton>
-            <div style={{marginTop: 24}}>
-              <h3 style={{fontWeight: 600}}>Phí vận chuyển</h3>
-              <p>Với hóa đơn từ 99.000đ : miễn phí vận chuyển toàn quốc<br/>
-              Với hóa đơn dưới 99.000đ: phí vận chuyển mặc định 30.000đ áp dụng toàn quốc.</p>
-              <h3 style={{fontWeight: 600}}>Thời gian giao hàng</h3>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <CloseButton onClick={() => setShowModal(false)}>
+              &times;
+            </CloseButton>
+            <div style={{ marginTop: 24 }}>
+              <h3 style={{ fontWeight: 600 }}>Phí vận chuyển</h3>
+              <p>
+                Với hóa đơn từ 99.000đ : miễn phí vận chuyển toàn quốc
+                <br />
+                Với hóa đơn dưới 99.000đ: phí vận chuyển mặc định 30.000đ áp
+                dụng toàn quốc.
+              </p>
+              <h3 style={{ fontWeight: 600 }}>Thời gian giao hàng</h3>
               <ul>
-                <li><b>Đơn hàng nội thành TP.Hà Nội:</b><br/>Thời gian giao hàng là 2-7 ngày sau khi đặt hàng.</li>
-                <li><b>Đơn hàng ở ngoại thành TP.Hà Nội và các tỉnh thành khác:</b><br/>Thời gian là 2-15 ngày đối với khu vực trung tâm tỉnh thành phố, 5-15 ngày đối với khu vực huyện, xã, thị trấn... (Không tính chủ nhật hay các ngày lễ tết) Có thể thay đổi thời gian giao hàng trong một số trường hợp bất khả kháng như: chịu ảnh hưởng của thiên tai, dịch Covid hoặc các sự kiện đặc biệt khác.</li>
-                <li><b>Lưu ý:</b> Đơn hàng đặt mua tại website: kyomatcha.id.vn sẽ được chúng tôi chuyển phát đến các bạn thông qua 2 đơn vị vận chuyển chính: GIAO HÀNG TIẾT KIỆM Hoặc NETPOST. Đặc biệt, thông tin hóa đơn dán bên ngoài kiện hàng luôn luôn có logo có giá của thương hiệu để nhận biết các sản phẩm là chính hãng.</li>
+                <li>
+                  <b>Đơn hàng nội thành TP.Hà Nội:</b>
+                  <br />
+                  Thời gian giao hàng là 2-7 ngày sau khi đặt hàng.
+                </li>
+                <li>
+                  <b>
+                    Đơn hàng ở ngoại thành TP.Hà Nội và các tỉnh thành khác:
+                  </b>
+                  <br />
+                  Thời gian là 2-15 ngày đối với khu vực trung tâm tỉnh thành
+                  phố, 5-15 ngày đối với khu vực huyện, xã, thị trấn... (Không
+                  tính chủ nhật hay các ngày lễ tết) Có thể thay đổi thời gian
+                  giao hàng trong một số trường hợp bất khả kháng như: chịu ảnh
+                  hưởng của thiên tai, dịch Covid hoặc các sự kiện đặc biệt
+                  khác.
+                </li>
+                <li>
+                  <b>Lưu ý:</b> Đơn hàng đặt mua tại website: kyomatcha.id.vn sẽ
+                  được chúng tôi chuyển phát đến các bạn thông qua 2 đơn vị vận
+                  chuyển chính: GIAO HÀNG TIẾT KIỆM Hoặc NETPOST. Đặc biệt,
+                  thông tin hóa đơn dán bên ngoài kiện hàng luôn luôn có logo có
+                  giá của thương hiệu để nhận biết các sản phẩm là chính hãng.
+                </li>
               </ul>
-              <p style={{fontStyle: 'italic', marginTop: 16}}>
-                Để kiểm tra thông tin hoặc tình trạng đơn hàng của quý khách, xin vui lòng nhắn tin vào Fanpage hoặc gọi số Hotline, cung cấp tên, số điện thoại, mã đơn hàng (nếu có) để được kiểm tra.
+              <p style={{ fontStyle: "italic", marginTop: 16 }}>
+                Để kiểm tra thông tin hoặc tình trạng đơn hàng của quý khách,
+                xin vui lòng nhắn tin vào Fanpage hoặc gọi số Hotline, cung cấp
+                tên, số điện thoại, mã đơn hàng (nếu có) để được kiểm tra.
               </p>
             </div>
           </ModalContent>
@@ -369,35 +400,47 @@ const Header = () => {
           </HamburgerButton>
           <LeftGroup>
             <NavItem className="nav-animated">
-              <NavLink
-                to="/products"
-                onClick={() => setSelectedCategory("")}
-              >
+              <NavLink to="/products" onClick={() => setSelectedCategory("")}>
                 Sản phẩm
               </NavLink>
             </NavItem>
             <NavItem
-              className={`nav-animated${isMenuActive("about") ? " active" : ""}`}
+              className={`nav-animated${
+                isMenuActive("about") ? " active" : ""
+              }`}
               onMouseEnter={() => handleDropdown("about")}
               onMouseLeave={closeDropdown}
             >
-              <NavLink to="/about-us">
-                Giới thiệu
-              </NavLink>
+              <NavLink to="/about-us">Giới thiệu</NavLink>
               <DropdownMenu show={isMenuActive("about")}>
-                <DropdownLink to="/about-us" onClick={() => setSelectedCategory("")}>Về chúng tôi</DropdownLink>
-                <DropdownLink to="/history" onClick={() => setSelectedCategory("")}>Lịch sử trà Nhật</DropdownLink>
+                <DropdownLink
+                  to="/about-us"
+                  onClick={() => setSelectedCategory("")}
+                >
+                  Về chúng tôi
+                </DropdownLink>
+                <DropdownLink
+                  to="/history"
+                  onClick={() => setSelectedCategory("")}
+                >
+                  Lịch sử trà Nhật
+                </DropdownLink>
               </DropdownMenu>
             </NavItem>
             <NavItem className="nav-animated">
-              <NavLink to="/blogs">
-                Bài viết
-              </NavLink>
+              <NavLink to="/blogs">Bài viết</NavLink>
             </NavItem>
           </LeftGroup>
           <CenterGroup>
-            <Link to="/" onClick={() => setSelectedCategory("")}
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Link
+              to="/"
+              onClick={() => setSelectedCategory("")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <Logo
                 src={isScrolled || isHovered ? logoImg : logoImg2}
                 alt="KyoMatcha Logo"
@@ -420,24 +463,88 @@ const Header = () => {
               </NavLink>
             </NavItem>
             <NavItem className="nav-animated">
-              <NavLink to="/cart" onClick={() => navigate("/cart")}>Giỏ hàng</NavLink>
+              <MobileMenuLink
+                to="/cart"
+                onClick={(e) => {
+                  const token = localStorage.getItem("token");
+                  const userId = localStorage.getItem("userId");
+
+                  if (!token || !userId) {
+                    e.preventDefault(); // Ngăn chuyển trang
+                    toast.info(
+                      "Vui lòng đăng nhập để xem giỏ hàng"
+                    );
+                    navigate("/login");
+                    return;
+                  }
+
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Giỏ hàng
+              </MobileMenuLink>
             </NavItem>
             <NavItem className="nav-animated">
               <NavLink to="/contact">Liên hệ</NavLink>
             </NavItem>
           </RightGroup>
         </HeaderContainer>
-        <MobileMenuOverlay open={mobileMenuOpen} onClick={() => setMobileMenuOpen(false)} />
+        <MobileMenuOverlay
+          open={mobileMenuOpen}
+          onClick={() => setMobileMenuOpen(false)}
+        />
         <MobileMenu open={mobileMenuOpen}>
-          <MobileMenuLink to="/products" onClick={() => setMobileMenuOpen(false)}>Sản phẩm</MobileMenuLink>
-          <MobileMenuLink to="/about-us" onClick={() => setMobileMenuOpen(false)}>Giới thiệu</MobileMenuLink>
-          <MobileMenuLink to="/history" onClick={() => setMobileMenuOpen(false)}>Lịch sử trà Nhật</MobileMenuLink>
-          <MobileMenuLink to="/blogs" onClick={() => setMobileMenuOpen(false)}>Bài viết</MobileMenuLink>
-          <MobileMenuLink to={isLoggedIn ? "/profile" : "/login"} onClick={() => setMobileMenuOpen(false)}>
+          <MobileMenuLink
+            to="/products"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Sản phẩm
+          </MobileMenuLink>
+          <MobileMenuLink
+            to="/about-us"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Giới thiệu
+          </MobileMenuLink>
+          <MobileMenuLink
+            to="/history"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Lịch sử trà Nhật
+          </MobileMenuLink>
+          <MobileMenuLink to="/blogs" onClick={() => setMobileMenuOpen(false)}>
+            Bài viết
+          </MobileMenuLink>
+          <MobileMenuLink
+            to={isLoggedIn ? "/profile" : "/login"}
+            onClick={() => setMobileMenuOpen(false)}
+          >
             {isLoggedIn ? "Tài khoản" : "Đăng nhập"}
           </MobileMenuLink>
-          <MobileMenuLink to="/cart" onClick={() => setMobileMenuOpen(false)}>Giỏ hàng</MobileMenuLink>
-          <MobileMenuLink to="/contact" onClick={() => setMobileMenuOpen(false)}>Liên hệ</MobileMenuLink>
+          <MobileMenuLink
+            to="/cart"
+            onClick={(e) => {
+              const token = localStorage.getItem("token");
+              const userId = localStorage.getItem("userId");
+
+              if (!token || !userId) {
+                e.preventDefault(); // Ngăn chuyển trang
+                toast.info("Vui lòng đăng nhập để xem vào giỏ hàng");
+                navigate("/login");
+                return;
+              }
+
+              setMobileMenuOpen(false);
+            }}
+          >
+            Giỏ hàng
+          </MobileMenuLink>
+          <MobileMenuLink
+            to="/contact"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Liên hệ
+          </MobileMenuLink>
         </MobileMenu>
       </HeaderWrapper>
     </HeaderFixedWrapper>
