@@ -110,7 +110,7 @@ const RightGroup = styled.div`
 `;
 
 const Logo = styled.img`
-  height: 90px;
+  height: 80px;
   width: auto;
   display: block;
   @media (max-width: 900px) {

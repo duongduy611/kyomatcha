@@ -236,7 +236,7 @@ function Login() {
       const data = await res.json();
       if (res.ok) {
         localStorage.setItem('token', data.token);
-        localStorage.setItem('id', data.user.id || '');
+        localStorage.setItem('userId', data.user.id || '');
         localStorage.setItem('username', data.user.username || '');
         localStorage.setItem('fullName', data.user.fullName || '');
         localStorage.setItem('email', data.user.email || '');

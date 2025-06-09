@@ -15,7 +15,7 @@ const TABS = [
 const Wrapper = styled.div`
   min-height: 100vh;
   background: #fcf9f2;
-  padding: 120px 0 80px 0;
+  padding: 120px 0 0 0;
 `;
 
 const Container = styled.div`

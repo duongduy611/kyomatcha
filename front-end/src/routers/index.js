@@ -21,102 +21,102 @@ export const routes = [
         path: "/",
         page: Home,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
     {
         path: "/login",
         page: Login,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
     {
         path: "/register",
         page: Register,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
     {
         path: '/profile',
         page: Profile,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
     {
         path: '/edit-profile',
         page: EditProfile,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
     {
         path: '/blogs',
         page: Blog,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
     {
         path: '/blogs/:slug',
         page: BlogDetail,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
     {
         path: '/contact',
         page: Contact,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
     {
         path: '/about-us',
         page: AboutUs,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
     {
         path: '/history',
         page: History,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
     {
         path: '*',
         page: NotFound,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
     {
         path: '/products',
         page: AllProducts,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
     {
         path: '/products/:slug',
         page: ProductDetail,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
     {
         path: '/cart',
         page: MyCart,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
     {
         path: '/thankyou',
         page: ThankYouPage,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
     {
         path: '/my-orders/:orderId',
         page: OrderDetail,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
      {
         path: '/qr-payment',
         page: QRPaymentPage,
         isShowHeader: true,
-        isShowFooter: true
+        isShowFooter: false
     },
 ]
