@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { blogs } from "../data/blogs";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+import Marquee from '../components/Marquee';
 import { useAppContext } from '../context/AppContext';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -504,6 +505,8 @@ function BlogList() {
 }
 
 const Home = () => {
+  const scrollingText = "KyoMatcha - Matcha cho 1 ngày dài tỉnh táo";
+
   return (
     <>
       <GlobalStyle />
@@ -518,6 +521,7 @@ const Home = () => {
           </BannerButtonGroup>
         </BannerTextWrapper>
       </BannerWrapper>
+      <Marquee text={scrollingText} duration="60s" />
       <TeaCollection />
       <BlogList />
     </>
