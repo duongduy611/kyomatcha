@@ -5,8 +5,10 @@ import axios from "axios";
 import { useAppContext } from "../context/AppContext";
 import bannerImage from "../assets/images/banner_product.jpg";
 import GlobalStyle from "../components/GlobalStyle";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { toast } from "react-toastify";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
 
 const KingofTea = styled.div`
   width: 100%;
@@ -57,8 +59,8 @@ const Container = styled.div`
 `;
 
 const Header = styled.div`
-  margin-bottom: 4rem;
-  padding: 2rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
   background-color: white;
   border-radius: 15px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -159,6 +161,11 @@ const ProductCard = styled.div`
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   background-color: #f6f6ee;
 
+  /* === CHANGED === */
+  /* Sử dụng width cố định và flex-shrink: 0 để thẻ không bị co lại trong flex container */
+  width: 250px;
+  flex-shrink: 0;
+
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -237,9 +244,10 @@ const Button = styled.button`
   transition: background 0.2s, color 0.2s;
   width: 40%;
   height: 120%;
+  border: 1px solid rgb(82, 115, 40);
   &:hover {
-    background: white ;
-    color: rgb(82, 115, 40) ;
+    background: white;
+    color: rgb(82, 115, 40);
     border: 1px solid rgb(82, 115, 40);
   }
 `;
@@ -251,6 +259,106 @@ const Loading = styled.div`
   color: #666;
 `;
 
+const CategoryRow = styled.div`
+  display: flex;
+  align-items: stretch;
+  margin-right: -100px;
+  background: #f9f6ef; /* Nền trắng ngà */
+  border-radius: 24px;
+  padding: 32px 0 32px 0;
+  min-height: 420px;
+  margin-bottom: 2rem; /* Thêm khoảng cách giữa các category */
+`;
+
+const CategoryInfo = styled.div`
+  width: 26%;
+  padding: 0 30px 0 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+const CategoryTitle = styled.h2`
+  font-size: 40px;
+  font-weight: 550;
+  color: #404040;
+  margin: 200px 0 0 -180px;
+`;
+
+const SliderWrapper = styled.div`
+  width: 74%;
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  /* === CHANGED === */
+  /* overflow: hidden là bắt buộc để ẩn các card nằm ngoài khung nhìn */
+  overflow: hidden;
+
+  &:hover .slider-arrow {
+    opacity: 1;
+    visibility: visible;
+  }
+`;
+
+const ProductSlider = styled.div`
+  display: flex;
+  gap: 32px;
+  /* Hiệu ứng chuyển động mượt mà khi transform thay đổi */
+  transition: transform 0.5s ease-in-out;
+`;
+
+const SliderArrow = styled.button`
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  color: #537328;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+
+  &:hover:not(:disabled) {
+    background: #537328;
+    color: white;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #f5f5f5;
+    color: #999;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2.5;
+  }
+
+  /* === NEW === */
+  /* Chỉnh lại vị trí cho nút trái/phải */
+  &.left {
+    left: 10px;
+  }
+  &.right {
+    right: 10px;
+  }
+`;
+
 const AllProducts = () => {
   const { category } = useParams();
   const { selectedCategory, setSelectedCategory, categoryMapping } =
@@ -260,31 +368,31 @@ const AllProducts = () => {
   const [sortOption, setSortOption] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [categoryIndices, setCategoryIndices] = useState({});
   const navigate = useNavigate();
+
+  // Số lượng card hiển thị cùng lúc
+  const CARDS_PER_VIEW = 3;
 
   const handleAddToCart = async (productId, color = "", size = "") => {
     try {
-      // Lấy token và id người dùng từ localStorage
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
 
-      // Nếu chưa đăng nhập, điều hướng về trang login
       if (!token || !userId) {
         toast.info("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
         navigate("/login");
         return;
       }
 
-      // Chuẩn bị payload theo đúng spec của backend
       const payload = {
         userId: userId,
         productId: productId,
-        quantity: 1, // ở đây mình để mặc định 1; bạn có thể truyền vào tham số nếu muốn
-        color: color, // truyền vào từ component hoặc để mặc định
-        size: size, // truyền vào từ component hoặc để mặc định
+        quantity: 1,
+        color: color,
+        size: size,
       };
 
-      // Gọi API thêm vào giỏ
       const response = await axios.post(`${BACKEND_URL}/cart/add`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -293,10 +401,8 @@ const AllProducts = () => {
       });
 
       if (response.status === 200 && response.data && response.data._id) {
-        // Backend trả về obj cart mới (có _id) → coi như thành công
         toast.success("Đã thêm vào giỏ hàng!");
       } else {
-        console.log("Unexpected response from /cart/add:", response.data);
         toast.error("Thêm vào giỏ hàng không thành công. Vui lòng thử lại.");
       }
     } catch (error) {
@@ -305,12 +411,29 @@ const AllProducts = () => {
         toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
         navigate("/login");
       } else if (error.response?.data?.message) {
-        // Hiển thị message lỗi do backend trả về (nếu có)
         toast.error(error.response.data.message);
       } else {
         toast.error("Có lỗi xảy ra khi thêm vào giỏ hàng");
       }
     }
+  };
+
+  // Logic next/prev 1 sản phẩm đã đúng
+  const handlePrev = (category) => {
+    setCategoryIndices((prev) => ({
+      ...prev,
+      [category]: Math.max((prev[category] || 0) - 1, 0),
+    }));
+  };
+
+  const handleNext = (category, productsInCategory) => {
+    const currentIdx = categoryIndices[category] || 0;
+    const maxIdx = productsInCategory.length - CARDS_PER_VIEW;
+
+    setCategoryIndices((prev) => ({
+      ...prev,
+      [category]: Math.min(currentIdx + 1, maxIdx),
+    }));
   };
 
   const fetchProducts = useCallback(async () => {
@@ -352,43 +475,21 @@ const AllProducts = () => {
     fetchProducts();
   }, [fetchProducts]);
 
-  const getCategoryTitle = () => {
-    if (category) {
-      switch (category) {
-        case "matcha":
-          return "Bột Trà Xanh Matcha";
-        case "tea-tools":
-          return "Tea Tools";
-        case "barista-tools":
-          return "Barista Tools";
-        default:
-          return "Tất Cả Sản Phẩm";
-      }
-    }
-    return "Tất Cả Sản Phẩm";
-  };
+  const groupedProducts = categories.reduce((acc, cat) => {
+    acc[cat] = products.filter((p) => p.category === cat);
+    return acc;
+  }, {});
 
   return (
     <>
       <GlobalStyle />
       <KingofTea>
         <Banner>
-          <BannerText>sản phẩm của chúng tôi </BannerText>
+          <BannerText>sản phẩm của chúng tôi</BannerText>
         </Banner>
         <Container>
           <Header>
             <FilterSection>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-              >
-                <option value="">Tất Cả Danh Mục</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {categoryMapping[category] || category}
-                  </option>
-                ))}
-              </select>
               <select
                 value={sortOption}
                 onChange={(e) => setSortOption(e.target.value)}
@@ -409,50 +510,119 @@ const AllProducts = () => {
               />
             </SearchBar>
           </Header>
-
           {loading ? (
             <Loading>Đang tải sản phẩm...</Loading>
           ) : (
-            <ProductGrid>
-              {products.map((product) => (
-                <ProductCard key={product._id}>
-                  <Link to={`/products/${product.slug}`}>
-                    <ProductImage>
-                      <img
-                        src={
-                          product.images && product.images.length > 0
-                            ? `${BACKEND_URL}${product.images[0]}`
-                            : "/placeholder.jpg"
-                        }
-                        alt={product.name}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = "/placeholder.jpg";
-                        }}
-                      />
-                    </ProductImage>
-                    <ProductInfo>
-                      <ProductName>{product.name}</ProductName>
-                      <ProductBottom>
-                        <ProductPrice>{product.price.toLocaleString('vi-VN')}₫</ProductPrice>
-                        <Button
-                          className="add-to-cart"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleAddToCart(product._id);
-                          }}
-                        >
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                            <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
-                          </svg>
-                        </Button>
-                      </ProductBottom>
-                    </ProductInfo>
-                  </Link>
-                </ProductCard>
-              ))}
-            </ProductGrid>
+            categories.map((cat) => {
+              const prods = groupedProducts[cat] || [];
+              if (prods.length <= 0) return null;
+
+              const start = categoryIndices[cat] || 0;
+
+              // === CHANGED ===
+              // Tính toán giá trị transform dựa trên width và gap cố định (bằng pixel)
+              // để đảm bảo slider dịch chuyển chính xác.
+              const cardWidth = 250; // width của ProductCard
+              const gap = 32; // gap của ProductSlider
+              const transformValue = -start * (cardWidth + gap);
+
+              return (
+                <CategoryRow key={cat}>
+                  <CategoryInfo>
+                    <div>
+                      <CategoryTitle>
+                        {cat === "barista_tools"
+                          ? "Dụng cụ pha chế"
+                          : cat === "tea_tools"
+                          ? "Dụng cụ trà đạo"
+                          : categoryMapping[cat] || cat}
+                      </CategoryTitle>
+                    </div>
+                  </CategoryInfo>
+                  <SliderWrapper>
+                    {/* Áp dụng transform đã tính toán */}
+                    <ProductSlider
+                      style={{ transform: `translateX(${transformValue}px)` }}
+                    >
+                      {prods.map((product) => (
+                        <ProductCard key={product.slug}>
+                          <Link to={`/products/${product.slug}`}>
+                            <ProductImage>
+                              <img
+                                src={
+                                  product.images && product.images.length > 0
+                                    ? product.images[0].startsWith("http")
+                                      ? product.images[0]
+                                      : `${BACKEND_URL}${product.images[0]}`
+                                    : "/placeholder.jpg"
+                                }
+                                alt={product.name}
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = "/placeholder.jpg";
+                                }}
+                              />
+                            </ProductImage>
+                            <ProductInfo>
+                              <ProductName>{product.name}</ProductName>
+                              <ProductBottom>
+                                <ProductPrice>
+                                  {product.price.toLocaleString("vi-VN")} đ
+                                </ProductPrice>
+                                <Button
+                                  className="add-to-cart"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleAddToCart(product._id);
+                                  }}
+                                >
+                                  <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                  >
+                                    <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                                    <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                                  </svg>
+                                </Button>
+                              </ProductBottom>
+                            </ProductInfo>
+                          </Link>
+                        </ProductCard>
+                      ))}
+                    </ProductSlider>
+
+                    {/* === UPDATED: Sử dụng conditional rendering để ẩn/hiện nút === */}
+                    {prods.length > CARDS_PER_VIEW && (
+                      <>
+                        {/* Nút TRÁI: Chỉ hiển thị khi 'start' lớn hơn 0 */}
+                        {start > 0 && (
+                          <SliderArrow
+                            className="slider-arrow left"
+                            onClick={() => handlePrev(cat)}
+                          >
+                            <FaChevronLeft />
+                          </SliderArrow>
+                        )}
+
+                        {/* Nút PHẢI: Chỉ hiển thị khi chưa trượt đến cuối danh sách */}
+                        {start < prods.length - CARDS_PER_VIEW && (
+                          <SliderArrow
+                            className="slider-arrow right"
+                            onClick={() => handleNext(cat, prods)}
+                          >
+                            <FaChevronRight />
+                          </SliderArrow>
+                        )}
+                      </>
+                    )}
+                  </SliderWrapper>
+                </CategoryRow>
+              );
+            })
           )}
         </Container>
       </KingofTea>
