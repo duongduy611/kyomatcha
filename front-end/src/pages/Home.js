@@ -330,9 +330,12 @@ const TeaCollection = () => {
             <Link to={`/products/${product.slug}`}>
               <ProductImage>
                 <img
-                  src={product.images && product.images.length > 0
-                    ? `${BACKEND_URL}${product.images[0]}`
-                    : "/placeholder.jpg"
+                  src={
+                    product.images && product.images.length > 0
+                      ? product.images[0].startsWith("http")
+                        ? product.images[0]
+                        : `${BACKEND_URL}${product.images[0]}`
+                      : "/placeholder.jpg"
                   }
                   alt={product.name}
                   onError={(e) => {
