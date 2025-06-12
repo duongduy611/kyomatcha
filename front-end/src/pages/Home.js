@@ -18,6 +18,14 @@ const BannerWrapper = styled.div`
   height: 70vh;
   position: relative;
   overflow: hidden;
+  @media (max-width: 768px) {
+    height: 50vh;
+    margin-top: 80px;
+  }
+  @media (max-width: 480px) {
+    height: 40vh;
+    margin-top: 60px;
+  }
 `;
 
 const BannerImage = styled.img`
@@ -67,12 +75,23 @@ const BannerTitle = styled.div`
   letter-spacing: 3px;
   margin-bottom: 32px;
   text-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
+  @media (max-width: 768px) {
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 480px) {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
 `;
 
 const BannerButtonGroup = styled.div`
   display: inline-grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
+  @media (max-width: 480px) {
+    gap: 12px;
+  }
 `;
 
 const BannerButton = styled(Link)`
@@ -89,7 +108,14 @@ const BannerButton = styled(Link)`
   font-family: "Montserrat", sans-serif;
   text-decoration: none;
   text-align: center;
-
+  @media (max-width: 768px) {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+  }
+  @media (max-width: 480px) {
+    padding: 10px 20px;
+    font-size: 0.8rem;
+  }
   &:hover {
     background: transparent;
     color: #fff;
@@ -110,6 +136,14 @@ const SectionTitle = styled.h2`
   color: #000;
   font-weight: 500;
   margin-bottom: 48px;
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+    margin-bottom: 24px;
+  }
 `;
 
 const ProductGrid = styled.div`
@@ -118,6 +152,19 @@ const ProductGrid = styled.div`
   justify-content: center;
   gap: 32px;
   padding: 0 32px;
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 30%);
+  }
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 40%);
+    gap: 20px;
+    padding: 0 20px;
+  }
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    max-width: 300px;
+    margin: 0 auto;
+  }
 `;
 
 
@@ -155,6 +202,12 @@ const ProductImage = styled.div`
   background-color: #f8f8f8;
   overflow: hidden;
   height: 320px;
+  @media (max-width: 768px) {
+    height: 280px;
+  }
+  @media (max-width: 480px) {
+    height: 250px;
+  }
   img {
     position: absolute;
     top: 0;
@@ -391,6 +444,19 @@ const BlogGrid = styled.div`
   justify-content: center;
   gap: 32px;
   padding: 0 32px;
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 35%);
+  }
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 40%);
+    gap: 20px;
+    padding: 0 20px;
+  }
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    max-width: 300px;
+    margin: 0 auto;
+  }
 `;
 
 const BlogCard = styled.div`
@@ -419,6 +485,12 @@ const BlogImage = styled.img`
   object-fit: cover;
   margin-bottom: 18px;
   cursor: pointer;
+  @media (max-width: 768px) {
+    height: 180px;
+  }
+  @media (max-width: 480px) {
+    height: 160px;
+  }
 `;
 
 const BlogCategory = styled.div`
