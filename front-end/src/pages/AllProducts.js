@@ -292,10 +292,11 @@ const CategoryTitle = styled.h2`
 
 const SliderWrapper = styled.div`
   width: 100%;
-  overflow-x: scroll; /* Cho phép cuộn ngang và hiển thị thanh cuộn mặc định */
-  overflow-y: hidden; /* Ẩn cuộn dọc */
-  scroll-behavior: smooth; /* Cuộn mượt khi dùng nút */
-  cursor: grab; /* Con trỏ kéo cho nội dung */
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  cursor: grab;
+
   &.dragging {
     cursor: grabbing;
   }
@@ -329,7 +330,7 @@ const SliderTrack = styled.div`
   display: flex;
   gap: 16px;
   flex-wrap: nowrap;
-  padding-bottom: 0px; /* Không cần padding nếu dùng scrollbar mặc định */
+  padding-bottom: 0px;
 `;
 
 const ProductSlider = styled.div`
@@ -410,23 +411,26 @@ function debounce(func, timeout = 100) {
 
 const AllProducts = () => {
   const { category } = useParams();
-  const { selectedCategory, setSelectedCategory, categoryMapping } = useAppContext();
+  const {
+    selectedCategory,
+    setSelectedCategory,
+    categoryMapping,
+    getCategoryDisplay,
+  } = useAppContext();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [sortOption, setSortOption] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  const [categoryIndices, setCategoryIndices] = useState({}); // Dùng để theo dõi vị trí cuộn cho các nút điều hướng
+  const [categoryIndices, setCategoryIndices] = useState({});
 
   const navigate = useNavigate();
 
-  const sliderRefs = useRef({}); // Ref để truy cập DOM element của SliderWrapper
-  
-  // Ref và state cho logic kéo chuột trên SliderWrapper (nội dung)
+  const sliderRefs = useRef({});
+
   const isDragging = useRef({});
   const startX = useRef({});
   const scrollLeft = useRef({});
-
 
   const CARDS_PER_VIEW = 3;
   const CARD_WIDTH = 250;
@@ -444,7 +448,10 @@ const AllProducts = () => {
       }
       const payload = { userId, productId, quantity: 1, color, size };
       const response = await axios.post(`${BACKEND_URL}/cart/add`, payload, {
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       });
       if (response.status === 200 && response.data?._id) {
         toast.success("Đã thêm vào giỏ hàng!");
@@ -457,7 +464,9 @@ const AllProducts = () => {
         toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
         navigate("/login");
       } else {
-        toast.error(error.response?.data?.message || "Có lỗi xảy ra khi thêm vào giỏ hàng");
+        toast.error(
+          error.response?.data?.message || "Có lỗi xảy ra khi thêm vào giỏ hàng"
+        );
       }
     }
   };
@@ -476,13 +485,16 @@ const AllProducts = () => {
     });
   };
 
-  const handleScroll = useCallback((category) => {
-    const slider = sliderRefs.current[category];
-    if (slider) {
-      const newIndex = Math.round(slider.scrollLeft / SCROLL_STEP);
-      setCategoryIndices((prev) => ({ ...prev, [category]: newIndex }));
-    }
-  }, [SCROLL_STEP]);
+  const handleScroll = useCallback(
+    (category) => {
+      const slider = sliderRefs.current[category];
+      if (slider) {
+        const newIndex = Math.round(slider.scrollLeft / SCROLL_STEP);
+        setCategoryIndices((prev) => ({ ...prev, [category]: newIndex }));
+      }
+    },
+    [SCROLL_STEP]
+  );
 
   const debouncedScrollHandlers = useMemo(() => {
     const handlers = {};
@@ -492,21 +504,22 @@ const AllProducts = () => {
     return handlers;
   }, [categories, handleScroll]);
 
-
   const handleMouseDown = useCallback((e, category) => {
-    if (e.button !== 0) return; // Chỉ xử lý click chuột trái
+    if (e.button !== 0) return;
     isDragging.current[category] = true;
-    startX.current[category] = e.pageX - sliderRefs.current[category].offsetLeft;
+    startX.current[category] =
+      e.pageX - sliderRefs.current[category].offsetLeft;
     scrollLeft.current[category] = sliderRefs.current[category].scrollLeft;
     sliderRefs.current[category].classList.add("dragging");
   }, []);
 
   const handleMouseMove = useCallback((e, category) => {
     if (!isDragging.current[category]) return;
-    e.preventDefault(); // Ngăn chặn hành vi chọn văn bản mặc định khi kéo
+    e.preventDefault();
     const x = e.pageX - sliderRefs.current[category].offsetLeft;
-    const walk = (x - startX.current[category]) * 2; // Điều chỉnh tốc độ kéo
-    sliderRefs.current[category].scrollLeft = scrollLeft.current[category] - walk;
+    const walk = (x - startX.current[category]) * 2;
+    sliderRefs.current[category].scrollLeft =
+      scrollLeft.current[category] - walk;
   }, []);
 
   const handleMouseUp = useCallback((category) => {
@@ -517,6 +530,7 @@ const AllProducts = () => {
   }, []);
 
   useEffect(() => {
+    console.log(categoryMapping);
     const handleGlobalMouseUp = (e) => {
       for (const category in isDragging.current) {
         if (isDragging.current[category]) {
@@ -527,12 +541,11 @@ const AllProducts = () => {
         }
       }
     };
-    window.addEventListener('mouseup', handleGlobalMouseUp);
+    window.addEventListener("mouseup", handleGlobalMouseUp);
     return () => {
-      window.removeEventListener('mouseup', handleGlobalMouseUp);
+      window.removeEventListener("mouseup", handleGlobalMouseUp);
     };
   }, []);
-
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -554,8 +567,24 @@ const AllProducts = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        const categoryOrder = ["Matcha", "tea_tools", "barista_tools"]; // Đúng thứ tự như trong ảnh và dữ liệu API
+
         const response = await axios.get(`${BACKEND_URL}/api/categories`);
-        setCategories(response.data.data || []);
+        const rawCategories = response.data.data || [];
+
+        // Lọc các danh mục có trong categoryOrder và giữ nguyên thứ tự
+        const orderedCategories = categoryOrder.filter((c) =>
+          rawCategories.includes(c)
+        );
+
+        // Lọc các danh mục còn lại không có trong categoryOrder
+        const extras = rawCategories.filter((c) => !categoryOrder.includes(c));
+
+        // Kết hợp lại: ưu tiên các danh mục trong orderedCategories, sau đó đến các danh mục còn lại
+        const finalCategories = [...orderedCategories, ...extras];
+
+        console.log(finalCategories);
+        setCategories(finalCategories || []);
       } catch (error) {
         console.error("Error fetching categories:", error);
         setCategories([]);
@@ -579,15 +608,14 @@ const AllProducts = () => {
   }, [categories, products]);
 
   useEffect(() => {
-    categories.forEach(cat => {
-        const prods = groupedProducts[cat] || [];
-        if (prods.length > 0) {
-            handleScroll(cat);
-        }
+    categories.forEach((cat) => {
+      const prods = groupedProducts[cat] || [];
+      if (prods.length > 0) {
+        handleScroll(cat);
+      }
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupedProducts, categories]);
-
 
   return (
     <>
@@ -599,7 +627,10 @@ const AllProducts = () => {
         <Container>
           <Header>
             <FilterSection>
-              <select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
+              >
                 <option value="">Sắp xếp theo</option>
                 <option value="name-asc">Tên, A-Z</option>
                 <option value="name-desc">Tên, Z-A</option>
@@ -626,9 +657,14 @@ const AllProducts = () => {
               const currentIndex = categoryIndices[cat] || 0;
               const isAtStart = currentIndex <= 0;
               const sliderElement = sliderRefs.current[cat];
-              const isAtEnd = sliderElement && 
-                             (Math.abs(sliderElement.scrollWidth - sliderElement.scrollLeft - sliderElement.clientWidth) < 1);
-              
+              const isAtEnd =
+                sliderElement &&
+                Math.abs(
+                  sliderElement.scrollWidth -
+                    sliderElement.scrollLeft -
+                    sliderElement.clientWidth
+                ) < 1;
+
               const showScrollControls = prods.length > CARDS_PER_VIEW;
 
               return (
@@ -636,7 +672,11 @@ const AllProducts = () => {
                   <CategoryInfo>
                     <div>
                       <CategoryTitle>
-                        {cat === "barista_tools" ? "Dụng cụ pha chế" : cat === "tea_tools" ? "Dụng cụ trà đạo" : categoryMapping[cat] || cat}
+                        {cat === "tea_tools"
+                          ? "Dụng cụ trà đạo"
+                          : cat === "barista_tools"
+                          ? "Dụng cụ pha chế"
+                          : cat}
                       </CategoryTitle>
                     </div>
                   </CategoryInfo>
@@ -660,7 +700,10 @@ const AllProducts = () => {
                                     src={
                                       product.images?.[0]?.startsWith("http")
                                         ? product.images[0]
-                                        : `${BACKEND_URL}${product.images?.[0] || '/placeholder.jpg'}`
+                                        : `${BACKEND_URL}${
+                                            product.images?.[0] ||
+                                            "/placeholder.jpg"
+                                          }`
                                     }
                                     alt={product.name}
                                     onError={(e) => {
@@ -677,7 +720,8 @@ const AllProducts = () => {
                                         {product.shortDescription}
                                       </ProductShortDescription>
                                       <ProductPrice>
-                                        {product.price.toLocaleString("vi-VN")} đ
+                                        {product.price.toLocaleString("vi-VN")}{" "}
+                                        đ
                                       </ProductPrice>
                                     </div>
                                     <Button
@@ -687,7 +731,14 @@ const AllProducts = () => {
                                         handleAddToCart(product._id);
                                       }}
                                     >
-                                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                      <svg
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                      >
                                         <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
                                         <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
                                       </svg>
@@ -700,17 +751,23 @@ const AllProducts = () => {
                         </ProductSlider>
                       </SliderTrack>
                     </SliderWrapper>
-                    
+
                     {/* Các nút điều hướng vẫn được giữ lại */}
                     {showScrollControls && (
                       <>
                         {!isAtStart && (
-                          <SliderArrow className="slider-arrow left" onClick={() => handlePrev(cat)}>
+                          <SliderArrow
+                            className="slider-arrow left"
+                            onClick={() => handlePrev(cat)}
+                          >
                             <FaChevronLeft />
                           </SliderArrow>
                         )}
                         {!isAtEnd && (
-                          <SliderArrow className="slider-arrow right" onClick={() => handleNext(cat)}>
+                          <SliderArrow
+                            className="slider-arrow right"
+                            onClick={() => handleNext(cat)}
+                          >
                             <FaChevronRight />
                           </SliderArrow>
                         )}
