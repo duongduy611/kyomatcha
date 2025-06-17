@@ -237,8 +237,10 @@ const TeaCollection = () => {
   try {
     // Lấy token và id người dùng từ localStorage
     const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('id');
-
+    const userId = localStorage.getItem('userId');
+    console.log("Token:", token);
+    console.log("User ID:", userId);
+    
     // Nếu chưa đăng nhập, điều hướng về trang login
     if (!token || !userId) {
       toast.info('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
