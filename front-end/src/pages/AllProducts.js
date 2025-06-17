@@ -292,7 +292,8 @@ const CategoryTitle = styled.h2`
 
 const SliderWrapper = styled.div`
   width: 100%;
-  overflow: scroll; /* Cho phép cuộn ngang và hiển thị thanh cuộn mặc định */
+  overflow-x: scroll; /* Cho phép cuộn ngang và hiển thị thanh cuộn mặc định */
+  overflow-y: hidden; /* Ẩn cuộn dọc */
   scroll-behavior: smooth; /* Cuộn mượt khi dùng nút */
   cursor: grab; /* Con trỏ kéo cho nội dung */
   &.dragging {
