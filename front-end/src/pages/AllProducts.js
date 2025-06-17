@@ -9,7 +9,6 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { toast } from "react-toastify";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-
 const KingofTea = styled.div`
   width: 100%;
   height: 100%;
@@ -203,17 +202,24 @@ const ProductInfo = styled.div`
   flex-direction: column;
   gap: 10px;
   background-color: #f6f6ee;
+  font-family: monsterrat;
 `;
 
 const ProductName = styled.h3`
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: #333;
   margin: 0 0 10px 0;
   line-height: 1.3;
   white-space: nowrap;
-  overflow: hidden;
+
   text-overflow: ellipsis;
+`;
+
+const ProductShortDescription = styled.h3`
+  font-size: 0.6rem;
+  width: 155%;
+  color: #333;
 `;
 
 const ProductBottom = styled.div`
@@ -224,8 +230,7 @@ const ProductBottom = styled.div`
 `;
 
 const ProductPrice = styled.div`
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 0.9rem;
   color: #527328;
 `;
 
@@ -242,9 +247,10 @@ const Button = styled.button`
   align-items: center;
   justify-content: center;
   transition: background 0.2s, color 0.2s;
-  width: 40%;
-  height: 120%;
+  width: 60px;
+  height: 60px;
   border: 1px solid rgb(82, 115, 40);
+  margin-right: -10px;
   &:hover {
     background: white;
     color: rgb(82, 115, 40);
@@ -283,6 +289,7 @@ const CategoryTitle = styled.h2`
   font-weight: 550;
   color: #404040;
   margin: 200px 0 0 -180px;
+  font-family: MJ Royale Couture Serif;
 `;
 
 const SliderWrapper = styled.div`
@@ -564,11 +571,14 @@ const AllProducts = () => {
                               />
                             </ProductImage>
                             <ProductInfo>
-                              <ProductName>{product.name}</ProductName>
                               <ProductBottom>
-                                <ProductPrice>
-                                  {product.price.toLocaleString("vi-VN")} đ
-                                </ProductPrice>
+                                <div style={{ width: "50%" }}>
+                                  <ProductName>{product.name}</ProductName>
+                                  <ProductShortDescription>{product.shortDescription}</ProductShortDescription>
+                                  <ProductPrice>
+                                    {product.price.toLocaleString("vi-VN")} đ
+                                  </ProductPrice>
+                                </div>
                                 <Button
                                   className="add-to-cart"
                                   onClick={(e) => {

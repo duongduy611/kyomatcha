@@ -54,7 +54,7 @@ const ProductDetail = () => {
 
           const combinedImages = [...mainImages, ...subImages];
           setAllImages(combinedImages);
-          
+
           // Set initial main image
           if (productData.images && productData.images.length > 0) {
             setCurrentMainImage(productData.images[0]);
@@ -67,7 +67,6 @@ const ProductDetail = () => {
           setSelectedSize("");
           setSelectedColor("");
           setQuantity(1);
-
         }
         setLoading(false);
       } catch (error) {
@@ -82,7 +81,7 @@ const ProductDetail = () => {
     if (!product) return 0;
 
     if (selectedSubCategory && selectedSubCategory.price) {
-        return selectedSubCategory.price;
+      return selectedSubCategory.price;
     }
 
     if (selectedSize && product.subPrice) {
@@ -189,7 +188,7 @@ const ProductDetail = () => {
   if (!product) {
     return <div>Không tìm thấy sản phẩm</div>;
   }
-  
+
   return (
     <Container style={{ marginTop: "160px" }}>
       <ProductSection>
@@ -306,7 +305,9 @@ const ProductDetail = () => {
                 <Link to={`/products/${relatedProduct.slug}`}>
                   <ProductImage>
                     <img
-                      src={getImageUrl(relatedProduct.images && relatedProduct.images[0])}
+                      src={getImageUrl(
+                        relatedProduct.images && relatedProduct.images[0]
+                      )}
                       alt={relatedProduct.name}
                       onError={(e) => {
                         e.target.onerror = null;
@@ -315,11 +316,16 @@ const ProductDetail = () => {
                     />
                   </ProductImage>
                   <ProductInfo>
-                    <ProductName>{relatedProduct.name}</ProductName>
                     <ProductBottom>
-                      <ProductPrice>
-                        {relatedProduct.price.toLocaleString("vi-VN")}₫
-                      </ProductPrice>
+                      <div style={{ width: "50%" }}>
+                        <ProductName>{relatedProduct.name}</ProductName>
+                        <ProductShortDescription>
+                          {relatedProduct.shortDescription}
+                        </ProductShortDescription>
+                        <ProductPrice>
+                          {relatedProduct.price.toLocaleString("vi-VN")}₫
+                        </ProductPrice>
+                      </div>
                       <Button>
                         <svg
                           width="20"
@@ -406,14 +412,6 @@ const Thumbnail = styled.div`
     display: block;
     aspect-ratio: 1 / 1;
   }
-`;
-
-const ProductInfo = styled.div`
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  background-color: #f6f6ee;
 `;
 
 const Price = styled.div`
@@ -556,15 +554,30 @@ const ProductImage = styled.div`
   }
 `;
 
+const ProductInfo = styled.div`
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #f6f6ee;
+  font-family: monsterrat;
+`;
+
 const ProductName = styled.h3`
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: #333;
   margin: 0 0 10px 0;
   line-height: 1.3;
   white-space: nowrap;
-  overflow: hidden;
+
   text-overflow: ellipsis;
+`;
+
+const ProductShortDescription = styled.h3`
+  font-size: 0.6rem;
+  width: 155%;
+  color: #333;
 `;
 
 const ProductBottom = styled.div`
@@ -575,8 +588,7 @@ const ProductBottom = styled.div`
 `;
 
 const ProductPrice = styled.div`
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 0.9rem;
   color: #527328;
 `;
 
@@ -593,11 +605,13 @@ const Button = styled.button`
   align-items: center;
   justify-content: center;
   transition: background 0.2s, color 0.2s;
-  width: 40%;
-  height: 120%;
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgb(82, 115, 40);
+  margin-right: -10px;
   &:hover {
-    background: white ;
-    color: rgb(82, 115, 40) ;
+    background: white;
+    color: rgb(82, 115, 40);
     border: 1px solid rgb(82, 115, 40);
   }
 `;
@@ -675,6 +689,5 @@ const StockInfo = styled.div`
   font-size: 0.9rem;
   color: #666;
 `;
-
 
 export default ProductDetail;

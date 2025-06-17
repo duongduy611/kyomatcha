@@ -225,17 +225,24 @@ const ProductInfo = styled.div`
   flex-direction: column;
   gap: 10px;
   background-color: #f6f6ee;
+  font-family: monsterrat;
 `;
 
 const ProductName = styled.h3`
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: #333;
   margin: 0 0 10px 0;
   line-height: 1.3;
   white-space: nowrap;
-  overflow: hidden;
+
   text-overflow: ellipsis;
+`;
+
+const ProductShortDescription = styled.h3`
+  font-size: 0.6rem;
+  width: 155%;
+  color: #333;
 `;
 
 const ProductBottom = styled.div`
@@ -246,8 +253,7 @@ const ProductBottom = styled.div`
 `;
 
 const ProductPrice = styled.div`
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 0.9rem;
   color: #527328;
 `;
 
@@ -258,20 +264,23 @@ const Button = styled.button`
   font-weight: 600;
   cursor: pointer;
   border: none;
-  background: #527328;
-  color: #fff;
+  background: #537328;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.2s, color 0.2s;
-   width: 40%;
-  height: 120%;
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgb(82, 115, 40);
+  margin-right: -10px;
   &:hover {
-    border: 1px solid #527328;
-    background: #f6f6ee;
-    color: #527328;
+    background: white;
+    color: rgb(82, 115, 40);
+    border: 1px solid rgb(82, 115, 40);
   }
 `;
+
 
 const TeaCollection = () => {
   const [products, setProducts] = useState([]);
@@ -379,44 +388,56 @@ const TeaCollection = () => {
       <SectionTitle>MATCHA CỦA CHÚNG TÔI</SectionTitle>
       <ProductGrid>
         {products.map((product) => (
-          <ProductCard key={product._id}>
-            <Link to={`/products/${product.slug}`}>
-              <ProductImage>
-                <img
-                  src={
-                    product.images && product.images.length > 0
-                      ? product.images[0].startsWith("http")
-                        ? product.images[0]
-                        : `${BACKEND_URL}${product.images[0]}`
-                      : "/placeholder.jpg"
-                  }
-                  alt={product.name}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "/placeholder.jpg";
+          <ProductCard key={product.slug}>
+          <Link to={`/products/${product.slug}`}>
+            <ProductImage>
+              <img
+                src={
+                  product.images && product.images.length > 0
+                    ? product.images[0].startsWith("http")
+                      ? product.images[0]
+                      : `${BACKEND_URL}${product.images[0]}`
+                    : "/placeholder.jpg"
+                }
+                alt={product.name}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/placeholder.jpg";
+                }}
+              />
+            </ProductImage>
+            <ProductInfo>
+              <ProductBottom>
+                <div style={{ width: "50%" }}>
+                  <ProductName>{product.name}</ProductName>
+                  <ProductShortDescription>{product.shortDescription}</ProductShortDescription>
+                  <ProductPrice>
+                    {product.price.toLocaleString("vi-VN")} đ
+                  </ProductPrice>
+                </div>
+                <Button
+                  className="add-to-cart"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleAddToCart(product._id);
                   }}
-                />
-              </ProductImage>
-              <ProductInfo>
-                <ProductName>{product.name}</ProductName>
-                <ProductBottom>
-                  <ProductPrice>{product.price.toLocaleString('vi-VN')}₫</ProductPrice>
-                  <Button
-                    className="add-to-cart"
-                    onClick={(e) => {
-                            e.preventDefault();
-                            handleAddToCart(product._id);
-                          }}
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                      <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
-                    </svg>
-                  </Button>
-                </ProductBottom>
-              </ProductInfo>
-            </Link>
-          </ProductCard>
+                    <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                    <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                  </svg>
+                </Button>
+              </ProductBottom>
+            </ProductInfo>
+          </Link>
+        </ProductCard>
         ))}
       </ProductGrid>
     </Section>

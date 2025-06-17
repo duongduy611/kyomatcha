@@ -21,6 +21,7 @@ const productSchema = new mongoose.Schema(
 		stock: { type: Number, default: 0 },
 		status: { type: String, enum: ['ACTIVE', 'INACTIVE'], default: 'ACTIVE' },
 		isDeleted: { type: Boolean, default: false },
+		shortDescription: { type: String },
 	},
 	{ timestamps: true }
 );
