@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo,
+} from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
@@ -7,6 +13,7 @@ import bannerImage from "../assets/images/banner_product.jpg";
 import GlobalStyle from "../components/GlobalStyle";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { toast } from "react-toastify";
+
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const KingofTea = styled.div`
@@ -143,12 +150,6 @@ const FilterSection = styled.div`
   }
 `;
 
-const ProductGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 2.5rem;
-`;
-
 const ProductCard = styled.div`
   background: white;
   border-radius: 8px;
@@ -159,9 +160,7 @@ const ProductCard = styled.div`
   height: 100%;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   background-color: #f6f6ee;
-
-  /* === CHANGED === */
-  /* Sử dụng width cố định và flex-shrink: 0 để thẻ không bị co lại trong flex container */
+  flex: 0 0 auto;
   width: 250px;
   flex-shrink: 0;
 
@@ -211,7 +210,7 @@ const ProductName = styled.h3`
   margin: 0 0 10px 0;
   line-height: 1.3;
   white-space: nowrap;
-
+  overflow: hidden;
   text-overflow: ellipsis;
 `;
 
@@ -267,12 +266,12 @@ const Loading = styled.div`
 const CategoryRow = styled.div`
   display: flex;
   align-items: stretch;
-  margin-right: -100px;
-  background: #f9f6ef; /* Nền trắng ngà */
+  background: #f9f6ef;
   border-radius: 24px;
   padding: 32px 0 32px 0;
   min-height: 420px;
-  margin-bottom: 2rem; /* Thêm khoảng cách giữa các category */
+  margin-bottom: 2rem;
+  margin-right: -100px;
 `;
 
 const CategoryInfo = styled.div`
@@ -292,14 +291,56 @@ const CategoryTitle = styled.h2`
 `;
 
 const SliderWrapper = styled.div`
-  width: 74%;
-  display: flex;
-  align-items: center;
-  position: relative;
+  width: 100%;
+  overflow: scroll; /* Cho phép cuộn ngang và hiển thị thanh cuộn mặc định */
+  scroll-behavior: smooth; /* Cuộn mượt khi dùng nút */
+  cursor: grab; /* Con trỏ kéo cho nội dung */
+  &.dragging {
+    cursor: grabbing;
+  }
 
-  /* === CHANGED === */
-  /* overflow: hidden là bắt buộc để ẩn các card nằm ngoài khung nhìn */
-  overflow: hidden;
+  /* Tùy chỉnh màu thanh cuộn mặc định cho WebKit (Chrome, Safari, Edge) */
+  &::-webkit-scrollbar {
+    height: 8px; /* Chiều cao của thanh cuộn ngang */
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #e0e0e0; /* Màu nền của track */
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #537329; /* Màu xanh đậm cho thumb */
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #537329; /* Màu xanh đậm hơn khi hover */
+  }
+
+  /* Tùy chỉnh màu thanh cuộn mặc định cho Firefox */
+  scrollbar-width: thin; /* "auto" hoặc "thin" */
+  scrollbar-color: #537329 #e0e0e0; /* thumb color track color (màu xanh đậm, nền xám nhạt) */
+`;
+
+const SliderTrack = styled.div`
+  display: flex;
+  gap: 16px;
+  flex-wrap: nowrap;
+  padding-bottom: 0px; /* Không cần padding nếu dùng scrollbar mặc định */
+`;
+
+const ProductSlider = styled.div`
+  display: flex;
+  gap: 32px;
+`;
+
+const SliderContainer = styled.div`
+  width: 74%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 
   &:hover .slider-arrow {
     opacity: 1;
@@ -307,26 +348,19 @@ const SliderWrapper = styled.div`
   }
 `;
 
-const ProductSlider = styled.div`
-  display: flex;
-  gap: 32px;
-  /* Hiệu ứng chuyển động mượt mà khi transform thay đổi */
-  transition: transform 0.5s ease-in-out;
-`;
-
 const SliderArrow = styled.button`
   border: none;
   background: rgba(255, 255, 255, 0.9);
   color: #537328;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  border-radius: 3px;
+  width: 66px;
+  height: 66px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1rem;
   position: absolute;
-  top: 50%;
+  top: 40%;
   transform: translateY(-50%);
   z-index: 2;
   opacity: 0;
@@ -350,63 +384,68 @@ const SliderArrow = styled.button`
   }
 
   svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     stroke-width: 2.5;
   }
 
-  /* === NEW === */
-  /* Chỉnh lại vị trí cho nút trái/phải */
   &.left {
-    left: 10px;
+    left: 0;
   }
   &.right {
-    right: 10px;
+    right: 0;
   }
 `;
 
+function debounce(func, timeout = 100) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, timeout);
+  };
+}
+
 const AllProducts = () => {
   const { category } = useParams();
-  const { selectedCategory, setSelectedCategory, categoryMapping } =
-    useAppContext();
+  const { selectedCategory, setSelectedCategory, categoryMapping } = useAppContext();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [sortOption, setSortOption] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  const [categoryIndices, setCategoryIndices] = useState({});
+  const [categoryIndices, setCategoryIndices] = useState({}); // Dùng để theo dõi vị trí cuộn cho các nút điều hướng
+
   const navigate = useNavigate();
 
-  // Số lượng card hiển thị cùng lúc
+  const sliderRefs = useRef({}); // Ref để truy cập DOM element của SliderWrapper
+  
+  // Ref và state cho logic kéo chuột trên SliderWrapper (nội dung)
+  const isDragging = useRef({});
+  const startX = useRef({});
+  const scrollLeft = useRef({});
+
+
   const CARDS_PER_VIEW = 3;
+  const CARD_WIDTH = 250;
+  const GAP = 32;
+  const SCROLL_STEP = CARD_WIDTH + GAP;
 
   const handleAddToCart = async (productId, color = "", size = "") => {
     try {
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
-
       if (!token || !userId) {
         toast.info("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
         navigate("/login");
         return;
       }
-
-      const payload = {
-        userId: userId,
-        productId: productId,
-        quantity: 1,
-        color: color,
-        size: size,
-      };
-
+      const payload = { userId, productId, quantity: 1, color, size };
       const response = await axios.post(`${BACKEND_URL}/cart/add`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       });
-
-      if (response.status === 200 && response.data && response.data._id) {
+      if (response.status === 200 && response.data?._id) {
         toast.success("Đã thêm vào giỏ hàng!");
       } else {
         toast.error("Thêm vào giỏ hàng không thành công. Vui lòng thử lại.");
@@ -416,46 +455,97 @@ const AllProducts = () => {
       if (error.response?.status === 401) {
         toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
         navigate("/login");
-      } else if (error.response?.data?.message) {
-        toast.error(error.response.data.message);
       } else {
-        toast.error("Có lỗi xảy ra khi thêm vào giỏ hàng");
+        toast.error(error.response?.data?.message || "Có lỗi xảy ra khi thêm vào giỏ hàng");
       }
     }
   };
 
-  // Logic next/prev 1 sản phẩm đã đúng
   const handlePrev = (category) => {
-    setCategoryIndices((prev) => ({
-      ...prev,
-      [category]: Math.max((prev[category] || 0) - 1, 0),
-    }));
+    sliderRefs.current[category]?.scrollTo({
+      left: sliderRefs.current[category].scrollLeft - SCROLL_STEP,
+      behavior: "smooth",
+    });
   };
 
-  const handleNext = (category, productsInCategory) => {
-    const currentIdx = categoryIndices[category] || 0;
-    const maxIdx = productsInCategory.length - CARDS_PER_VIEW;
-
-    setCategoryIndices((prev) => ({
-      ...prev,
-      [category]: Math.min(currentIdx + 1, maxIdx),
-    }));
+  const handleNext = (category) => {
+    sliderRefs.current[category]?.scrollTo({
+      left: sliderRefs.current[category].scrollLeft + SCROLL_STEP,
+      behavior: "smooth",
+    });
   };
+
+  const handleScroll = useCallback((category) => {
+    const slider = sliderRefs.current[category];
+    if (slider) {
+      const newIndex = Math.round(slider.scrollLeft / SCROLL_STEP);
+      setCategoryIndices((prev) => ({ ...prev, [category]: newIndex }));
+    }
+  }, [SCROLL_STEP]);
+
+  const debouncedScrollHandlers = useMemo(() => {
+    const handlers = {};
+    categories.forEach((cat) => {
+      handlers[cat] = debounce(() => handleScroll(cat), 100);
+    });
+    return handlers;
+  }, [categories, handleScroll]);
+
+
+  const handleMouseDown = useCallback((e, category) => {
+    if (e.button !== 0) return; // Chỉ xử lý click chuột trái
+    isDragging.current[category] = true;
+    startX.current[category] = e.pageX - sliderRefs.current[category].offsetLeft;
+    scrollLeft.current[category] = sliderRefs.current[category].scrollLeft;
+    sliderRefs.current[category].classList.add("dragging");
+  }, []);
+
+  const handleMouseMove = useCallback((e, category) => {
+    if (!isDragging.current[category]) return;
+    e.preventDefault(); // Ngăn chặn hành vi chọn văn bản mặc định khi kéo
+    const x = e.pageX - sliderRefs.current[category].offsetLeft;
+    const walk = (x - startX.current[category]) * 2; // Điều chỉnh tốc độ kéo
+    sliderRefs.current[category].scrollLeft = scrollLeft.current[category] - walk;
+  }, []);
+
+  const handleMouseUp = useCallback((category) => {
+    if (isDragging.current[category]) {
+      isDragging.current[category] = false;
+      sliderRefs.current[category]?.classList.remove("dragging");
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleGlobalMouseUp = (e) => {
+      for (const category in isDragging.current) {
+        if (isDragging.current[category]) {
+          isDragging.current[category] = false;
+          if (sliderRefs.current[category]) {
+            sliderRefs.current[category].classList.remove("dragging");
+          }
+        }
+      }
+    };
+    window.addEventListener('mouseup', handleGlobalMouseUp);
+    return () => {
+      window.removeEventListener('mouseup', handleGlobalMouseUp);
+    };
+  }, []);
+
 
   const fetchProducts = useCallback(async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const params = new URLSearchParams();
       if (selectedCategory) params.append("category", selectedCategory);
       if (sortOption) params.append("sort", sortOption);
       if (searchTerm) params.append("search", searchTerm);
-
       const response = await axios.get(`${BACKEND_URL}/api/products?${params}`);
       setProducts(response.data.data || []);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching products:", error);
       setProducts([]);
+    } finally {
       setLoading(false);
     }
   }, [selectedCategory, sortOption, searchTerm]);
@@ -470,7 +560,6 @@ const AllProducts = () => {
         setCategories([]);
       }
     };
-
     fetchCategories();
     if (category) {
       setSelectedCategory(categoryMapping[category] || "");
@@ -481,10 +570,23 @@ const AllProducts = () => {
     fetchProducts();
   }, [fetchProducts]);
 
-  const groupedProducts = categories.reduce((acc, cat) => {
-    acc[cat] = products.filter((p) => p.category === cat);
-    return acc;
-  }, {});
+  const groupedProducts = useMemo(() => {
+    return categories.reduce((acc, cat) => {
+      acc[cat] = products.filter((p) => p.category === cat);
+      return acc;
+    }, {});
+  }, [categories, products]);
+
+  useEffect(() => {
+    categories.forEach(cat => {
+        const prods = groupedProducts[cat] || [];
+        if (prods.length > 0) {
+            handleScroll(cat);
+        }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groupedProducts, categories]);
+
 
   return (
     <>
@@ -496,10 +598,7 @@ const AllProducts = () => {
         <Container>
           <Header>
             <FilterSection>
-              <select
-                value={sortOption}
-                onChange={(e) => setSortOption(e.target.value)}
-              >
+              <select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
                 <option value="">Sắp xếp theo</option>
                 <option value="name-asc">Tên, A-Z</option>
                 <option value="name-desc">Tên, Z-A</option>
@@ -523,112 +622,100 @@ const AllProducts = () => {
               const prods = groupedProducts[cat] || [];
               if (prods.length <= 0) return null;
 
-              const start = categoryIndices[cat] || 0;
-
-              // === CHANGED ===
-              // Tính toán giá trị transform dựa trên width và gap cố định (bằng pixel)
-              // để đảm bảo slider dịch chuyển chính xác.
-              const cardWidth = 250; // width của ProductCard
-              const gap = 32; // gap của ProductSlider
-              const transformValue = -start * (cardWidth + gap);
+              const currentIndex = categoryIndices[cat] || 0;
+              const isAtStart = currentIndex <= 0;
+              const sliderElement = sliderRefs.current[cat];
+              const isAtEnd = sliderElement && 
+                             (Math.abs(sliderElement.scrollWidth - sliderElement.scrollLeft - sliderElement.clientWidth) < 1);
+              
+              const showScrollControls = prods.length > CARDS_PER_VIEW;
 
               return (
                 <CategoryRow key={cat}>
                   <CategoryInfo>
                     <div>
                       <CategoryTitle>
-                        {cat === "barista_tools"
-                          ? "Dụng cụ pha chế"
-                          : cat === "tea_tools"
-                          ? "Dụng cụ trà đạo"
-                          : categoryMapping[cat] || cat}
+                        {cat === "barista_tools" ? "Dụng cụ pha chế" : cat === "tea_tools" ? "Dụng cụ trà đạo" : categoryMapping[cat] || cat}
                       </CategoryTitle>
                     </div>
                   </CategoryInfo>
-                  <SliderWrapper>
-                    {/* Áp dụng transform đã tính toán */}
-                    <ProductSlider
-                      style={{ transform: `translateX(${transformValue}px)` }}
-                    >
-                      {prods.map((product) => (
-                        <ProductCard key={product.slug}>
-                          <Link to={`/products/${product.slug}`}>
-                            <ProductImage>
-                              <img
-                                src={
-                                  product.images && product.images.length > 0
-                                    ? product.images[0].startsWith("http")
-                                      ? product.images[0]
-                                      : `${BACKEND_URL}${product.images[0]}`
-                                    : "/placeholder.jpg"
-                                }
-                                alt={product.name}
-                                onError={(e) => {
-                                  e.target.onerror = null;
-                                  e.target.src = "/placeholder.jpg";
-                                }}
-                              />
-                            </ProductImage>
-                            <ProductInfo>
-                              <ProductBottom>
-                                <div style={{ width: "50%" }}>
-                                  <ProductName>{product.name}</ProductName>
-                                  <ProductShortDescription>{product.shortDescription}</ProductShortDescription>
-                                  <ProductPrice>
-                                    {product.price.toLocaleString("vi-VN")} đ
-                                  </ProductPrice>
-                                </div>
-                                <Button
-                                  className="add-to-cart"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    handleAddToCart(product._id);
-                                  }}
-                                >
-                                  <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                  >
-                                    <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                                    <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
-                                  </svg>
-                                </Button>
-                              </ProductBottom>
-                            </ProductInfo>
-                          </Link>
-                        </ProductCard>
-                      ))}
-                    </ProductSlider>
 
-                    {/* === UPDATED: Sử dụng conditional rendering để ẩn/hiện nút === */}
-                    {prods.length > CARDS_PER_VIEW && (
+                  <SliderContainer>
+                    <SliderWrapper
+                      ref={(el) => (sliderRefs.current[cat] = el)}
+                      onScroll={debouncedScrollHandlers[cat]}
+                      onMouseDown={(e) => handleMouseDown(e, cat)}
+                      onMouseMove={(e) => handleMouseMove(e, cat)}
+                      onMouseUp={() => handleMouseUp(cat)}
+                      onMouseLeave={() => handleMouseUp(cat)}
+                    >
+                      <SliderTrack>
+                        <ProductSlider>
+                          {prods.map((product) => (
+                            <ProductCard key={product.slug}>
+                              <Link to={`/products/${product.slug}`}>
+                                <ProductImage>
+                                  <img
+                                    src={
+                                      product.images?.[0]?.startsWith("http")
+                                        ? product.images[0]
+                                        : `${BACKEND_URL}${product.images?.[0] || '/placeholder.jpg'}`
+                                    }
+                                    alt={product.name}
+                                    onError={(e) => {
+                                      e.target.onerror = null;
+                                      e.target.src = "/placeholder.jpg";
+                                    }}
+                                  />
+                                </ProductImage>
+                                <ProductInfo>
+                                  <ProductBottom>
+                                    <div style={{ width: "50%" }}>
+                                      <ProductName>{product.name}</ProductName>
+                                      <ProductShortDescription>
+                                        {product.shortDescription}
+                                      </ProductShortDescription>
+                                      <ProductPrice>
+                                        {product.price.toLocaleString("vi-VN")} đ
+                                      </ProductPrice>
+                                    </div>
+                                    <Button
+                                      className="add-to-cart"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        handleAddToCart(product._id);
+                                      }}
+                                    >
+                                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                                        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                                      </svg>
+                                    </Button>
+                                  </ProductBottom>
+                                </ProductInfo>
+                              </Link>
+                            </ProductCard>
+                          ))}
+                        </ProductSlider>
+                      </SliderTrack>
+                    </SliderWrapper>
+                    
+                    {/* Các nút điều hướng vẫn được giữ lại */}
+                    {showScrollControls && (
                       <>
-                        {/* Nút TRÁI: Chỉ hiển thị khi 'start' lớn hơn 0 */}
-                        {start > 0 && (
-                          <SliderArrow
-                            className="slider-arrow left"
-                            onClick={() => handlePrev(cat)}
-                          >
+                        {!isAtStart && (
+                          <SliderArrow className="slider-arrow left" onClick={() => handlePrev(cat)}>
                             <FaChevronLeft />
                           </SliderArrow>
                         )}
-
-                        {/* Nút PHẢI: Chỉ hiển thị khi chưa trượt đến cuối danh sách */}
-                        {start < prods.length - CARDS_PER_VIEW && (
-                          <SliderArrow
-                            className="slider-arrow right"
-                            onClick={() => handleNext(cat, prods)}
-                          >
+                        {!isAtEnd && (
+                          <SliderArrow className="slider-arrow right" onClick={() => handleNext(cat)}>
                             <FaChevronRight />
                           </SliderArrow>
                         )}
                       </>
                     )}
-                  </SliderWrapper>
+                  </SliderContainer>
                 </CategoryRow>
               );
             })
