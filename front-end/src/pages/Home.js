@@ -225,7 +225,6 @@ const ProductInfo = styled.div`
   flex-direction: column;
   gap: 10px;
   background-color: #f6f6ee;
-  font-family: monsterrat;
 `;
 
 const ProductName = styled.h3`
