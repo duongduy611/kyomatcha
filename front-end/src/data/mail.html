@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="vi">
+	<head>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+		<meta charset="UTF-8" />
+		<title>Hóa đơn</title>
+		<style>
+			body {
+				 font-family: 'Montserrat', sans-serif;
+				background-color: #fff;
+				color: #000;
+				padding: 40px;
+			}
+
+			.invoice {
+				max-width: 700px;
+				margin: auto;
+				padding: 40px;
+				border: 1px solid #ccc;
+			}
+
+			.header {
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-start;
+			}
+
+			.title {
+				font-size: 36px;
+				font-weight: bold;
+				letter-spacing: 1px;
+			}
+
+			.info-section {
+				margin-top: 40px;
+				display: flex;
+				justify-content: space-between;
+			}
+
+			.billed-to {
+				line-height: 1.5;
+			}
+
+			.invoice-meta {
+				text-align: right;
+				line-height: 1.5;
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-top: 30px;
+			}
+
+			table th,
+			table td {
+				padding: 12px;
+				border-bottom: 1px solid #ccc;
+				text-align: right;
+			}
+
+			table th:first-child,
+			table td:first-child {
+				text-align: left;
+			}
+
+			tfoot td {
+				font-weight: bold;
+			}
+
+			.total-due {
+				font-size: 20px;
+				margin-top: 20px;
+				text-align: right;
+			}
+
+			.thankyou {
+				margin-top: 40px;
+				font-size: 16px;
+				text-align: left;
+			}
+
+			.payment-info {
+				margin-top: 30px;
+				font-size: 14px;
+				line-height: 1.5;
+			}
+
+			.company-footer {
+				margin-top: 30px;
+				font-size: 14px;
+				text-align: right;
+			}
+            .logo1 {
+                width: 100px;
+                height: 100px;
+            }
+            td.center, th.center {
+            text-align: center;
+            }
+		</style>
+	</head>
+	<body>
+		<div class="invoice">
+			<div class="header">
+				<img src="https://kyomatcha.id.vn/static/media/kyo-matcha-logo.e628b10ef86ee98064f9.png" class="logo1"></img>
+				<div class="title" style="font-weight: bold; color: #3d7925">HÓA ĐƠN</div>
+			</div>
+
+			<div class="info-section">
+				<div class="billed-to">
+					<strong>KHÁCH HÀNG:</strong><br />
+					Trịnh Văn An<br />
+					098 282 64 38<br />
+					12 Nguyễn Huệ, Quận 1, TP.HCM<br />
+                    <strong>PhƯƠNG THỨC THANH TOÁN:</strong> VietQR
+				</div>
+				<div class="invoice-meta">
+					<div><strong>Số hóa đơn:</strong> KM-20250619</div>
+					<div>Ngày: 19/06/2025</div>
+				</div>
+			</div>
+
+			<table>
+				<thead>
+					<tr>
+						<th>Sản phẩm</th>
+						<th class="center">Số lượng</th>
+						<th class="center">Đơn giá</th>
+						<th>Thành tiền</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Matcha Fuji 04</td>
+						<td class="center">1</td>
+						<td class="center">430.000đ</td>
+						<td>430.000đ</td>
+					</tr>
+					<tr>
+						<td>Matcha Aki</td>
+						<td class="center">1</td>
+						<td class="center">119.000đ</td>
+						<td>119.000đ</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="3" align="right">Tạm tính</td>
+						<td>549.000đ</td>
+					</tr>
+                    <!-- <tr>
+						<td colspan="3" align="right">Voucher</td>
+						<td>0đ</td>
+					</tr> -->
+
+				</tfoot>
+			</table>
+
+			<div class="total-due" style="display: flex; justify-content: flex-end">
+				<strong>Tổng cộng:</strong> <div style="color: #3d7925; margin-left: 10px; margin-top: 2px;">549.000đ</div>
+			</div>
+
+			<div class="thankyou">Cảm ơn bạn đã mua hàng tại KyoMatcha!</div>
+
+            <div class="row" style="display: flex; justify-content: space-between; gap: 20px;">
+            <div class="column" style="flex: 2;">
+                <div class="payment-info">
+                <strong>LIÊN HỆ HỖ TRỢ</strong><br />
+                Mọi thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ chúng tôi qua:<br />
+                 Hotline: <b>098 282 64 38</b><br />
+                 Facebook:
+                <a href="https://www.facebook.com/kyomatcha" target="_blank">facebook.com/kyomatcha</a><br />
+                 Website:
+                <a href="http://kyomatcha.id.vn/" target="_blank">Kyo Matcha</a>
+                </div>
+            </div>
+
+            <div class="column" style="flex: 1; text-align: right; padding-top: 70px;">
+                <div class="company-footer">
+                KyoMatcha Vietnam<br />
+                Thạch Thất, Thạch Hòa, Hà Nội
+                </div>
+            </div>
+            </div>
+			
+		</div>
+	</body>
+</html>
