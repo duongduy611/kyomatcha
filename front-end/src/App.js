@@ -7,6 +7,8 @@ import { AppProvider } from './context/AppContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import ScrollToTop from "./components/ScrollToTop";
 import Footer from "./components/Footer";
+import FloatingContactButton from "./components/FloatingContactButton";
+// import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const App = () => {
   return (
@@ -26,6 +28,7 @@ const App = () => {
                   element={
                     <Layout>
                       <route.page />
+                      {route.isShowHeader && <FloatingContactButton />}
                       {route.isShowFooter && <Footer />}
                     </Layout>
                   }
@@ -36,6 +39,7 @@ const App = () => {
         </AppProvider>
       </Router>
       </GoogleOAuthProvider>
+      {/* <SpeedInsights /> */}
     </div>
   );
 };

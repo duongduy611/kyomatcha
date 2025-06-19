@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import GlobalStyle from "../components/GlobalStyle";
-import { Link } from "react-router-dom";
 import { FaFacebookF, FaTwitter, FaInstagram, FaPinterestP, FaYoutube } from "react-icons/fa";
-import { MdAttachMoney, MdTimer, MdPeople } from "react-icons/md";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const ContactWrapper = styled.div`
   margin-top: 100px;
@@ -182,7 +182,7 @@ const Contact = () => {
     setSuccess("");
     setError("");
     try {
-      const res = await fetch("http://localhost:9999/api/add-contact", {
+      const res = await fetch(`${BACKEND_URL}/api/add-contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

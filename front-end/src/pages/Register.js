@@ -1,26 +1,27 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import GlobalStyle from '../components/GlobalStyle';
-import styled from 'styled-components';
-import logoImg from '../assets/logo/logo1.png';
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import GlobalStyle from "../components/GlobalStyle";
+import styled from "styled-components";
+import logoImg from "../assets/logo/kyo-matcha-logo.png";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RegisterWrapper = styled.div`
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #F6F6EE;
+  background: #f6f6ee;
   margin-top: 0;
   padding: 160px 0 80px 0;
-
 `;
 
 const RegisterContainer = styled.div`
   display: flex;
   background: #fff;
   border-radius: 24px;
-  box-shadow: 0 8px 32px 0 rgba(64, 64, 64, 0.10);
+  box-shadow: 0 8px 32px 0 rgba(64, 64, 64, 0.1);
   overflow: hidden;
   max-width: 800px;
   width: 100%;
@@ -28,7 +29,11 @@ const RegisterContainer = styled.div`
 `;
 
 const LogoSide = styled.div`
-  background: linear-gradient(135deg, rgb(250, 253, 225) 0%, rgb(251, 249, 239) 100%);
+  background: linear-gradient(
+    135deg,
+    rgb(250, 253, 225) 0%,
+    rgb(251, 249, 239) 100%
+  );
   display: flex;
   align-items: center;
   justify-content: center;
@@ -87,10 +92,10 @@ const Label = styled.label`
 const Input = styled.input`
   padding: 12px 14px;
   border-radius: 10px;
-  border: 1.5px solid #B9BF9E;
+  border: 1.5px solid #b9bf9e;
   font-size: 16px;
   outline: none;
-  background: #F6F6EE;
+  background: #f6f6ee;
   color: #404040;
   transition: border 0.2s;
   width: 100%;
@@ -113,7 +118,7 @@ const EyeIcon = styled.span`
   right: 14px;
   top: 38px;
   cursor: pointer;
-  color: #6A6649;
+  color: #6a6649;
 `;
 
 const SubmitButton = styled.button`
@@ -121,7 +126,11 @@ const SubmitButton = styled.button`
   padding: 12px 0;
   border-radius: 10px;
   border: none;
-  background: linear-gradient(90deg, rgb(112, 146, 68) 0%, rgb(191, 178, 81) 100%);
+  background: linear-gradient(
+    90deg,
+    rgb(112, 146, 68) 0%,
+    rgb(191, 178, 81) 100%
+  );
   color: #fff;
   font-weight: 700;
   font-size: 18px;
@@ -132,7 +141,7 @@ const SubmitButton = styled.button`
 `;
 
 const Message = styled.div`
-  color: ${({ success }) => (success ? '#527328' : '#d32f2f')};
+  color: ${({ success }) => (success ? "#527328" : "#d32f2f")};
   min-height: 24px;
   text-align: center;
   font-weight: 500;
@@ -152,128 +161,332 @@ const LoginPrompt = styled.div`
     margin-left: 4px;
     transition: color 0.2s;
     &:hover {
-      color: #6A6649;
+      color: #6a6649;
     }
   }
 `;
 
 function Register() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [message, setMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [step, setStep] = useState(1); // 1: form đăng ký, 2: nhập OTP
+  const [otp, setOtp] = useState("");
   const navigate = useNavigate();
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  useEffect(() => {
+    let timer;
+    if (resendCooldown > 0) {
+      timer = setTimeout(() => {
+        setResendCooldown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setMessage('');
+
+    // ✅ Validate các trường bắt buộc
     if (!email || !password || !confirmPassword || !fullName) {
-      setMessage('Vui lòng nhập đầy đủ thông tin bắt buộc!');
+      toast.warning("Vui lòng nhập đầy đủ thông tin bắt buộc.");
       return;
     }
-    if (!/^\w+([\.-]?\w+)*@[\w-]+(\.[\w-]+)+$/.test(email)) {
-      setMessage('Email không hợp lệ!');
+
+    const emailRegex = /^\w+([\.-]?\w+)*@[\w-]+(\.[\w-]+)+$/;
+    if (!emailRegex.test(email)) {
+      toast.warning("Email không hợp lệ!");
       return;
     }
+
     if (phone && !/^0\d{9}$/.test(phone)) {
-      setMessage('Số điện thoại phải có 10 số và bắt đầu bằng số 0!');
+      toast.warning("Số điện thoại phải có 10 chữ số và bắt đầu bằng số 0!");
       return;
     }
+
     if (password !== confirmPassword) {
-      setMessage('Mật khẩu xác nhận không khớp!');
+      toast.warning("Mật khẩu xác nhận không khớp!");
       return;
     }
+
     try {
-      const res = await fetch('http://localhost:9999/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, fullName, phone, address }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setMessage('Đăng ký thành công! Bạn có thể đăng nhập.');
-        setEmail(''); setPassword(''); setConfirmPassword(''); setFullName(''); setPhone(''); setAddress('');
-        setTimeout(() => navigate('/login'), 600);
+      // ✅ Check email đã tồn tại chưa
+      const checkRes = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/check-email`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      const checkData = await checkRes.json();
+
+      if (checkData.exists) {
+        toast.error("Email đã tồn tại. Vui lòng dùng email khác.");
+        return;
+      }
+      // ✅ Gửi OTP nếu email hợp lệ và chưa tồn tại
+      
+      setOtp('');
+      setStep(2);
+      const otpRes = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/send-otp`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }
+      );
+      const otpData = await otpRes.json();
+
+      if (otpRes.ok) {
+        toast.success(
+          "Mã xác thực đã gửi về email. Vui lòng nhập để xác minh."
+        );
+      setResendCooldown(30);
       } else {
-        setMessage(data.message || 'Đăng ký thất bại');
+        toast.error(otpData.message || "Không thể gửi mã OTP.");
       }
     } catch (err) {
-      setMessage('Lỗi kết nối server');
+      console.error("🔥 Lỗi hệ thống:", err);
+      toast.error("Không thể kết nối đến máy chủ.");
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    try {
+      // 1. Gửi mã OTP để xác minh
+      const res = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/verify-otp`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, otp }),
+        }
+      );
+      const result = await res.json();
+
+      if (!res.ok) {
+        console.error("❌ Xác minh OTP thất bại:", result);
+        toast.error(result.message || "OTP không đúng hoặc đã hết hạn.");
+        return;
+      }
+
+      // 2. Gửi đăng ký
+      const registerRes = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, fullName, phone, address }),
+        }
+      );
+      const regData = await registerRes.json();
+
+      if (!registerRes.ok) {
+        console.error("❌ Đăng ký thất bại:", regData);
+        toast.error(regData.message || "Đăng ký thất bại.");
+        return;
+      }
+
+      toast.success("Đăng ký thành công! Đang chuyển hướng...");
+      setTimeout(() => navigate("/login"), 2000);
+    } catch (err) {
+      console.error("🔥 Lỗi hệ thống:", err);
+      toast.error("Lỗi xác minh hoặc đăng ký.");
+    }
+  };
+  const handleResendOtp = async () => {
+    if (resendCooldown > 0) return; // tránh spam khi countdown đang chạy
+
+    try {
+      const res = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/send-otp`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }
+      );
+      const data = await res.json();
+      if (res.ok) {
+        toast.success("Đã gửi lại mã OTP!");
+        setResendCooldown(30); // bắt đầu đếm ngược 60s
+      } else {
+        toast.error(data.message || "Không thể gửi lại mã OTP.");
+      }
+    } catch (err) {
+      toast.error("Lỗi khi gửi lại mã OTP.");
+      console.error(err);
     }
   };
 
   return (
     <>
-    <GlobalStyle />
-    <RegisterWrapper>
-      <RegisterContainer>
-        <LogoSide>
-          <LogoImg src={logoImg} alt="KyoMatcha Logo" />
-        </LogoSide>
-        <FormSide>
-          <RegisterForm onSubmit={handleRegister}>
-            <Title>Đăng ký</Title>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-            />
-            <Label htmlFor="fullName">Họ và tên</Label>
-            <Input
-              id="fullName"
-              type="text"
-              placeholder="Họ và tên"
-              value={fullName}
-              onChange={e => setFullName(e.target.value)}
-              required
-            />
-            <PasswordWrapper>
-              <Label htmlFor="password">Mật khẩu</Label>
-              <Input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Nhập mật khẩu"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-              />
-              <EyeIcon onClick={() => setShowPassword(v => !v)} style={{ marginTop: 12 }}>
-                {!showPassword ? <FaEyeSlash /> : <FaEye />}
-              </EyeIcon>
-            </PasswordWrapper>
-            <PasswordWrapper>
-              <Label htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
-              <Input
-                id="confirmPassword"
-                type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="Xác nhận mật khẩu"
-                value={confirmPassword}
-                onChange={e => setConfirmPassword(e.target.value)}
-                required
-              />
-              <EyeIcon onClick={() => setShowConfirmPassword(v => !v)} style={{ marginTop: 12 }}>
-                {!showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-              </EyeIcon>
-            </PasswordWrapper>
-            <SubmitButton type="submit">Đăng ký</SubmitButton>
-            <Message success={message === 'Đăng ký thành công! Bạn có thể đăng nhập.'}>{message}</Message>
-            <LoginPrompt>
-              <span>Bạn đã có tài khoản?</span>
-              <Link to="/login" onClick={() => window.scrollTo(0, 0)}>Đăng nhập</Link>
-            </LoginPrompt>
-          </RegisterForm>
-        </FormSide>
-      </RegisterContainer>
-    </RegisterWrapper>
+      <GlobalStyle />
+      <RegisterWrapper>
+        <RegisterContainer>
+          <LogoSide>
+            <LogoImg src={logoImg} alt="KyoMatcha Logo" />
+          </LogoSide>
+          <FormSide>
+            <RegisterForm
+              onSubmit={
+                step === 1
+                  ? handleRegister
+                  : (e) => {
+                      e.preventDefault();
+                      handleVerifyOtp();
+                    }
+              }
+            >
+              <Title>Đăng ký</Title>
+
+              {step === 1 && (
+                <>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                  <Label htmlFor="fullName">Họ và tên</Label>
+                  <Input
+                    id="fullName"
+                    type="text"
+                    placeholder="Họ và tên"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    required
+                  />
+                  <PasswordWrapper>
+                    <Label htmlFor="password">Mật khẩu</Label>
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Nhập mật khẩu"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                    <EyeIcon
+                      onClick={() => setShowPassword((v) => !v)}
+                      style={{ marginTop: 12 }}
+                    >
+                      {!showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </EyeIcon>
+                  </PasswordWrapper>
+                  <PasswordWrapper>
+                    <Label htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
+                    <Input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Xác nhận mật khẩu"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                    <EyeIcon
+                      onClick={() => setShowConfirmPassword((v) => !v)}
+                      style={{ marginTop: 12 }}
+                    >
+                      {!showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                    </EyeIcon>
+                  </PasswordWrapper>
+                  <SubmitButton type="submit">Xác minh & Đăng ký</SubmitButton>
+                </>
+              )}
+
+              {step === 2 && (
+                <>
+                  <Label htmlFor="otp">Mã OTP đã gửi tới email</Label>
+                  <Input
+                    id="otp"
+                    type="text"
+                    placeholder="Nhập mã OTP"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    required
+                  />
+
+                  {/* Countdown hiển thị ngay dưới input OTP */}
+                  <div
+                    style={{
+                      textAlign: "center",
+                      margin: "8px 0",
+                      color: "#6A6649",
+                    }}
+                  >
+                    {resendCooldown > 0 ? (
+                      `Bạn có thể gửi lại mã sau ${resendCooldown} giây`
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleResendOtp}
+                        style={{
+                          background: "none",
+                          color: "#527328",
+                          border: "none",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                          marginLeft: "-65%",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        Gửi lại mã OTP
+                      </button>
+                    )}
+                  </div>
+
+                  <SubmitButton type="submit">Xác minh & Đăng ký</SubmitButton>
+
+                  <div style={{ marginTop: "12px", textAlign: "center" }}>
+                    <button
+                      type="button"
+                      onClick={() => {setStep(1);setResendCooldown(0);setOtp('');}}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        color: "#6A6649",
+                        textDecoration: "underline",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Tôi muốn sửa lại thông tin
+                    </button>
+                  </div>
+                </>
+              )}
+
+              <Message success={message.includes("thành công")}>
+                {message}
+              </Message>
+
+              {step === 1 && (
+                <LoginPrompt>
+                  <span>Bạn đã có tài khoản?</span>
+                  <Link to="/login" onClick={() => window.scrollTo(0, 0)}>
+                    Đăng nhập
+                  </Link>
+                </LoginPrompt>
+              )}
+            </RegisterForm>
+            {/* <ToastContainer position="top-center" autoClose={3000} /> */}
+          </FormSide>
+        </RegisterContainer>
+      </RegisterWrapper>
     </>
   );
 }

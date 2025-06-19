@@ -5,13 +5,12 @@ import axios from "axios";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-const BACKEND_URL = "http://localhost:9999"; // Add backend URL
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const ProductDetail = () => {
   const { slug } = useParams();
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
@@ -23,6 +22,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
+        setLoading(true); // Reset loading state for new product
         const response = await axios.get(`${BACKEND_URL}/api/products/${slug}`);
         if (response.data && response.data.data) {
           const productData = response.data.data.product;
@@ -32,19 +32,19 @@ const ProductDetail = () => {
           // Combine all images
           const mainImages = productData.images
             ? productData.images.map((img) => ({
-                images: img,
+                image: img,
                 isMain: true,
                 subCategory: null,
               }))
             : [];
 
-          // Add subcategory images
           const subImages = [];
           if (productData.subCategory && productData.subCategory.length > 0) {
             productData.subCategory.forEach((sub) => {
               if (sub.images) {
+                // Assuming sub.images is a single image URL string
                 subImages.push({
-                  images: sub.images,
+                  image: sub.images,
                   isMain: false,
                   subCategory: sub,
                 });
@@ -53,13 +53,20 @@ const ProductDetail = () => {
           }
 
           const combinedImages = [...mainImages, ...subImages];
-          console.log("Combined Images:", combinedImages);
           setAllImages(combinedImages);
 
-          // Set initial main images to first product images
+          // Set initial main image
           if (productData.images && productData.images.length > 0) {
             setCurrentMainImage(productData.images[0]);
+          } else if (subImages.length > 0) {
+            setCurrentMainImage(subImages[0].image);
           }
+
+          // Reset selections
+          setSelectedSubCategory(null);
+          setSelectedSize("");
+          setSelectedColor("");
+          setQuantity(1);
         }
         setLoading(false);
       } catch (error) {
@@ -72,6 +79,10 @@ const ProductDetail = () => {
 
   const getPrice = () => {
     if (!product) return 0;
+
+    if (selectedSubCategory && selectedSubCategory.price) {
+      return selectedSubCategory.price;
+    }
 
     if (selectedSize && product.subPrice) {
       const sizePrice = product.subPrice.find((p) => p.size === selectedSize);
@@ -103,14 +114,12 @@ const ProductDetail = () => {
   };
 
   const handleSubCategoryChange = (subCat) => {
-    console.log("Selected subcategory:", subCat);
     setSelectedSubCategory(subCat);
     if (subCat.size) setSelectedSize(subCat.size);
     if (subCat.color) setSelectedColor(subCat.color);
 
-    // Update main images to show subcategory images
+    // Update main image to show subcategory image
     if (subCat.images) {
-      console.log("Setting subcategory images:", subCat.images);
       setCurrentMainImage(subCat.images);
     }
   };
@@ -147,8 +156,7 @@ const ProductDetail = () => {
   };
 
   const handleThumbnailClick = (imageData) => {
-    console.log("Clicked thumbnail:", imageData);
-    setCurrentMainImage(imageData.images);
+    setCurrentMainImage(imageData.image);
 
     if (imageData.subCategory) {
       setSelectedSubCategory(imageData.subCategory);
@@ -157,10 +165,20 @@ const ProductDetail = () => {
       if (imageData.subCategory.color)
         setSelectedColor(imageData.subCategory.color);
     } else {
+      // If clicking a main product thumbnail, deselect subcategory
       setSelectedSubCategory(null);
       setSelectedSize("");
       setSelectedColor("");
     }
+  };
+
+  // Helper function to get the correct image URL
+  const getImageUrl = (path) => {
+    if (!path) return "/placeholder.jpg";
+    if (path.startsWith("http")) {
+      return path;
+    }
+    return `${BACKEND_URL}${path}`;
   };
 
   if (loading) {
@@ -175,9 +193,10 @@ const ProductDetail = () => {
     <Container style={{ marginTop: "160px" }}>
       <ProductSection>
         <ImageSection>
+          {/* SỬA LỖI 1: SỬ DỤNG currentMainImage VÀ getImageUrl */}
           <MainImage>
             <img
-              src={`${BACKEND_URL}${currentMainImage}`}
+              src={getImageUrl(currentMainImage)}
               alt={product?.name}
               onError={(e) => {
                 e.target.onerror = null;
@@ -190,10 +209,11 @@ const ProductDetail = () => {
               <Thumbnail
                 key={index}
                 onClick={() => handleThumbnailClick(imageData)}
-                $isActive={currentMainImage === imageData.images}
+                $isActive={currentMainImage === imageData.image}
               >
+                {/* SỬA LỖI 2: SỬ DỤNG getImageUrl CHO THUMBNAIL */}
                 <img
-                  src={`${BACKEND_URL}${imageData.images}`}
+                  src={getImageUrl(imageData.image)}
                   alt={`${product?.name} ${
                     imageData.isMain ? "main" : "variant"
                   } ${index + 1}`}
@@ -285,12 +305,9 @@ const ProductDetail = () => {
                 <Link to={`/products/${relatedProduct.slug}`}>
                   <ProductImage>
                     <img
-                      src={
-                        relatedProduct.images &&
-                        relatedProduct.images.length > 0
-                          ? `${BACKEND_URL}${relatedProduct.images[0]}`
-                          : "/placeholder.jpg"
-                      }
+                      src={getImageUrl(
+                        relatedProduct.images && relatedProduct.images[0]
+                      )}
                       alt={relatedProduct.name}
                       onError={(e) => {
                         e.target.onerror = null;
@@ -299,11 +316,16 @@ const ProductDetail = () => {
                     />
                   </ProductImage>
                   <ProductInfo>
-                    <ProductName>{relatedProduct.name}</ProductName>
                     <ProductBottom>
-                      <ProductPrice>
-                        {relatedProduct.price.toLocaleString("vi-VN")}₫
-                      </ProductPrice>
+                      <div style={{ width: "50%" }}>
+                        <ProductName>{relatedProduct.name}</ProductName>
+                        <ProductShortDescription>
+                          {relatedProduct.shortDescription}
+                        </ProductShortDescription>
+                        <ProductPrice>
+                          {relatedProduct.price.toLocaleString("vi-VN")}₫
+                        </ProductPrice>
+                      </div>
                       <Button>
                         <svg
                           width="20"
@@ -329,6 +351,7 @@ const ProductDetail = () => {
   );
 };
 
+// ... (Phần styled-components giữ nguyên không đổi)
 const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
@@ -351,11 +374,15 @@ const ImageSection = styled.div``;
 
 const MainImage = styled.div`
   margin-bottom: 1rem;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
 
   img {
     width: 100%;
     height: auto;
     object-fit: cover;
+    aspect-ratio: 1 / 1;
   }
 `;
 
@@ -369,6 +396,8 @@ const Thumbnail = styled.div`
   cursor: pointer;
   border: 2px solid transparent;
   transition: border-color 0.3s ease;
+  border-radius: 4px;
+  overflow: hidden;
 
   ${(props) =>
     props.$isActive &&
@@ -380,15 +409,9 @@ const Thumbnail = styled.div`
     width: 100%;
     height: auto;
     object-fit: cover;
+    display: block;
+    aspect-ratio: 1 / 1;
   }
-`;
-
-const ProductInfo = styled.div`
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  background-color: #f6f6ee;
 `;
 
 const Price = styled.div`
@@ -407,7 +430,7 @@ const Options = styled.div`
 
 const SubCategoryGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 1rem;
   margin-top: 1rem;
 `;
@@ -415,26 +438,14 @@ const SubCategoryGrid = styled.div`
 const SubCategoryItem = styled.div`
   border: 2px solid ${(props) => (props.$isActive ? "#2ecc40" : "#e0e0e0")};
   border-radius: 8px;
-  padding: 0.5rem;
+  padding: 0.75rem 0.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  background-color: white;
 
   &:hover {
     border-color: #2ecc40;
     transform: translateY(-2px);
-  }
-`;
-
-const SubCategoryImage = styled.div`
-  width: 100%;
-  height: 100px;
-  margin-bottom: 0.5rem;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 4px;
   }
 `;
 
@@ -444,7 +455,8 @@ const SubCategoryInfo = styled.div`
   align-items: center;
   gap: 0.25rem;
   font-size: 0.9rem;
-  color: #666;
+  color: #333;
+  font-weight: 500;
 `;
 
 const AddToCart = styled.button`
@@ -542,15 +554,29 @@ const ProductImage = styled.div`
   }
 `;
 
+const ProductInfo = styled.div`
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #f6f6ee;
+`;
+
 const ProductName = styled.h3`
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: #333;
   margin: 0 0 10px 0;
   line-height: 1.3;
   white-space: nowrap;
-  overflow: hidden;
+
   text-overflow: ellipsis;
+`;
+
+const ProductShortDescription = styled.h3`
+  font-size: 0.6rem;
+  width: 155%;
+  color: #333;
 `;
 
 const ProductBottom = styled.div`
@@ -561,8 +587,7 @@ const ProductBottom = styled.div`
 `;
 
 const ProductPrice = styled.div`
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 0.9rem;
   color: #527328;
 `;
 
@@ -573,17 +598,20 @@ const Button = styled.button`
   font-weight: 600;
   cursor: pointer;
   border: none;
-  background: #eddfcb;
-  color: #231b10;
+  background: #537328;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.2s, color 0.2s;
-  width: 40%;
-  height: 120%;
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgb(82, 115, 40);
+  margin-right: -10px;
   &:hover {
-    background: #6a6649;
-    color: #fff;
+    background: white;
+    color: rgb(82, 115, 40);
+    border: 1px solid rgb(82, 115, 40);
   }
 `;
 
@@ -648,7 +676,6 @@ const QuantityInput = styled.input`
     border-color: #2ecc40;
   }
 
-  /* Ẩn mũi tên tăng giảm mặc định của input number */
   &::-webkit-inner-spin-button,
   &::-webkit-outer-spin-button {
     -webkit-appearance: none;

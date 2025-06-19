@@ -1,12 +1,20 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo,
+} from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import { useAppContext } from "../context/AppContext";
 import bannerImage from "../assets/images/banner_product.jpg";
 import GlobalStyle from "../components/GlobalStyle";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { toast } from "react-toastify";
-const BACKEND_URL = "http://localhost:9999";
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const KingofTea = styled.div`
   width: 100%;
@@ -57,8 +65,8 @@ const Container = styled.div`
 `;
 
 const Header = styled.div`
-  margin-bottom: 4rem;
-  padding: 2rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
   background-color: white;
   border-radius: 15px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -142,12 +150,6 @@ const FilterSection = styled.div`
   }
 `;
 
-const ProductGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 2.5rem;
-`;
-
 const ProductCard = styled.div`
   background: white;
   border-radius: 8px;
@@ -158,6 +160,9 @@ const ProductCard = styled.div`
   height: 100%;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   background-color: #f6f6ee;
+  flex: 0 0 auto;
+  width: 250px;
+  flex-shrink: 0;
 
   &:hover {
     transform: translateY(-4px);
@@ -190,43 +195,6 @@ const ProductImage = styled.div`
   }
 `;
 
-const FavoriteButton = styled.button`
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: white;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 2;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-
-  svg {
-    width: 18px;
-    height: 18px;
-    color: #666;
-  }
-
-  &.active {
-    background-color: #ff4d4f;
-    svg {
-      color: white;
-    }
-  }
-
-  &:hover {
-    transform: scale(1.1);
-    background: ${(props) =>
-      props.className === "active" ? "#ff4d4f" : "#fff"};
-  }
-`;
-
 const ProductInfo = styled.div`
   padding: 16px;
   display: flex;
@@ -236,7 +204,7 @@ const ProductInfo = styled.div`
 `;
 
 const ProductName = styled.h3`
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: #333;
   margin: 0 0 10px 0;
@@ -244,6 +212,12 @@ const ProductName = styled.h3`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+const ProductShortDescription = styled.h3`
+  font-size: 0.6rem;
+  width: 155%;
+  color: #333;
 `;
 
 const ProductBottom = styled.div`
@@ -254,8 +228,7 @@ const ProductBottom = styled.div`
 `;
 
 const ProductPrice = styled.div`
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 0.9rem;
   color: #527328;
 `;
 
@@ -266,17 +239,20 @@ const Button = styled.button`
   font-weight: 600;
   cursor: pointer;
   border: none;
-  background: #eddfcb;
-  color: #231b10;
+  background: #537328;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.2s, color 0.2s;
-  width: 40%;
-  height: 120%;
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgb(82, 115, 40);
+  margin-right: -10px;
   &:hover {
-    background: #6a6649;
-    color: #fff;
+    background: white;
+    color: rgb(82, 115, 40);
+    border: 1px solid rgb(82, 115, 40);
   }
 `;
 
@@ -287,52 +263,204 @@ const Loading = styled.div`
   color: #666;
 `;
 
+const CategoryRow = styled.div`
+  display: flex;
+  align-items: stretch;
+  background: #f9f6ef;
+  border-radius: 24px;
+  padding: 32px 0 32px 0;
+  min-height: 420px;
+  margin-bottom: 2rem;
+  margin-right: -100px;
+`;
+
+const CategoryInfo = styled.div`
+  width: 26%;
+  padding: 0 30px 0 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+const CategoryTitle = styled.h2`
+  font-size: 40px;
+  font-weight: 550;
+  color: #404040;
+  margin: 200px 0 0 -180px;
+  font-family: MJ Royale Couture Serif;
+`;
+
+const SliderWrapper = styled.div`
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  cursor: grab;
+
+  &.dragging {
+    cursor: grabbing;
+  }
+
+  /* Tùy chỉnh màu thanh cuộn mặc định cho WebKit (Chrome, Safari, Edge) */
+  &::-webkit-scrollbar {
+    height: 8px; /* Chiều cao của thanh cuộn ngang */
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #e0e0e0; /* Màu nền của track */
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #537329; /* Màu xanh đậm cho thumb */
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #537329; /* Màu xanh đậm hơn khi hover */
+  }
+
+  /* Tùy chỉnh màu thanh cuộn mặc định cho Firefox */
+  scrollbar-width: thin; /* "auto" hoặc "thin" */
+  scrollbar-color: #537329 #e0e0e0; /* thumb color track color (màu xanh đậm, nền xám nhạt) */
+`;
+
+const SliderTrack = styled.div`
+  display: flex;
+  gap: 16px;
+  flex-wrap: nowrap;
+  padding-bottom: 0px;
+`;
+
+const ProductSlider = styled.div`
+  display: flex;
+  gap: 32px;
+`;
+
+const SliderContainer = styled.div`
+  width: 74%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  &:hover .slider-arrow {
+    opacity: 1;
+    visibility: visible;
+  }
+`;
+
+const SliderArrow = styled.button`
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  color: #537328;
+  border-radius: 3px;
+  width: 66px;
+  height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  z-index: 2;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+
+  &:hover:not(:disabled) {
+    background: #537328;
+    color: white;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #f5f5f5;
+    color: #999;
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2.5;
+  }
+
+  &.left {
+    left: 0;
+  }
+  &.right {
+    right: 0;
+  }
+`;
+
+function debounce(func, timeout = 100) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, timeout);
+  };
+}
+
 const AllProducts = () => {
   const { category } = useParams();
-  const { selectedCategory, setSelectedCategory, categoryMapping } =
-    useAppContext();
+  const {
+    selectedCategory,
+    setSelectedCategory,
+    categoryMapping,
+    getCategoryDisplay,
+  } = useAppContext();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [sortOption, setSortOption] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [categoryIndices, setCategoryIndices] = useState({});
+
   const navigate = useNavigate();
+
+  const sliderRefs = useRef({});
+
+  const isDragging = useRef({});
+  const startX = useRef({});
+  const scrollLeft = useRef({});
+
+  const CARDS_PER_VIEW = 3;
+  const CARD_WIDTH = 250;
+  const GAP = 32;
+  const SCROLL_STEP = CARD_WIDTH + GAP;
 
   const handleAddToCart = async (productId, color = "", size = "") => {
     try {
-      // Lấy token và id người dùng từ localStorage
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
+<<<<<<< HEAD
 
       // Nếu chưa đăng nhập, điều hướng về trang login
+=======
+>>>>>>> d355a2d1c0388bb225784185cd16f40a8435eaf0
       if (!token || !userId) {
         toast.info("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
         navigate("/login");
         return;
       }
-
-      // Chuẩn bị payload theo đúng spec của backend
-      const payload = {
-        userId: userId,
-        productId: productId,
-        quantity: 1, // ở đây mình để mặc định 1; bạn có thể truyền vào tham số nếu muốn
-        color: color, // truyền vào từ component hoặc để mặc định
-        size: size, // truyền vào từ component hoặc để mặc định
-      };
-
-      // Gọi API thêm vào giỏ
+      const payload = { userId, productId, quantity: 1, color, size };
       const response = await axios.post(`${BACKEND_URL}/cart/add`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
-
-      if (response.status === 200 && response.data && response.data._id) {
-        // Backend trả về obj cart mới (có _id) → coi như thành công
+      if (response.status === 200 && response.data?._id) {
         toast.success("Đã thêm vào giỏ hàng!");
       } else {
-        console.log("Unexpected response from /cart/add:", response.data);
         toast.error("Thêm vào giỏ hàng không thành công. Vui lòng thử lại.");
       }
     } catch (error) {
@@ -340,29 +468,103 @@ const AllProducts = () => {
       if (error.response?.status === 401) {
         toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
         navigate("/login");
-      } else if (error.response?.data?.message) {
-        // Hiển thị message lỗi do backend trả về (nếu có)
-        toast.error(error.response.data.message);
       } else {
-        toast.error("Có lỗi xảy ra khi thêm vào giỏ hàng");
+        toast.error(
+          error.response?.data?.message || "Có lỗi xảy ra khi thêm vào giỏ hàng"
+        );
       }
     }
   };
 
+  const handlePrev = (category) => {
+    sliderRefs.current[category]?.scrollTo({
+      left: sliderRefs.current[category].scrollLeft - SCROLL_STEP,
+      behavior: "smooth",
+    });
+  };
+
+  const handleNext = (category) => {
+    sliderRefs.current[category]?.scrollTo({
+      left: sliderRefs.current[category].scrollLeft + SCROLL_STEP,
+      behavior: "smooth",
+    });
+  };
+
+  const handleScroll = useCallback(
+    (category) => {
+      const slider = sliderRefs.current[category];
+      if (slider) {
+        const newIndex = Math.round(slider.scrollLeft / SCROLL_STEP);
+        setCategoryIndices((prev) => ({ ...prev, [category]: newIndex }));
+      }
+    },
+    [SCROLL_STEP]
+  );
+
+  const debouncedScrollHandlers = useMemo(() => {
+    const handlers = {};
+    categories.forEach((cat) => {
+      handlers[cat] = debounce(() => handleScroll(cat), 100);
+    });
+    return handlers;
+  }, [categories, handleScroll]);
+
+  const handleMouseDown = useCallback((e, category) => {
+    if (e.button !== 0) return;
+    isDragging.current[category] = true;
+    startX.current[category] =
+      e.pageX - sliderRefs.current[category].offsetLeft;
+    scrollLeft.current[category] = sliderRefs.current[category].scrollLeft;
+    sliderRefs.current[category].classList.add("dragging");
+  }, []);
+
+  const handleMouseMove = useCallback((e, category) => {
+    if (!isDragging.current[category]) return;
+    e.preventDefault();
+    const x = e.pageX - sliderRefs.current[category].offsetLeft;
+    const walk = (x - startX.current[category]) * 2;
+    sliderRefs.current[category].scrollLeft =
+      scrollLeft.current[category] - walk;
+  }, []);
+
+  const handleMouseUp = useCallback((category) => {
+    if (isDragging.current[category]) {
+      isDragging.current[category] = false;
+      sliderRefs.current[category]?.classList.remove("dragging");
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log(categoryMapping);
+    const handleGlobalMouseUp = (e) => {
+      for (const category in isDragging.current) {
+        if (isDragging.current[category]) {
+          isDragging.current[category] = false;
+          if (sliderRefs.current[category]) {
+            sliderRefs.current[category].classList.remove("dragging");
+          }
+        }
+      }
+    };
+    window.addEventListener("mouseup", handleGlobalMouseUp);
+    return () => {
+      window.removeEventListener("mouseup", handleGlobalMouseUp);
+    };
+  }, []);
+
   const fetchProducts = useCallback(async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const params = new URLSearchParams();
       if (selectedCategory) params.append("category", selectedCategory);
       if (sortOption) params.append("sort", sortOption);
       if (searchTerm) params.append("search", searchTerm);
-
       const response = await axios.get(`${BACKEND_URL}/api/products?${params}`);
       setProducts(response.data.data || []);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching products:", error);
       setProducts([]);
+    } finally {
       setLoading(false);
     }
   }, [selectedCategory, sortOption, searchTerm]);
@@ -370,14 +572,29 @@ const AllProducts = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        const categoryOrder = ["Matcha", "tea_tools", "barista_tools"]; // Đúng thứ tự như trong ảnh và dữ liệu API
+
         const response = await axios.get(`${BACKEND_URL}/api/categories`);
-        setCategories(response.data.data || []);
+        const rawCategories = response.data.data || [];
+
+        // Lọc các danh mục có trong categoryOrder và giữ nguyên thứ tự
+        const orderedCategories = categoryOrder.filter((c) =>
+          rawCategories.includes(c)
+        );
+
+        // Lọc các danh mục còn lại không có trong categoryOrder
+        const extras = rawCategories.filter((c) => !categoryOrder.includes(c));
+
+        // Kết hợp lại: ưu tiên các danh mục trong orderedCategories, sau đó đến các danh mục còn lại
+        const finalCategories = [...orderedCategories, ...extras];
+
+        console.log(finalCategories);
+        setCategories(finalCategories || []);
       } catch (error) {
         console.error("Error fetching categories:", error);
         setCategories([]);
       }
     };
-
     fetchCategories();
     if (category) {
       setSelectedCategory(categoryMapping[category] || "");
@@ -388,43 +605,33 @@ const AllProducts = () => {
     fetchProducts();
   }, [fetchProducts]);
 
-  const getCategoryTitle = () => {
-    if (category) {
-      switch (category) {
-        case "matcha":
-          return "Bột Trà Xanh Matcha";
-        case "tea-tools":
-          return "Tea Tools";
-        case "barista-tools":
-          return "Barista Tools";
-        default:
-          return "Tất Cả Sản Phẩm";
+  const groupedProducts = useMemo(() => {
+    return categories.reduce((acc, cat) => {
+      acc[cat] = products.filter((p) => p.category === cat);
+      return acc;
+    }, {});
+  }, [categories, products]);
+
+  useEffect(() => {
+    categories.forEach((cat) => {
+      const prods = groupedProducts[cat] || [];
+      if (prods.length > 0) {
+        handleScroll(cat);
       }
-    }
-    return "Tất Cả Sản Phẩm";
-  };
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groupedProducts, categories]);
 
   return (
     <>
       <GlobalStyle />
       <KingofTea>
         <Banner>
-          <BannerText>sản phẩm của chúng tôi </BannerText>
+          <BannerText>sản phẩm của chúng tôi</BannerText>
         </Banner>
         <Container>
           <Header>
             <FilterSection>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-              >
-                <option value="">Tất Cả Danh Mục</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {categoryMapping[category] || category}
-                  </option>
-                ))}
-              </select>
               <select
                 value={sortOption}
                 onChange={(e) => setSortOption(e.target.value)}
@@ -445,50 +652,136 @@ const AllProducts = () => {
               />
             </SearchBar>
           </Header>
-
           {loading ? (
             <Loading>Đang tải sản phẩm...</Loading>
           ) : (
-            <ProductGrid>
-              {products.map((product) => (
-                <ProductCard key={product._id}>
-                  <Link to={`/products/${product.slug}`}>
-                    <ProductImage>
-                      <img
-                        src={
-                          product.images && product.images.length > 0
-                            ? `${BACKEND_URL}${product.images[0]}`
-                            : "/placeholder.jpg"
-                        }
-                        alt={product.name}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = "/placeholder.jpg";
-                        }}
-                      />
-                    </ProductImage>
-                    <ProductInfo>
-                      <ProductName>{product.name}</ProductName>
-                      <ProductBottom>
-                        <ProductPrice>{product.price.toLocaleString('vi-VN')}₫</ProductPrice>
-                        <Button
-                          className="add-to-cart"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleAddToCart(product._id);
-                          }}
-                        >
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                            <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
-                          </svg>
-                        </Button>
-                      </ProductBottom>
-                    </ProductInfo>
-                  </Link>
-                </ProductCard>
-              ))}
-            </ProductGrid>
+            categories.map((cat) => {
+              const prods = groupedProducts[cat] || [];
+              if (prods.length <= 0) return null;
+
+              const currentIndex = categoryIndices[cat] || 0;
+              const isAtStart = currentIndex <= 0;
+              const sliderElement = sliderRefs.current[cat];
+              const isAtEnd =
+                sliderElement &&
+                Math.abs(
+                  sliderElement.scrollWidth -
+                    sliderElement.scrollLeft -
+                    sliderElement.clientWidth
+                ) < 1;
+
+              const showScrollControls = prods.length > CARDS_PER_VIEW;
+
+              return (
+                <CategoryRow key={cat}>
+                  <CategoryInfo>
+                    <div>
+                      <CategoryTitle>
+                        {cat === "tea_tools"
+                          ? "Dụng cụ trà đạo"
+                          : cat === "barista_tools"
+                          ? "Dụng cụ pha chế"
+                          : cat}
+                      </CategoryTitle>
+                    </div>
+                  </CategoryInfo>
+
+                  <SliderContainer>
+                    <SliderWrapper
+                      ref={(el) => (sliderRefs.current[cat] = el)}
+                      onScroll={debouncedScrollHandlers[cat]}
+                      onMouseDown={(e) => handleMouseDown(e, cat)}
+                      onMouseMove={(e) => handleMouseMove(e, cat)}
+                      onMouseUp={() => handleMouseUp(cat)}
+                      onMouseLeave={() => handleMouseUp(cat)}
+                    >
+                      <SliderTrack>
+                        <ProductSlider>
+                          {prods.map((product) => (
+                            <ProductCard key={product.slug}>
+                              <Link to={`/products/${product.slug}`}>
+                                <ProductImage>
+                                  <img
+                                    src={
+                                      product.images?.[0]?.startsWith("http")
+                                        ? product.images[0]
+                                        : `${BACKEND_URL}${
+                                            product.images?.[0] ||
+                                            "/placeholder.jpg"
+                                          }`
+                                    }
+                                    alt={product.name}
+                                    onError={(e) => {
+                                      e.target.onerror = null;
+                                      e.target.src = "/placeholder.jpg";
+                                    }}
+                                  />
+                                </ProductImage>
+                                <ProductInfo>
+                                  <ProductBottom>
+                                    <div style={{ width: "50%" }}>
+                                      <ProductName>{product.name}</ProductName>
+                                      <ProductShortDescription>
+                                        {product.shortDescription}
+                                      </ProductShortDescription>
+                                      <ProductPrice>
+                                        {product.price.toLocaleString("vi-VN")}{" "}
+                                        đ
+                                      </ProductPrice>
+                                    </div>
+                                    <Button
+                                      className="add-to-cart"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        handleAddToCart(product._id);
+                                      }}
+                                    >
+                                      <svg
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                      >
+                                        <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                                        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                                      </svg>
+                                    </Button>
+                                  </ProductBottom>
+                                </ProductInfo>
+                              </Link>
+                            </ProductCard>
+                          ))}
+                        </ProductSlider>
+                      </SliderTrack>
+                    </SliderWrapper>
+
+                    {/* Các nút điều hướng vẫn được giữ lại */}
+                    {showScrollControls && (
+                      <>
+                        {!isAtStart && (
+                          <SliderArrow
+                            className="slider-arrow left"
+                            onClick={() => handlePrev(cat)}
+                          >
+                            <FaChevronLeft />
+                          </SliderArrow>
+                        )}
+                        {!isAtEnd && (
+                          <SliderArrow
+                            className="slider-arrow right"
+                            onClick={() => handleNext(cat)}
+                          >
+                            <FaChevronRight />
+                          </SliderArrow>
+                        )}
+                      </>
+                    )}
+                  </SliderContainer>
+                </CategoryRow>
+              );
+            })
           )}
         </Container>
       </KingofTea>

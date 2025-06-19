@@ -1,6 +1,7 @@
 import React from 'react'
 import Header from './Header'
 import styled from 'styled-components'
+import Footer from './Footer';
 
 const Wrapper = styled.div`
   display: flex;
@@ -18,6 +19,7 @@ const Default = ({ children }) => {
     <Wrapper>
       <Header />
       <MainContent>{children}</MainContent>
+      <Footer />
     </Wrapper>
   )
 }

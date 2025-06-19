@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { GoogleLogin } from '@react-oauth/google';
-import GlobalStyle from '../components/GlobalStyle';
 import styled   from 'styled-components';
 import logoImg from '../assets/logo/kyo-matcha-logo.png';
 
@@ -225,7 +224,7 @@ function Login() {
         setMessage('Không nhận được thông tin xác thực từ Google');
         return;
       }
-      
+
       const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -233,11 +232,11 @@ function Login() {
           token: credentialResponse.credential
         }),
       });
-      
+
       const data = await res.json();
       if (res.ok) {
         localStorage.setItem('token', data.token);
-        localStorage.setItem('id', data.user.id || '');
+        localStorage.setItem('userId', data.user.id || '');
         localStorage.setItem('username', data.user.username || '');
         localStorage.setItem('fullName', data.user.fullName || '');
         localStorage.setItem('email', data.user.email || '');

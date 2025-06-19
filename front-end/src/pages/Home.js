@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { blogs } from "../data/blogs";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+import Marquee from '../components/Marquee';
 import { useAppContext } from '../context/AppContext';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -17,6 +18,14 @@ const BannerWrapper = styled.div`
   height: 70vh;
   position: relative;
   overflow: hidden;
+  @media (max-width: 768px) {
+    height: 50vh;
+    margin-top: 80px;
+  }
+  @media (max-width: 480px) {
+    height: 40vh;
+    margin-top: 60px;
+  }
 `;
 
 const BannerImage = styled.img`
@@ -66,12 +75,23 @@ const BannerTitle = styled.div`
   letter-spacing: 3px;
   margin-bottom: 32px;
   text-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
+  @media (max-width: 768px) {
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 480px) {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
 `;
 
 const BannerButtonGroup = styled.div`
   display: inline-grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
+  @media (max-width: 480px) {
+    gap: 12px;
+  }
 `;
 
 const BannerButton = styled(Link)`
@@ -88,7 +108,14 @@ const BannerButton = styled(Link)`
   font-family: "Montserrat", sans-serif;
   text-decoration: none;
   text-align: center;
-
+  @media (max-width: 768px) {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+  }
+  @media (max-width: 480px) {
+    padding: 10px 20px;
+    font-size: 0.8rem;
+  }
   &:hover {
     background: transparent;
     color: #fff;
@@ -109,30 +136,57 @@ const SectionTitle = styled.h2`
   color: #000;
   font-weight: 500;
   margin-bottom: 48px;
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 480px) {
+    font-size: 1.1rem;
+    margin-bottom: 24px;
+  }
 `;
 
 const ProductGrid = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 20%);
   justify-content: center;
   gap: 32px;
-  flex-wrap: wrap;
   padding: 0 32px;
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 30%);
+  }
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 40%);
+    gap: 20px;
+    padding: 0 20px;
+  }
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    max-width: 300px;
+    margin: 0 auto;
+  }
 `;
+
 
 const ProductCard = styled.div`
   background: #f6f6ee;
+  border-radius: 8px;
+  background: white;
   border-radius: 8px;
   overflow: hidden;
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 280px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  width: 100%;
+  height: 100%;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #f6f6ee;
+
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.18);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   }
+
   a {
     text-decoration: none;
     color: inherit;
@@ -147,7 +201,13 @@ const ProductImage = styled.div`
   padding-top: 100%;
   background-color: #f8f8f8;
   overflow: hidden;
-  border-radius: 8px;
+  height: 320px;
+  @media (max-width: 768px) {
+    height: 280px;
+  }
+  @media (max-width: 480px) {
+    height: 250px;
+  }
   img {
     position: absolute;
     top: 0;
@@ -168,14 +228,20 @@ const ProductInfo = styled.div`
 `;
 
 const ProductName = styled.h3`
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: #333;
   margin: 0 0 10px 0;
   line-height: 1.3;
   white-space: nowrap;
-  overflow: hidden;
+
   text-overflow: ellipsis;
+`;
+
+const ProductShortDescription = styled.h3`
+  font-size: 0.6rem;
+  width: 155%;
+  color: #333;
 `;
 
 const ProductBottom = styled.div`
@@ -186,24 +252,8 @@ const ProductBottom = styled.div`
 `;
 
 const ProductPrice = styled.div`
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 0.9rem;
   color: #527328;
-`;
-
-const ShippingInfo = styled.span`
-  font-size: 14px;
-  color: #666;
-  font-weight: normal;
-  margin-left: 4px;
-`;
-
-const ButtonGroup = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 8px;
-  padding: 16px;
-  padding-top: 0;
 `;
 
 const Button = styled.button`
@@ -213,35 +263,44 @@ const Button = styled.button`
   font-weight: 600;
   cursor: pointer;
   border: none;
-  background: #eddfcb;
-  color: #231b10;
+  background: #537328;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.2s, color 0.2s;
-   width: 40%;
-  height: 120%;
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgb(82, 115, 40);
+  margin-right: -10px;
   &:hover {
-    background: #6a6649;
-    color: #fff;
+    background: white;
+    color: rgb(82, 115, 40);
+    border: 1px solid rgb(82, 115, 40);
   }
 `;
+
 
 const TeaCollection = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { toggleFavorite, isProductFavorited } = useAppContext();
+  const { toggleFavorite, isProductFavorited, user } = useAppContext();
 
  const handleAddToCart = async (productId, color = "", size = "") => {
   try {
-    // Lấy token và id người dùng từ localStorage
+    // Lấy token từ localStorage và userId từ context
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
+<<<<<<< HEAD
     console.log("Token:", token);
     console.log("User ID:", userId);
     
     // Nếu chưa đăng nhập, điều hướng về trang login
+=======
+
+    // Nếu chưa đăng nhập hoặc chưa có userId, điều hướng về trang login
+>>>>>>> d355a2d1c0388bb225784185cd16f40a8435eaf0
     if (!token || !userId) {
       toast.info('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
       navigate('/login');
@@ -302,9 +361,10 @@ const TeaCollection = () => {
                 (product.name.includes("Matcha Natsu") ||
                   product.name.includes("Matcha Aki") ||
                   product.name.includes("Matcha Haru") ||
-                  product.name.includes("Matcha Fuji 02") ||
-                  product.name.includes("Matcha Fuji 03") ||
-                  product.name.includes("Matcha Fuji 05"))
+                  product.name.includes("Chổi Chasen") ||
+                  product.name.includes("Combo 2 Món Matcha") ||
+                  product.name.includes("Đế Sứ Cắm Chổi")
+                )
             )
             .slice(0, 6);
           console.log("Filtered Products:", filteredProducts); // Debug log
@@ -334,41 +394,56 @@ const TeaCollection = () => {
       <SectionTitle>MATCHA CỦA CHÚNG TÔI</SectionTitle>
       <ProductGrid>
         {products.map((product) => (
-          <ProductCard key={product._id}>
-            <Link to={`/products/${product.slug}`}>
-              <ProductImage>
-                <img
-                  src={product.images && product.images.length > 0
-                    ? `${BACKEND_URL}${product.images[0]}`
+          <ProductCard key={product.slug}>
+          <Link to={`/products/${product.slug}`}>
+            <ProductImage>
+              <img
+                src={
+                  product.images && product.images.length > 0
+                    ? product.images[0].startsWith("http")
+                      ? product.images[0]
+                      : `${BACKEND_URL}${product.images[0]}`
                     : "/placeholder.jpg"
-                  }
-                  alt={product.name}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "/placeholder.jpg";
+                }
+                alt={product.name}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/placeholder.jpg";
+                }}
+              />
+            </ProductImage>
+            <ProductInfo>
+              <ProductBottom>
+                <div style={{ width: "50%" }}>
+                  <ProductName>{product.name}</ProductName>
+                  <ProductShortDescription>{product.shortDescription}</ProductShortDescription>
+                  <ProductPrice>
+                    {product.price.toLocaleString("vi-VN")} đ
+                  </ProductPrice>
+                </div>
+                <Button
+                  className="add-to-cart"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleAddToCart(product._id);
                   }}
-                />
-              </ProductImage>
-              <ProductInfo>
-                <ProductName>{product.name}</ProductName>
-                <ProductBottom>
-                  <ProductPrice>{product.price.toLocaleString('vi-VN')}₫</ProductPrice>
-                  <Button
-                    className="add-to-cart"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleAddToCart(product._id);
-                    }}
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                      <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
-                    </svg>
-                  </Button>
-                </ProductBottom>
-              </ProductInfo>
-            </Link>
-          </ProductCard>
+                    <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                    <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                  </svg>
+                </Button>
+              </ProductBottom>
+            </ProductInfo>
+          </Link>
+        </ProductCard>
         ))}
       </ProductGrid>
     </Section>
@@ -391,17 +466,44 @@ const BlogTitle = styled.h2`
 `;
 
 const BlogGrid = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 25%);
   justify-content: center;
-  gap: 48px;
-  flex-wrap: wrap;
+  gap: 32px;
+  padding: 0 32px;
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 35%);
+  }
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 40%);
+    gap: 20px;
+    padding: 0 20px;
+  }
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    max-width: 300px;
+    margin: 0 auto;
+  }
 `;
 
 const BlogCard = styled.div`
-  width: 370px;
-  text-align: left;
-  padding: 20px;
-  transition: transform 0.3s ease;
+  background: #f6f6ee;
+  border-radius: 8px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #f6f6ee;
+  padding: 10px;
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
 `;
 
 const BlogImage = styled.img`
@@ -410,10 +512,11 @@ const BlogImage = styled.img`
   object-fit: cover;
   margin-bottom: 18px;
   cursor: pointer;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  @media (max-width: 768px) {
+    height: 180px;
+  }
+  @media (max-width: 480px) {
+    height: 160px;
   }
 `;
 
@@ -433,6 +536,7 @@ const BlogPostTitle = styled.div`
   margin-bottom: 12px;
   line-height: 1.4;
   cursor: pointer;
+
   &:hover {
     color: #4A7C59;
   }
@@ -448,49 +552,53 @@ const BlogDesc = styled.div`
 const BlogReadMore = styled(Link)`
   color: #4A7C59;
   font-size: 0.95rem;
-  text-decoration: underline;
+  text-decoration: none;
   text-underline-offset: 3px;
   transition: color 0.2s;
   font-weight: 500;
+  position: relative;
+  width:86px;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    width: 0%;
+    height: 2px;
+    background: #4A7C59;
+    transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 0 auto;
+  }
 
   &:hover {
     color: #4A7C59;
   }
+  &:hover::after {
+    width: 100%;
+  }
 `;
 
 function BlogList() {
-  const getLatestBlogsByCategory = () => {
-    const categories = ["Khám phá", "Làm đẹp", "Pha chế"];
-    const latestBlogs = [];
-
-    categories.forEach((category) => {
-      const categoryBlogs = blogs
-        .filter((blog) => blog.category === category)
-        .sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
-
-      if (categoryBlogs.length > 0) {
-        latestBlogs.push(categoryBlogs[0]);
-      }
-    });
-
-    return latestBlogs;
-  };
-
-  const latestBlogs = getLatestBlogsByCategory();
+  // Lấy 6 blog mới nhất, sắp xếp theo ngày tạo hoặc cập nhật mới nhất
+  const latestBlogs = blogs
+    .slice() // copy mảng để không ảnh hưởng gốc
+    .sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt))
+    .slice(0, 3);
 
   return (
     <BlogSection>
-      <BlogTitle>BLOGS MỚI NHẤT</BlogTitle>
+      <BlogTitle>BÀI VIẾT MỚI NHẤT</BlogTitle>
       <BlogGrid>
         {latestBlogs.map((blog, idx) => (
           <BlogCard key={idx}>
-            <Link to={`/blog/${blog.id}`} style={{ textDecoration: 'none' }}>
+            <Link to={`/blogs/${blog.slug}`} style={{ textDecoration: 'none' }}>
               <BlogImage src={blog.thumbnailUrl} alt={blog.title} />
               <BlogPostTitle>{blog.title}</BlogPostTitle>
-            </Link>
             <BlogCategory>{blog.category}</BlogCategory>
-            <BlogDesc>{blog.desc}</BlogDesc>
-            <BlogReadMore to={`/blog/${blog.id}`}>Xem thêm</BlogReadMore>
+            <BlogDesc>{blog.summary || blog.desc}</BlogDesc>
+            <BlogReadMore to={`/blogs/${blog.slug}`}>XEM THÊM</BlogReadMore>
+            </Link>
           </BlogCard>
         ))}
       </BlogGrid>
@@ -499,6 +607,8 @@ function BlogList() {
 }
 
 const Home = () => {
+  const scrollingText = "KyoMatcha - Matcha cho 1 ngày dài tỉnh táo";
+
   return (
     <>
       <GlobalStyle />
@@ -509,10 +619,11 @@ const Home = () => {
           <BannerTitle>MỘT KHỞI ĐẦU MỚI</BannerTitle>
           <BannerButtonGroup>
             <BannerButton to="/products">MUA NGAY</BannerButton>
-            <BannerButton to="/blog">XEM THÊM</BannerButton>
+            <BannerButton to="/blogs">XEM THÊM</BannerButton>
           </BannerButtonGroup>
         </BannerTextWrapper>
       </BannerWrapper>
+      <Marquee text={scrollingText} duration="60s" />
       <TeaCollection />
       <BlogList />
     </>
