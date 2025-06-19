@@ -6,6 +6,8 @@ import axios from 'axios';
 
 const QRPaymentPage = () => {
 	const navigate = useNavigate();
+	const [cart, setCart] = useState({ items: [] });
+	const userId = localStorage.getItem('userId');
 	const [qrData, setQrData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -25,16 +27,14 @@ const QRPaymentPage = () => {
 
 	const handleConfirmPayment = async () => {
 		try {
-			const res = await axios.post(
-				`${BACKEND_URL}/orders/confirm-payment`,
-				{
-					orderId: qrData.orderId,
-
-				}
-			);
+			const res = await axios.post(`${BACKEND_URL}/orders/confirm-payment`, {
+				orderId: qrData.orderId,
+			});
 
 			toast.success('Đã xác nhận và gửi hóa đơn qua email');
 			localStorage.removeItem('qrCheckout');
+			await axios.delete(`${BACKEND_URL}/cart/clear/${userId}`);
+			setCart({ items: [] });
 			navigate('/thankyou');
 		} catch (error) {
 			console.error('Lỗi xác nhận thanh toán:', error);
