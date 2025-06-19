@@ -15,6 +15,7 @@ import MyCart from '../pages/MyCart';
 import ThankYouPage from "../pages/ThankYouPage";
 import OrderDetail from "../pages/OrderDetail";
 import QRPaymentPage from "../pages/QRPayment";
+import ComboDetail from "../pages/ComboDetail";
 
 export const routes = [
     {
@@ -119,4 +120,10 @@ export const routes = [
         isShowHeader: true,
         isShowFooter: false
     },
+    {
+        path: '/combo-detail/:id',
+        page: ComboDetail,
+        isShowHeader: true,
+        isShowFooter: false
+    }
 ]

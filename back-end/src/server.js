@@ -43,6 +43,8 @@ const blogRouter = require('./routes/blogRoutes');
 app.use('/api', blogRouter);
 const favoriteRouter = require('./routes/favoriteRoutes');
 app.use('/api/favorites', favoriteRouter);
+const comboRouter = require('./routes/comboRoutes');
+app.use('/api', comboRouter);
 
 const PORT = 9999;
 app.listen(PORT, () =>
