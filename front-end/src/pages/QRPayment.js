@@ -9,7 +9,7 @@ const QRPaymentPage = () => {
 	const [qrData, setQrData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-	
+
 	useEffect(() => {
 		const stored = localStorage.getItem('qrCheckout');
 		if (stored) {
@@ -29,6 +29,7 @@ const QRPaymentPage = () => {
 				`${BACKEND_URL}/orders/confirm-payment`,
 				{
 					orderId: qrData.orderId,
+
 				}
 			);
 
