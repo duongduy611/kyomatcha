@@ -8,8 +8,6 @@ router.get('/blogs', BlogController.getAllBlogs);
 router.get('/category/:category', BlogController.getBlogByCategory);
 // Lấy blog nổi bật (mỗi category 1 blog mới nhất)
 router.get('/prominent', BlogController.getBlogProminent);
-// Lấy blog theo id
-router.get('/:blogId', BlogController.getBlogById);
 // Lấy blog theo slug
 router.get('/slug/:slug', BlogController.getBlogBySlug);
 // Tạo blog mới

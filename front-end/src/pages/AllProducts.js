@@ -59,26 +59,80 @@ const BannerText = styled.h1`
 `;
 
 const Container = styled.div`
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 2rem;
+  position: relative;
+  width: 100%;
+  padding: 0 32px;
+
+  @media (min-width: 1600px) {
+    max-width: 1600px;
+    padding: 0 48px;
+  }
+
+  @media (max-width: 1280px) {
+    padding: 0 20px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 16px;
+  }
 `;
 
 const Header = styled.div`
-  margin-bottom: 2rem;
-  padding: 1.5rem;
+  padding-top: 2rem;
   background-color: white;
-  border-radius: 15px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 2rem;
-  background-color: rgb(255, 255, 255);
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  border-bottom: 6px solid #F8F6EF;
+
+  @media (max-width: 1280px) {
+    width: 100%;
+    left: 0;
+    right: 0;
+    margin-left: -20px;
+    margin-right: -20px;
+  }
 
   @media (max-width: 768px) {
     flex-direction: column;
-    align-items: stretch;
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-top: 1rem;
+    gap: 1rem;
+  }
+`;
+
+const HeaderContent = styled.div`
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 64px;
+  gap: 2rem;
+
+  @media (min-width: 1600px) {
+    max-width: 1600px;
+    padding: 0 80px;
+  }
+
+  @media (max-width: 1280px) {
+    padding: 0 20px;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 0 16px;
     gap: 1rem;
   }
 `;
@@ -87,6 +141,11 @@ const SearchBar = styled.div`
   flex: 1;
   max-width: 400px;
   position: relative;
+  margin-right: 5%;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 
   input {
     width: 100%;
@@ -99,7 +158,7 @@ const SearchBar = styled.div`
 
     &:focus {
       outline: none;
-      border-color: #2ecc40;
+      border-color: #476422;
       background-color: white;
       box-shadow: 0 2px 8px rgba(46, 204, 64, 0.1);
     }
@@ -110,59 +169,59 @@ const SearchBar = styled.div`
   }
 `;
 
-const FilterSection = styled.div`
+const TabWrapper = styled.div`
   display: flex;
-  gap: 1rem;
-  align-items: center;
+  padding: 0 64px;
 
-  select {
-    padding: 10px 35px 10px 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 30px;
+  @media (max-width: 768px) {
+    padding: 0 16px;
+    width: 100%;
+    justify-content: space-between;
+  }
+`;
+
+const Tab = styled.button`
+  font-size: 1.125rem;
+  font-weight: 500;
+  padding: 12px 24px;
+  color: ${(props) => (props.active ? "#476422" : "#668d35")};
+  background: ${(props) => (props.active ? "#F8F6EF" : "transparent")};
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 8px 8px 0 0;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    padding: 10px 16px;
+    flex: 1;
+    text-align: center;
+  }
+
+  @media (max-width: 480px) {
     font-size: 0.9rem;
-    cursor: pointer;
-    background-color: #f8f8f8;
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 15px center;
-    background-size: 15px;
-    min-width: 180px;
-    transition: all 0.3s ease;
-
-    &:focus {
-      outline: none;
-      border-color: #2ecc40;
-      background-color: white;
-      box-shadow: 0 2px 8px rgba(46, 204, 64, 0.1);
-    }
-
-    &:hover {
-      background-color: white;
-      border-color: #2ecc40;
-    }
-
-    option {
-      background-color: white;
-      color: #333;
-      padding: 10px;
-    }
+    padding: 8px 12px;
   }
 `;
 
 const ProductCard = styled.div`
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: #f6f6ee;
+  background: #f6f6ee;
   flex: 0 0 auto;
-  width: 250px;
+  width: 280px;
   flex-shrink: 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  @media (min-width: 1600px) {
+    width: 320px;
+  }
+
+  @media (max-width: 768px) {
+    width: 200px;
+  }
+
+  @media (max-width: 480px) {
+    width: 160px;
+  }
 
   &:hover {
     transform: translateY(-4px);
@@ -178,12 +237,26 @@ const ProductCard = styled.div`
   }
 `;
 
+
 const ProductImage = styled.div`
   position: relative;
   padding-top: 100%;
   background-color: #f8f8f8;
   overflow: hidden;
-  height: 320px;
+  height: 360px;
+
+  @media (min-width: 1600px) {
+    height: 400px;
+  }
+
+  @media (max-width: 768px) {
+    height: 260px;
+  }
+
+  @media (max-width: 480px) {
+    height: 200px;
+  }
+
   img {
     position: absolute;
     top: 0;
@@ -209,9 +282,12 @@ const ProductName = styled.h3`
   color: #333;
   margin: 0 0 10px 0;
   line-height: 1.3;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const ProductShortDescription = styled.h3`
@@ -230,6 +306,10 @@ const ProductBottom = styled.div`
 const ProductPrice = styled.div`
   font-size: 0.9rem;
   color: #527328;
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const Button = styled.button`
@@ -254,6 +334,16 @@ const Button = styled.button`
     color: rgb(82, 115, 40);
     border: 1px solid rgb(82, 115, 40);
   }
+
+  @media (max-width: 768px) {
+    width: 50px;
+    height: 50px;
+  }
+
+  @media (max-width: 480px) {
+    width: 40px;
+    height: 40px;
+  }
 `;
 
 const Loading = styled.div`
@@ -268,10 +358,22 @@ const CategoryRow = styled.div`
   align-items: stretch;
   background: #f9f6ef;
   border-radius: 24px;
-  padding: 32px 0 32px 0;
+  padding: 32px 0;
   min-height: 420px;
   margin-bottom: 2rem;
-  margin-right: -100px;
+  width: 100%;
+
+  @media (min-width: 1600px) {
+    padding: 40px 0;
+    min-height: 480px;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    min-height: auto;
+    padding: 20px 0;
+    border-radius: 16px;
+  }
 `;
 
 const CategoryInfo = styled.div`
@@ -280,14 +382,33 @@ const CategoryInfo = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  @media (min-width: 1600px) {
+    padding: 0 40px 0 80px;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 0 20px 20px;
+  }
 `;
 
 const CategoryTitle = styled.h2`
   font-size: 40px;
   font-weight: 550;
-  color: #404040;
-  margin: 200px 0 0 -180px;
+  color: #476422;
+  margin: 200px 0 0 0;
   font-family: MJ Royale Couture Serif;
+
+  @media (max-width: 1280px) {
+    font-size: 32px;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 28px;
+    text-align: center;
+  }
 `;
 
 const SliderWrapper = styled.div`
@@ -297,13 +418,21 @@ const SliderWrapper = styled.div`
   scroll-behavior: smooth;
   cursor: grab;
 
+  @media (max-width: 768px) {
+    padding: 0 16px;
+  }
+
   &.dragging {
     cursor: grabbing;
   }
 
   /* Tùy chỉnh màu thanh cuộn mặc định cho WebKit (Chrome, Safari, Edge) */
   &::-webkit-scrollbar {
-    height: 8px; /* Chiều cao của thanh cuộn ngang */
+    height: 8px;
+    
+    @media (max-width: 768px) {
+      height: 4px;
+    }
   }
 
   &::-webkit-scrollbar-track {
@@ -328,9 +457,17 @@ const SliderWrapper = styled.div`
 
 const SliderTrack = styled.div`
   display: flex;
-  gap: 16px;
+  gap: 24px;
   flex-wrap: nowrap;
   padding-bottom: 0px;
+
+  @media (min-width: 1600px) {
+    gap: 32px;
+  }
+
+  @media (max-width: 768px) {
+    gap: 16px;
+  }
 `;
 
 const ProductSlider = styled.div`
@@ -343,6 +480,16 @@ const SliderContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  padding-right: 32px;
+
+  @media (min-width: 1600px) {
+    padding-right: 48px;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding-right: 0;
+  }
 
   &:hover .slider-arrow {
     opacity: 1;
@@ -399,6 +546,122 @@ const SliderArrow = styled.button`
   }
 `;
 
+const ComboSection = styled.div`
+  padding: 2rem 0;
+  background: #f9f6ef;
+  border-radius: 24px;
+  margin-bottom: 2rem;
+`;
+
+const ComboGrid = styled.div`
+  display: grid;
+  /* Giữ nguyên logic responsive của bạn, rất tốt! */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 3rem; /* Tăng gap cho thoáng hơn */
+  padding: 0 64px;
+
+  @media (min-width: 1600px) {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    padding: 0 80px;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr; /* Hiển thị 1 cột trên mobile */
+    padding: 0 20px;
+    gap: 1.5rem;
+  }
+`;
+
+// ComboCard bây giờ là khung viền
+const ComboCard = styled.div`
+  padding: 0.75rem; /* Padding để tạo khoảng cách giữa viền và nội dung */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  /* BỎ HẾT CÁC THUỘC TÍNH WIDTH CỐ ĐỊNH */
+  /* width: 100%; không cần thiết vì grid item sẽ tự dãn ra */
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  a {
+    background: #fcfcf9; /* Màu nền kem cho nội dung bên trong */
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
+
+  .image-wrapper {
+    padding: 2rem; /* Padding cho hình ảnh */
+    background: white; /* Nền trắng cho khu vực ảnh */
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+  }
+
+  .info-wrapper {
+    display: flex;
+    justify-content: space-between; /* Đẩy text và nút về 2 phía */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    padding: 1rem 1.5rem;
+    gap: 1rem;
+  }
+  
+  .text-details {
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #333;
+      margin: 0 0 0.5rem 0;
+    }
+    p {
+      font-size: 0.875rem;
+      color: #666;
+      margin: 0 0 1rem 0;
+      line-height: 1.4;
+    }
+    span {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #333;
+    }
+  }
+
+  .cart-button {
+    background: #5a7247; /* Màu xanh của nút */
+    border: none;
+    border-radius: 4px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0; /* Ngăn nút bị co lại */
+    
+    /* Thêm icon giỏ hàng (SVG hoặc Font Awesome) vào đây */
+    /* ví dụ: color: white; */
+  }
+`;
+
+const ComboTitle = styled.h2`
+  font-size: 2rem;
+  color: #476422;
+  margin: 0 0 2rem 64px;
+  font-family: MJ Royale Couture Serif;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+    margin: 0 0 1.5rem 20px;
+  }
+`;
+
 function debounce(func, timeout = 100) {
   let timer;
   return (...args) => {
@@ -423,6 +686,9 @@ const AllProducts = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [categoryIndices, setCategoryIndices] = useState({});
+  const [selectedTab, setSelectedTab] = useState("product");
+  const [combos, setCombos] = useState([]);
+  const [loadingCombos, setLoadingCombos] = useState(false);
 
   const navigate = useNavigate();
 
@@ -617,6 +883,62 @@ const AllProducts = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupedProducts, categories]);
 
+  // Fetch combos
+  const fetchCombos = useCallback(async () => {
+    if (selectedTab === 'combo') {
+      setLoadingCombos(true);
+      try {
+        const response = await axios.get(`${BACKEND_URL}/api/combo`);
+        console.log(response.data.data);
+        setCombos(response.data.data || []);
+      } catch (error) {
+        console.error('Error fetching combos:', error);
+        toast.error('Không thể tải combo sản phẩm');
+      } finally {
+        setLoadingCombos(false);
+      }
+    }
+  }, [selectedTab]);
+
+  useEffect(() => {
+    fetchCombos();
+  }, [fetchCombos]);
+
+  // Add to cart function for combo
+  const handleAddComboToCart = async (comboId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+      if (!token || !userId) {
+        toast.info("Vui lòng đăng nhập để thêm combo vào giỏ hàng");
+        navigate("/login");
+        return;
+      }
+      const payload = { userId, comboId, quantity: 1 };
+      const response = await axios.post(`${BACKEND_URL}/cart/add-combo`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200 && response.data?._id) {
+        toast.success("Đã thêm combo vào giỏ hàng!");
+      } else {
+        toast.error("Thêm combo vào giỏ hàng không thành công. Vui lòng thử lại.");
+      }
+    } catch (error) {
+      console.error("Error adding combo to cart:", error);
+      if (error.response?.status === 401) {
+        toast.error("Vui lòng đăng nhập để thêm combo vào giỏ hàng");
+        navigate("/login");
+      } else {
+        toast.error(
+          error.response?.data?.message || "Có lỗi xảy ra khi thêm vào giỏ hàng"
+        );
+      }
+    }
+  };
+
   return (
     <>
       <GlobalStyle />
@@ -626,157 +948,231 @@ const AllProducts = () => {
         </Banner>
         <Container>
           <Header>
-            <FilterSection>
-              <select
-                value={sortOption}
-                onChange={(e) => setSortOption(e.target.value)}
-              >
-                <option value="">Sắp xếp theo</option>
-                <option value="name-asc">Tên, A-Z</option>
-                <option value="name-desc">Tên, Z-A</option>
-                <option value="price-asc">Giá, thấp đến cao</option>
-                <option value="price-desc">Giá, cao đến thấp</option>
-              </select>
-            </FilterSection>
-            <SearchBar>
-              <input
-                type="text"
-                placeholder="Tìm kiếm sản phẩm..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </SearchBar>
+            <HeaderContent>
+              <TabWrapper>
+                <Tab
+                  active={selectedTab === "product"}
+                  onClick={() => setSelectedTab("product")}
+                >
+                  Sản phẩm riêng lẻ
+                </Tab>
+                <Tab
+                  active={selectedTab === "combo"}
+                  onClick={() => setSelectedTab("combo")}
+                >
+                  Combo sản phẩm
+                </Tab>
+              </TabWrapper>
+
+              <SearchBar>
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </SearchBar>
+            </HeaderContent>
           </Header>
-          {loading ? (
-            <Loading>Đang tải sản phẩm...</Loading>
-          ) : (
-            categories.map((cat) => {
-              const prods = groupedProducts[cat] || [];
-              if (prods.length <= 0) return null;
 
-              const currentIndex = categoryIndices[cat] || 0;
-              const isAtStart = currentIndex <= 0;
-              const sliderElement = sliderRefs.current[cat];
-              const isAtEnd =
-                sliderElement &&
-                Math.abs(
-                  sliderElement.scrollWidth -
-                    sliderElement.scrollLeft -
-                    sliderElement.clientWidth
-                ) < 1;
+          {selectedTab === "product" ? (
+            loading ? (
+              <Loading>Đang tải sản phẩm...</Loading>
+            ) : (
+              categories.map((cat) => {
+                const prods = groupedProducts[cat] || [];
+                if (prods.length <= 0) return null;
 
-              const showScrollControls = prods.length > CARDS_PER_VIEW;
+                const currentIndex = categoryIndices[cat] || 0;
+                const isAtStart = currentIndex <= 0;
+                const sliderElement = sliderRefs.current[cat];
+                const isAtEnd =
+                  sliderElement &&
+                  Math.abs(
+                    sliderElement.scrollWidth -
+                      sliderElement.scrollLeft -
+                      sliderElement.clientWidth
+                  ) < 1;
 
-              return (
-                <CategoryRow key={cat}>
-                  <CategoryInfo>
-                    <div>
-                      <CategoryTitle>
-                        {cat === "tea_tools"
-                          ? "Dụng cụ trà đạo"
-                          : cat === "barista_tools"
-                          ? "Dụng cụ pha chế"
-                          : cat}
-                      </CategoryTitle>
-                    </div>
-                  </CategoryInfo>
+                const showScrollControls = prods.length > CARDS_PER_VIEW;
 
-                  <SliderContainer>
-                    <SliderWrapper
-                      ref={(el) => (sliderRefs.current[cat] = el)}
-                      onScroll={debouncedScrollHandlers[cat]}
-                      onMouseDown={(e) => handleMouseDown(e, cat)}
-                      onMouseMove={(e) => handleMouseMove(e, cat)}
-                      onMouseUp={() => handleMouseUp(cat)}
-                      onMouseLeave={() => handleMouseUp(cat)}
-                    >
-                      <SliderTrack>
-                        <ProductSlider>
-                          {prods.map((product) => (
-                            <ProductCard key={product.slug}>
-                              <Link to={`/products/${product.slug}`}>
-                                <ProductImage>
-                                  <img
-                                    src={
-                                      product.images?.[0]?.startsWith("http")
-                                        ? product.images[0]
-                                        : `${BACKEND_URL}${
-                                            product.images?.[0] ||
-                                            "/placeholder.jpg"
-                                          }`
-                                    }
-                                    alt={product.name}
-                                    onError={(e) => {
-                                      e.target.onerror = null;
-                                      e.target.src = "/placeholder.jpg";
-                                    }}
-                                  />
-                                </ProductImage>
-                                <ProductInfo>
-                                  <ProductBottom>
-                                    <div style={{ width: "50%" }}>
-                                      <ProductName>{product.name}</ProductName>
-                                      <ProductShortDescription>
-                                        {product.shortDescription}
-                                      </ProductShortDescription>
-                                      <ProductPrice>
-                                        {product.price.toLocaleString("vi-VN")}{" "}
-                                        đ
-                                      </ProductPrice>
-                                    </div>
-                                    <Button
-                                      className="add-to-cart"
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        handleAddToCart(product._id);
+                return (
+                  <CategoryRow key={cat}>
+                    <CategoryInfo>
+                      <div>
+                        <CategoryTitle>
+                          {cat === "tea_tools"
+                            ? "Dụng cụ trà đạo"
+                            : cat === "barista_tools"
+                            ? "Dụng cụ pha chế"
+                            : cat}
+                        </CategoryTitle>
+                      </div>
+                    </CategoryInfo>
+
+                    <SliderContainer>
+                      <SliderWrapper
+                        ref={(el) => (sliderRefs.current[cat] = el)}
+                        onScroll={debouncedScrollHandlers[cat]}
+                        onMouseDown={(e) => handleMouseDown(e, cat)}
+                        onMouseMove={(e) => handleMouseMove(e, cat)}
+                        onMouseUp={() => handleMouseUp(cat)}
+                        onMouseLeave={() => handleMouseUp(cat)}
+                      >
+                        <SliderTrack>
+                          <ProductSlider>
+                            {prods.map((product) => (
+                              <ProductCard key={product.slug}>
+                                <Link to={`/products/${product.slug}`}>
+                                  <ProductImage>
+                                    <img
+                                      src={
+                                        product.images?.[0]?.startsWith(
+                                          "http"
+                                        )
+                                          ? product.images[0]
+                                          : `${BACKEND_URL}${
+                                              product.images?.[0] ||
+                                              "/placeholder.jpg"
+                                            }`
+                                      }
+                                      alt={product.name}
+                                      onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = "/placeholder.jpg";
                                       }}
-                                    >
-                                      <svg
-                                        width="20"
-                                        height="20"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
+                                    />
+                                  </ProductImage>
+                                  <ProductInfo>
+                                    <ProductBottom>
+                                      <div style={{ width: "50%" }}>
+                                        <ProductName>
+                                          {product.name}
+                                        </ProductName>
+                                        <ProductShortDescription>
+                                          {product.shortDescription}
+                                        </ProductShortDescription>
+                                        <ProductPrice>
+                                          {product.price.toLocaleString(
+                                            "vi-VN"
+                                          )}{" "}
+                                          đ
+                                        </ProductPrice>
+                                      </div>
+                                      <Button
+                                        className="add-to-cart"
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          handleAddToCart(product._id);
+                                        }}
                                       >
-                                        <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                                        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
-                                      </svg>
-                                    </Button>
-                                  </ProductBottom>
-                                </ProductInfo>
-                              </Link>
-                            </ProductCard>
-                          ))}
-                        </ProductSlider>
-                      </SliderTrack>
-                    </SliderWrapper>
+                                        <svg
+                                          width="20"
+                                          height="20"
+                                          viewBox="0 0 24 24"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          strokeWidth="2"
+                                        >
+                                          <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                                          <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                                        </svg>
+                                      </Button>
+                                    </ProductBottom>
+                                  </ProductInfo>
+                                </Link>
+                              </ProductCard>
+                            ))}
+                          </ProductSlider>
+                        </SliderTrack>
+                      </SliderWrapper>
 
-                    {/* Các nút điều hướng vẫn được giữ lại */}
-                    {showScrollControls && (
-                      <>
-                        {!isAtStart && (
-                          <SliderArrow
-                            className="slider-arrow left"
-                            onClick={() => handlePrev(cat)}
+                      {/* Các nút điều hướng vẫn được giữ lại */}
+                      {showScrollControls && (
+                        <>
+                          {!isAtStart && (
+                            <SliderArrow
+                              className="slider-arrow left"
+                              onClick={() => handlePrev(cat)}
+                            >
+                              <FaChevronLeft />
+                            </SliderArrow>
+                          )}
+                          {!isAtEnd && (
+                            <SliderArrow
+                              className="slider-arrow right"
+                              onClick={() => handleNext(cat)}
+                            >
+                              <FaChevronRight />
+                            </SliderArrow>
+                          )}
+                        </>
+                      )}
+                    </SliderContainer>
+                  </CategoryRow>
+                );
+              })
+            )
+          ) : loadingCombos ? (
+            <Loading>Đang tải combo sản phẩm...</Loading>
+          ) : (
+            <ComboSection>
+              <ComboTitle>Combo Sản Phẩm</ComboTitle>
+              <ComboGrid>
+                {combos.map((combo) => (
+                  <ComboCard key={combo._id}>
+                    <Link to={`/combo-detail/${combo._id}`}>
+                      <ProductImage>
+                        <img
+                          src={
+                            combo.images?.[0]?.startsWith("http")
+                              ? combo.images[0]
+                              : `${BACKEND_URL}${combo.images?.[0] || "/placeholder.jpg"}`
+                          }
+                          alt={combo.title}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "/placeholder.jpg";
+                          }}
+                        />
+                      </ProductImage>
+                      <ProductInfo>
+                        <ProductBottom>
+                          <div style={{ width: "50%" }}>
+                            <ProductName>{combo.title}</ProductName>
+                            <ProductShortDescription>
+                              {combo.suitableFor}
+                            </ProductShortDescription>
+                            <ProductPrice>
+                              {combo.price.toLocaleString("vi-VN")} đ
+                            </ProductPrice>
+                          </div>
+                          <Button
+                            className="add-to-cart"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleAddComboToCart(combo._id);
+                            }}
                           >
-                            <FaChevronLeft />
-                          </SliderArrow>
-                        )}
-                        {!isAtEnd && (
-                          <SliderArrow
-                            className="slider-arrow right"
-                            onClick={() => handleNext(cat)}
-                          >
-                            <FaChevronRight />
-                          </SliderArrow>
-                        )}
-                      </>
-                    )}
-                  </SliderContainer>
-                </CategoryRow>
-              );
-            })
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                              <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                            </svg>
+                          </Button>
+                        </ProductBottom>
+                      </ProductInfo>
+                    </Link>
+                  </ComboCard>
+                ))}
+              </ComboGrid>
+            </ComboSection>
           )}
         </Container>
       </KingofTea>
