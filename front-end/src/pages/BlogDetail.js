@@ -10,7 +10,7 @@ const BlogDetailWrapper = styled.div`
 const Banner = styled.div`
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 70vh;
   overflow: hidden;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   display: flex;
@@ -95,10 +95,8 @@ const LeftColumn = styled.div`
 `;
 
 const MetaInfo = styled.div`
-  background: white;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 `;
 
 const CategoryTag = styled.div`
@@ -118,11 +116,12 @@ const DateInfo = styled.div`
 
 const Title = styled.h2`
   font-size: 1.8rem;
-  font-weight: 700;
+  font-weight: inherit;
   line-height: 1.3;
   color: #333;
-  font-family: 'Times New Roman', serif;
+  font-family: "Vollkorn", serif;
   margin-bottom: 15px;
+  font-style: italic;
 `;
 
 const AuthorInfo = styled.div`
@@ -136,9 +135,7 @@ const AuthorName = styled.span`
 `;
 
 const MiddleColumn = styled.div`
-  background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   overflow: hidden;
 `;
 
@@ -190,8 +187,8 @@ const Summary = styled.p`
   margin-bottom: 25px;
   font-style: italic;
   padding: 20px;
-  background: #f8f9fa;
-  border-left: 4px solid #e74c3c;
+  background: rgb(237 224 204);
+  border-left: 4px solid #527328;
 `;
 
 const ContentText = styled.div`
@@ -247,7 +244,7 @@ const SidebarTitle = styled.h3`
   font-weight: 700;
   margin-bottom: 20px;
   color: #333;
-  font-family: 'Times New Roman', serif;
+  font-family: "Vollkorn", serif;
   font-style: italic;
 `;
 
@@ -359,11 +356,11 @@ const BlogDetail = () => {
       <ContentSection>
         <LeftColumn>
           <MetaInfo>
-            <CategoryTag>{blog.category}</CategoryTag>
+            <CategoryTag>{blog.category}</CategoryTag> &nbsp;|&nbsp;
             <DateInfo>{formatDate(blog.createdAt)}</DateInfo>
             <Title>{blog.title}</Title>
             <AuthorInfo>
-              By <AuthorName>{blog.author}</AuthorName>
+              Bởi <AuthorName>{blog.author}</AuthorName>
             </AuthorInfo>
           </MetaInfo>
         </LeftColumn>

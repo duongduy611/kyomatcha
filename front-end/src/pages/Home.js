@@ -1,127 +1,191 @@
 import React, { useState, useEffect } from "react";
-import bannerWeb from "../assets/images/e1df83de170ef44fef5a41025bb81813.jpg";
 import styled from "styled-components";
 import GlobalStyle from "../components/GlobalStyle";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { blogs } from "../data/blogs";
 import { useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
-import Marquee from '../components/Marquee';
-import { useAppContext } from '../context/AppContext';
+import { toast } from "react-toastify";
+import Marquee from "../components/Marquee";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { FaChevronLeft, FaChevronRight, FaArrowRight } from "react-icons/fa";
+import { useAppContext } from "../context/AppContext";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-const BannerWrapper = styled.div`
+const CarouselContainer = styled.div`
   margin-top: 100px;
-  width: 100%;
-  height: 70vh;
   position: relative;
-  overflow: hidden;
+
+  .slick-dots {
+    position: absolute;
+    bottom: 8vh;
+    left: 57%;
+    transform: translateX(-50%);
+    width: auto;
+
+    li button:before {
+      font-size: 10px;
+      color: #c8bca7;
+      opacity: 1;
+    }
+    li.slick-active button:before {
+      color: #7c6a46;
+    }
+  }
+
+  &:hover .prev-arrow,
+  &:hover .next-arrow {
+    opacity: 1;
+  }
+`;
+
+const Slide = styled.div`
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  height: 89vh;
+  background-color: #f6f6ee;
+
   @media (max-width: 768px) {
     height: 50vh;
-    margin-top: 80px;
-  }
-  @media (max-width: 480px) {
-    height: 40vh;
-    margin-top: 60px;
+    flex-direction: column;
   }
 `;
 
-const BannerImage = styled.img`
-  width: 100%;
+const SlideImage = styled.div`
+  width: 50%;
   height: 100%;
-  object-fit: cover;
-  display: block;
+  background-image: url(${(props) => props.src});
+  background-size: cover;
+  background-position: center;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 50%;
+  }
 `;
 
-const BannerOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.30) 50%,
-    rgba(0, 0, 0, 0.30) 100%
-  );
-  z-index: 1;
-`;
-
-const BannerTextWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+const SlideContent = styled.div`
+  width: 50%;
+  padding: 0 5%;
   display: flex;
   flex-direction: column;
-  justify-content: end;
-  align-items: flex-start;
-  z-index: 2;
-  padding-left: 64px;
-  padding-bottom: 64px;
-  box-sizing: border-box;
+  justify-content: center;
+
   @media (max-width: 768px) {
-    padding-left: 24px;
-    padding-bottom: 24px;
+    width: 100%;
+    height: 50%;
+    padding: 24px;
+    text-align: center;
+    align-items: center;
   }
 `;
 
-const BannerTitle = styled.div`
-  color: #fff;
-  font-size: 24px;
-  letter-spacing: 3px;
-  margin-bottom: 32px;
-  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
-  @media (max-width: 768px) {
-    font-size: 20px;
-    margin-bottom: 24px;
-  }
-  @media (max-width: 480px) {
-    font-size: 18px;
-    margin-bottom: 20px;
-  }
-`;
-
-const BannerButtonGroup = styled.div`
-  display: inline-grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  @media (max-width: 480px) {
-    gap: 12px;
-  }
-`;
-
-const BannerButton = styled(Link)`
-  background: #527328;
-  color: #fff;
-  border: 2px solid #527328;
-  padding: 14px 38px;
+const SlidePreTitle = styled.p`
+  font-family: "Montserrat", sans-serif;
   font-size: 1rem;
+  color: #888;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+`;
+
+const SlideTitle = styled.h1`
+  font-family: "Vollkorn", serif;
+  font-size: 2.8rem;
+  line-height: 1.2;
+  margin-bottom: 24px;
+  color: #333;
+
+  @media (max-width: 1024px) {
+    font-size: 2.4rem;
+  }
+`;
+
+const SlideDescription = styled.p`
+  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 32px;
+  max-width: 500px;
+`;
+
+const SlideButton = styled(Link)`
+  font-family: "Montserrat", sans-serif;
+  background: #fdfdfb;
+  color: #333;
+  border: 1px solid #f0f0f0;
+  padding: 18px 24px;
+  font-size: 0.9rem;
   font-weight: 500;
   letter-spacing: 2px;
-  border-radius: 2px;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, border 0.2s;
-  font-family: "Montserrat", sans-serif;
+  transition: all 0.3s ease;
   text-decoration: none;
-  text-align: center;
-  @media (max-width: 768px) {
-    padding: 12px 24px;
-    font-size: 0.9rem;
-  }
-  @media (max-width: 480px) {
-    padding: 10px 20px;
-    font-size: 0.8rem;
-  }
+  align-self: flex-start;
+  width: 300px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
   &:hover {
-    background: transparent;
-    color: #fff;
-    border: 2px solid #fff;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  @media (max-width: 768px) {
+    align-self: center;
   }
 `;
+
+const Arrow = styled.div`
+  display: block;
+  background: #2c2c2c;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0;
+
+  &:hover {
+    background: #404040;
+  }
+
+  &.prev-arrow {
+    left: 20px;
+  }
+  &.next-arrow {
+    right: 20px;
+  }
+
+  svg {
+    color: white;
+    font-size: 20px;
+  }
+`;
+
+const PrevArrow = ({ onClick }) => (
+  <Arrow className="prev-arrow" onClick={onClick}>
+    <FaChevronLeft />
+  </Arrow>
+);
+const NextArrow = ({ onClick }) => (
+  <Arrow className="next-arrow" onClick={onClick}>
+    <FaChevronRight />
+  </Arrow>
+);
 
 const Section = styled.section`
   border-top: 1px solid #e5e5e5;
@@ -166,7 +230,6 @@ const ProductGrid = styled.div`
     margin: 0 auto;
   }
 `;
-
 
 const ProductCard = styled.div`
   background: #f6f6ee;
@@ -279,7 +342,6 @@ const Button = styled.button`
     border: 1px solid rgb(82, 115, 40);
   }
 `;
-
 
 const TeaCollection = () => {
   const [products, setProducts] = useState([]);
@@ -531,7 +593,7 @@ const BlogPostTitle = styled.div`
   cursor: pointer;
 
   &:hover {
-    color: #4A7C59;
+    color: #4a7c59;
   }
 `;
 
@@ -543,14 +605,14 @@ const BlogDesc = styled.div`
 `;
 
 const BlogReadMore = styled(Link)`
-  color: #4A7C59;
+  color: #4a7c59;
   font-size: 0.95rem;
   text-decoration: none;
   text-underline-offset: 3px;
   transition: color 0.2s;
   font-weight: 500;
   position: relative;
-  width:86px;
+  width: 86px;
   &::after {
     content: "";
     position: absolute;
@@ -559,13 +621,13 @@ const BlogReadMore = styled(Link)`
     bottom: -2px;
     width: 0%;
     height: 2px;
-    background: #4A7C59;
+    background: #4a7c59;
     transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     margin: 0 auto;
   }
 
   &:hover {
-    color: #4A7C59;
+    color: #4a7c59;
   }
   &:hover::after {
     width: 100%;
@@ -576,7 +638,11 @@ function BlogList() {
   // Lấy 6 blog mới nhất, sắp xếp theo ngày tạo hoặc cập nhật mới nhất
   const latestBlogs = blogs
     .slice() // copy mảng để không ảnh hưởng gốc
-    .sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt))
+    .sort(
+      (a, b) =>
+        new Date(b.updatedAt || b.createdAt) -
+        new Date(a.updatedAt || a.createdAt)
+    )
     .slice(0, 3);
 
   return (
@@ -585,12 +651,12 @@ function BlogList() {
       <BlogGrid>
         {latestBlogs.map((blog, idx) => (
           <BlogCard key={idx}>
-            <Link to={`/blogs/${blog.slug}`} style={{ textDecoration: 'none' }}>
+            <Link to={`/blogs/${blog.slug}`} style={{ textDecoration: "none" }}>
               <BlogImage src={blog.thumbnailUrl} alt={blog.title} />
               <BlogPostTitle>{blog.title}</BlogPostTitle>
-            <BlogCategory>{blog.category}</BlogCategory>
-            <BlogDesc>{blog.summary || blog.desc}</BlogDesc>
-            <BlogReadMore to={`/blogs/${blog.slug}`}>XEM THÊM</BlogReadMore>
+              <BlogCategory>{blog.category}</BlogCategory>
+              <BlogDesc>{blog.summary || blog.desc}</BlogDesc>
+              <BlogReadMore to={`/blogs/${blog.slug}`}>XEM THÊM</BlogReadMore>
             </Link>
           </BlogCard>
         ))}
@@ -600,23 +666,56 @@ function BlogList() {
 }
 
 const Home = () => {
-  const scrollingText = "KyoMatcha - Matcha cho 1 ngày dài tỉnh táo";
+  const scrollingText = "Kyo Matcha - Matcha cho 1 ngày dài tỉnh táo";
+
+  const latestBlogs = blogs
+    .slice()
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 3);
+
+  const slides = latestBlogs.map((blog) => ({
+    preTitle: blog.category,
+    title: blog.title,
+    description: blog.summary,
+    buttonText: "XEM THÊM",
+    buttonLink: `/blogs/${blog.slug}`,
+    image: blog.thumbnailUrl,
+  }));
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    prevArrow: <PrevArrow />,
+    nextArrow: <NextArrow />,
+  };
 
   return (
     <>
       <GlobalStyle />
-      <BannerWrapper>
-        <BannerImage src={bannerWeb} alt="Banner" />
-        <BannerOverlay />
-        <BannerTextWrapper>
-          <BannerTitle>MỘT KHỞI ĐẦU MỚI</BannerTitle>
-          <BannerButtonGroup>
-            <BannerButton to="/products">MUA NGAY</BannerButton>
-            <BannerButton to="/blogs">XEM THÊM</BannerButton>
-          </BannerButtonGroup>
-        </BannerTextWrapper>
-      </BannerWrapper>
-      <Marquee text={scrollingText} duration="60s" />
+      <CarouselContainer>
+        <Slider {...settings}>
+          {slides.map((slide, index) => (
+            <Slide key={index}>
+              <SlideImage src={slide.image} />
+              <SlideContent>
+                <SlidePreTitle>{slide.preTitle}</SlidePreTitle>
+                <SlideTitle>{slide.title}</SlideTitle>
+                <SlideDescription>{slide.description}</SlideDescription>
+                <SlideButton to={slide.buttonLink}>
+                  {slide.buttonText}
+                  <FaArrowRight />
+                </SlideButton>
+              </SlideContent>
+            </Slide>
+          ))}
+        </Slider>
+      </CarouselContainer>
+      <Marquee text={scrollingText} duration="30s" />
       <TeaCollection />
       <BlogList />
     </>
