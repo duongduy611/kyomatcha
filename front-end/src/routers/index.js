@@ -121,7 +121,7 @@ export const routes = [
         isShowFooter: false
     },
     {
-        path: '/combo-detail/:id',
+        path: '/combo-detail/:comboId',
         page: ComboDetail,
         isShowHeader: true,
         isShowFooter: false

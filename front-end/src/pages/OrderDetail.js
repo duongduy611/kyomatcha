@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import {
-	Container,
-	Spinner,
-	Card,
-	Button,
-	Row,
-	Col,
-} from 'react-bootstrap';
+import { Container, Spinner, Card, Button, Row, Col } from 'react-bootstrap';
 import OrderProgressBar from '../components/OrderProgressBar';
-
+import {
+	getOrderDetailItemImage,
+	getOrderItemImage,
+	resolveImageUrl,
+} from '../utils';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -67,8 +64,6 @@ const OrderDetail = () => {
 		}
 	};
 
-
-
 	return (
 		<Container
 			className='pt-5'
@@ -91,9 +86,9 @@ const OrderDetail = () => {
 							<strong>Ngày đặt:</strong>{' '}
 							{new Date(order.createdAt).toLocaleString()}
 						</p>
-                        <p>
-						<strong>Địa chỉ:</strong> {order.shippingInfo.address}
-					</p>
+						<p>
+							<strong>Địa chỉ:</strong> {order.shippingInfo.address}
+						</p>
 					</Col>
 					<Col md={6}>
 						<p>
@@ -103,32 +98,52 @@ const OrderDetail = () => {
 							<strong>Người nhận:</strong> {order.shippingInfo.receiverName} —{' '}
 							{order.shippingInfo.phone}
 						</p>
-                        <p>
+						<p>
 							<strong>Thanh toán bằng:</strong> {order.paymentInfo.method}
 						</p>
 					</Col>
-					
 				</Row>
 
-			
-                <OrderProgressBar status={order.status} />
-
+				<OrderProgressBar status={order.status} />
 
 				{/* SẢN PHẨM */}
 				<Row className='mt-4'>
 					{order.items.map((item, idx) => (
 						<Col md={3} sm={6} xs={12} key={idx} className='text-center mb-4'>
 							<img
-								src={`http://localhost:9999${item.productId?.images?.[0]}`}
-								alt={item.name}
-								className='img-fluid mb-2'
-								style={{ height: '100px', objectFit: 'contain' }}
+								src={resolveImageUrl(getOrderDetailItemImage(item))}
+								alt={
+									item.kind === 'Combo' ? item.comboTitle : item.product?.name
+								}
 								onError={(e) => {
-									e.target.onerror = null;
-									e.target.src = '/images/placeholder.jpg';
+									e.currentTarget.onerror = null;
+									e.currentTarget.src = '/images/placeholder.jpg';
 								}}
+								style={{ width: '150px', height: '200px' }}
 							/>
-							<div>{item.name}</div>
+							<div>
+								{item.comboTitle ? (
+									<>
+										<h5 style={{ fontWeight: 300 }}>{item.comboTitle}</h5>
+										{item.variant && (
+											<div
+												style={{
+													fontSize: '0.95rem',
+													marginTop: '4px',
+													color: '#555',
+												}}>
+												{item.variant.title} —{' '}
+												{item.variant.price.toLocaleString()}đ
+											</div>
+										)}
+									</>
+								) : (
+									<h5 style={{ fontWeight: 300 }}>
+										{item.name}
+										<br />
+									</h5>
+								)}
+							</div>
 							<div className='text-muted' style={{ fontSize: '0.9rem' }}>
 								SL: {item.quantity} – {item.price.toLocaleString()} VND
 							</div>

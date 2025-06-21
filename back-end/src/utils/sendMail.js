@@ -83,19 +83,34 @@ const sendMailOrderConfirmation = async (to, order) => {
     </thead>
     <tbody>
       ${items
-				.map((item) => {
-					const qty = item.quantity || 0;
-					const price = Number(item.price) || 0;
-					const lineTotal = price * qty;
-					return `
-        <tr style="border-bottom:1px solid #ccc;">
-          <td>${item.name}</td>
-          <td align="center">${qty}</td>
-          <td align="center">${price.toLocaleString()}đ</td>
-          <td align="right">${lineTotal.toLocaleString()}đ</td>
-        </tr>`;
-				})
-				.join('')}
+        .map((item) => {
+          // 1️⃣ Tách ra displayName tuỳ theo kind
+          let displayName;
+          if (item.kind === 'Product') {
+            // với product: đã enrich thành item.product.name
+            displayName = item.product?.name || 'Sản phẩm';
+          } else {
+            // với combo: lấy comboTitle, nếu có variant thì thêm " – variant"
+            displayName = item.comboTitle;
+            if (item.variant?.title) {
+              displayName += ` – ${item.variant.title}`;
+            }
+          }
+
+          // 2️⃣ Lấy số lượng & giá
+          const qty = item.quantity || 0;
+          const price = Number(item.price) || 0;
+          const lineTotal = price * qty;
+
+          return `
+            <tr style="border-bottom:1px solid #ccc;">
+              <td>${displayName}</td>
+              <td align="center">${qty}</td>
+              <td align="center">${price.toLocaleString()}đ</td>
+              <td align="right">${lineTotal.toLocaleString()}đ</td>
+            </tr>`;
+        })
+        .join('')}
     </tbody>
     <tfoot>
       <tr>

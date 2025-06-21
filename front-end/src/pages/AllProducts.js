@@ -703,39 +703,53 @@ const AllProducts = () => {
   const GAP = 32;
   const SCROLL_STEP = CARD_WIDTH + GAP;
 
-  const handleAddToCart = async (productId, color = "", size = "") => {
-    try {
-      const token = localStorage.getItem("token");
-      const userId = localStorage.getItem("userId");
-      if (!token || !userId) {
-        toast.info("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
-        navigate("/login");
-        return;
-      }
-      const payload = { userId, productId, quantity: 1, color, size };
-      const response = await axios.post(`${BACKEND_URL}/cart/add`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.status === 200 && response.data?._id) {
-        toast.success("Đã thêm vào giỏ hàng!");
-      } else {
-        toast.error("Thêm vào giỏ hàng không thành công. Vui lòng thử lại.");
-      }
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      if (error.response?.status === 401) {
-        toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
-        navigate("/login");
-      } else {
-        toast.error(
-          error.response?.data?.message || "Có lỗi xảy ra khi thêm vào giỏ hàng"
-        );
-      }
-    }
-  };
+        const handleAddToCart = async (item) => {
+          const token  = localStorage.getItem("token");
+          const userId = localStorage.getItem("userId");
+          if (!token || !userId) {
+            toast.info("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
+            navigate("/login");
+            return;
+          }
+
+          // 1️⃣ Build payload mặc định
+          const payload = { userId, quantity: 1 };
+
+          // 2️⃣ Nếu là combo (item.matcha tồn tại) thì map sang comboId + matchaTitle
+          if (item.matcha) {
+            payload.comboId     = item._id;
+            // ở đây tạm lấy variant đầu tiên, hoặc bạn có thể cho user pick trước
+            payload.matchaTitle = item.matcha[2].title;
+          } else {
+            // 3️⃣ Ngược lại là product
+            payload.productId = item._id;
+            // nếu có màu/size, gán vào payload (nếu không gán, backend sẽ hiểu là combo)
+            payload.color     = item.color || "";
+            payload.size      = item.size  || "";
+          }
+
+          try {
+            const res = await axios.post(
+              `${BACKEND_URL}/cart/add`,
+              payload,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+            if (res.status === 200 && res.data?._id) {
+              toast.success("Đã thêm vào giỏ hàng!");
+              // nếu bạn muốn refresh cart trên UI, gọi setCart(res.data) v.v.
+            } else {
+              toast.error("Thêm vào giỏ hàng không thành công. Vui lòng thử lại.");
+            }
+          } catch (err) {
+            console.error("Error adding to cart:", err);
+            toast.error(err.response?.data?.message || "Lỗi khi thêm vào giỏ hàng");
+          }
+        };
 
   const handlePrev = (category) => {
     sliderRefs.current[category]?.scrollTo({
@@ -904,40 +918,6 @@ const AllProducts = () => {
     fetchCombos();
   }, [fetchCombos]);
 
-  // Add to cart function for combo
-  const handleAddComboToCart = async (comboId) => {
-    try {
-      const token = localStorage.getItem("token");
-      const userId = localStorage.getItem("userId");
-      if (!token || !userId) {
-        toast.info("Vui lòng đăng nhập để thêm combo vào giỏ hàng");
-        navigate("/login");
-        return;
-      }
-      const payload = { userId, comboId, quantity: 1 };
-      const response = await axios.post(`${BACKEND_URL}/cart/add-combo`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.status === 200 && response.data?._id) {
-        toast.success("Đã thêm combo vào giỏ hàng!");
-      } else {
-        toast.error("Thêm combo vào giỏ hàng không thành công. Vui lòng thử lại.");
-      }
-    } catch (error) {
-      console.error("Error adding combo to cart:", error);
-      if (error.response?.status === 401) {
-        toast.error("Vui lòng đăng nhập để thêm combo vào giỏ hàng");
-        navigate("/login");
-      } else {
-        toast.error(
-          error.response?.data?.message || "Có lỗi xảy ra khi thêm vào giỏ hàng"
-        );
-      }
-    }
-  };
 
   return (
     <>
@@ -1063,7 +1043,7 @@ const AllProducts = () => {
                                         className="add-to-cart"
                                         onClick={(e) => {
                                           e.preventDefault();
-                                          handleAddToCart(product._id);
+                                          handleAddToCart(product);
                                         }}
                                       >
                                         <svg
@@ -1149,11 +1129,12 @@ const AllProducts = () => {
                           </div>
                           <Button
                             className="add-to-cart"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleAddComboToCart(combo._id);
-                            }}
-                          >
+                            onClick={e => {
+                                      e.preventDefault();    // <-- ngăn submit/link
+                                      e.stopPropagation();   // <-- ngăn click "lên" Link
+                                      handleAddToCart(combo);
+                                    }}
+                                    >
                             <svg
                               width="20"
                               height="20"

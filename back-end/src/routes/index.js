@@ -9,7 +9,7 @@ const comboRoutes = require('../routes/comboRoutes');
 
 router.use("/cart", cartRoutes);
 router.use("/orders", orderRoutes);
-router.use('/payment', paymentRouter);
+router.use('/vietqr', paymentRouter);
 router.use('/users', userRouter);
 router.use('/combo', comboRoutes);
 
