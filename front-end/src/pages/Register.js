@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import GlobalStyle from "../components/GlobalStyle";
@@ -176,20 +176,7 @@ function Register() {
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [step, setStep] = useState(1); // 1: form đăng ký, 2: nhập OTP
-  const [otp, setOtp] = useState("");
   const navigate = useNavigate();
-  const [resendCooldown, setResendCooldown] = useState(0);
-
-  useEffect(() => {
-    let timer;
-    if (resendCooldown > 0) {
-      timer = setTimeout(() => {
-        setResendCooldown((prev) => prev - 1);
-      }, 1000);
-    }
-    return () => clearTimeout(timer);
-  }, [resendCooldown]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -233,54 +220,8 @@ function Register() {
         toast.error("Email đã tồn tại. Vui lòng dùng email khác.");
         return;
       }
-      // ✅ Gửi OTP nếu email hợp lệ và chưa tồn tại
-      
-      setOtp('');
-      setStep(2);
-      const otpRes = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/send-otp`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        }
-      );
-      const otpData = await otpRes.json();
 
-      if (otpRes.ok) {
-        toast.success(
-          "Mã xác thực đã gửi về email. Vui lòng nhập để xác minh."
-        );
-      setResendCooldown(30);
-      } else {
-        toast.error(otpData.message || "Không thể gửi mã OTP.");
-      }
-    } catch (err) {
-      console.error("🔥 Lỗi hệ thống:", err);
-      toast.error("Không thể kết nối đến máy chủ.");
-    }
-  };
-
-  const handleVerifyOtp = async () => {
-    try {
-      // 1. Gửi mã OTP để xác minh
-      const res = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/verify-otp`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, otp }),
-        }
-      );
-      const result = await res.json();
-
-      if (!res.ok) {
-        console.error("❌ Xác minh OTP thất bại:", result);
-        toast.error(result.message || "OTP không đúng hoặc đã hết hạn.");
-        return;
-      }
-
-      // 2. Gửi đăng ký
+      // Gửi đăng ký
       const registerRes = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/api/register`,
         {
@@ -301,31 +242,7 @@ function Register() {
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
       console.error("🔥 Lỗi hệ thống:", err);
-      toast.error("Lỗi xác minh hoặc đăng ký.");
-    }
-  };
-  const handleResendOtp = async () => {
-    if (resendCooldown > 0) return; // tránh spam khi countdown đang chạy
-
-    try {
-      const res = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/api/send-otp`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        }
-      );
-      const data = await res.json();
-      if (res.ok) {
-        toast.success("Đã gửi lại mã OTP!");
-        setResendCooldown(30); // bắt đầu đếm ngược 60s
-      } else {
-        toast.error(data.message || "Không thể gửi lại mã OTP.");
-      }
-    } catch (err) {
-      toast.error("Lỗi khi gửi lại mã OTP.");
-      console.error(err);
+      toast.error("Lỗi đăng ký.");
     }
   };
 
@@ -338,152 +255,73 @@ function Register() {
             <LogoImg src={logoImg} alt="KyoMatcha Logo" />
           </LogoSide>
           <FormSide>
-            <RegisterForm
-              onSubmit={
-                step === 1
-                  ? handleRegister
-                  : (e) => {
-                      e.preventDefault();
-                      handleVerifyOtp();
-                    }
-              }
-            >
+            <RegisterForm onSubmit={handleRegister}>
               <Title>Đăng ký</Title>
-
-              {step === 1 && (
-                <>
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                  <Label htmlFor="fullName">Họ và tên</Label>
-                  <Input
-                    id="fullName"
-                    type="text"
-                    placeholder="Họ và tên"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                  />
-                  <PasswordWrapper>
-                    <Label htmlFor="password">Mật khẩu</Label>
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Nhập mật khẩu"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                    <EyeIcon
-                      onClick={() => setShowPassword((v) => !v)}
-                      style={{ marginTop: 12 }}
-                    >
-                      {!showPassword ? <FaEyeSlash /> : <FaEye />}
-                    </EyeIcon>
-                  </PasswordWrapper>
-                  <PasswordWrapper>
-                    <Label htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
-                    <Input
-                      id="confirmPassword"
-                      type={showConfirmPassword ? "text" : "password"}
-                      placeholder="Xác nhận mật khẩu"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
-                    />
-                    <EyeIcon
-                      onClick={() => setShowConfirmPassword((v) => !v)}
-                      style={{ marginTop: 12 }}
-                    >
-                      {!showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-                    </EyeIcon>
-                  </PasswordWrapper>
-                  <SubmitButton type="submit">Xác minh & Đăng ký</SubmitButton>
-                </>
-              )}
-
-              {step === 2 && (
-                <>
-                  <Label htmlFor="otp">Mã OTP đã gửi tới email</Label>
-                  <Input
-                    id="otp"
-                    type="text"
-                    placeholder="Nhập mã OTP"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    required
-                  />
-
-                  {/* Countdown hiển thị ngay dưới input OTP */}
-                  <div
-                    style={{
-                      textAlign: "center",
-                      margin: "8px 0",
-                      color: "#6A6649",
-                    }}
-                  >
-                    {resendCooldown > 0 ? (
-                      `Bạn có thể gửi lại mã sau ${resendCooldown} giây`
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={handleResendOtp}
-                        style={{
-                          background: "none",
-                          color: "#527328",
-                          border: "none",
-                          cursor: "pointer",
-                          fontWeight: "600",
-                          marginLeft: "-65%",
-                          textDecoration: "underline",
-                        }}
-                      >
-                        Gửi lại mã OTP
-                      </button>
-                    )}
-                  </div>
-
-                  <SubmitButton type="submit">Xác minh & Đăng ký</SubmitButton>
-
-                  <div style={{ marginTop: "12px", textAlign: "center" }}>
-                    <button
-                      type="button"
-                      onClick={() => {setStep(1);setResendCooldown(0);setOtp('');}}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        color: "#6A6649",
-                        textDecoration: "underline",
-                        fontWeight: "600",
-                        cursor: "pointer",
-                      }}
-                    >
-                      Tôi muốn sửa lại thông tin
-                    </button>
-                  </div>
-                </>
-              )}
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <Label htmlFor="fullName">Họ và tên</Label>
+              <Input
+                id="fullName"
+                type="text"
+                placeholder="Họ và tên"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+              />
+              <PasswordWrapper>
+                <Label htmlFor="password">Mật khẩu</Label>
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Nhập mật khẩu"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <EyeIcon
+                  onClick={() => setShowPassword((v) => !v)}
+                  style={{ marginTop: 12 }}
+                >
+                  {!showPassword ? <FaEyeSlash /> : <FaEye />}
+                </EyeIcon>
+              </PasswordWrapper>
+              <PasswordWrapper>
+                <Label htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
+                <Input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Xác nhận mật khẩu"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+                <EyeIcon
+                  onClick={() => setShowConfirmPassword((v) => !v)}
+                  style={{ marginTop: 12 }}
+                >
+                  {!showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                </EyeIcon>
+              </PasswordWrapper>
+              <SubmitButton type="submit">Đăng ký</SubmitButton>
 
               <Message success={message.includes("thành công")}>
                 {message}
               </Message>
 
-              {step === 1 && (
-                <LoginPrompt>
-                  <span>Bạn đã có tài khoản?</span>
-                  <Link to="/login" onClick={() => window.scrollTo(0, 0)}>
-                    Đăng nhập
-                  </Link>
-                </LoginPrompt>
-              )}
+              <LoginPrompt>
+                <span>Bạn đã có tài khoản?</span>
+                <Link to="/login" onClick={() => window.scrollTo(0, 0)}>
+                  Đăng nhập
+                </Link>
+              </LoginPrompt>
             </RegisterForm>
-            {/* <ToastContainer position="top-center" autoClose={3000} /> */}
           </FormSide>
         </RegisterContainer>
       </RegisterWrapper>

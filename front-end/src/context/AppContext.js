@@ -16,14 +16,15 @@ export const AppProvider = ({ children }) => {
 	const [loading, setLoading] = useState(false);
 	const [isLoadingUser, setIsLoadingUser] = useState(true);
 
+
 	const categoryMapping = {
-		matcha: 'Matcha',
+		Matcha: 'Matcha',
 		'tea-tools': 'Dụng cụ trà đạo',
 		'barista-tools': 'Dụng cụ pha chế',
 	};
 
 	const reverseCategoryMapping = {
-		Matcha: 'matcha',
+		Matcha: 'Matcha',
 		'Dụng cụ trà đạo': 'tea-tools',
 		'Dụng cụ pha chế': 'barista-tools',
 	};

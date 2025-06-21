@@ -11,6 +11,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FaChevronLeft, FaChevronRight, FaArrowRight } from "react-icons/fa";
+import { useAppContext } from "../context/AppContext";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -290,14 +291,20 @@ const ProductInfo = styled.div`
 `;
 
 const ProductName = styled.h3`
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: #333;
   margin: 0 0 10px 0;
   line-height: 1.3;
   white-space: nowrap;
-  overflow: hidden;
+
   text-overflow: ellipsis;
+`;
+
+const ProductShortDescription = styled.h3`
+  font-size: 0.6rem;
+  width: 155%;
+  color: #333;
 `;
 
 const ProductBottom = styled.div`
@@ -308,8 +315,7 @@ const ProductBottom = styled.div`
 `;
 
 const ProductPrice = styled.div`
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 0.9rem;
   color: #527328;
 `;
 
@@ -320,20 +326,184 @@ const Button = styled.button`
   font-weight: 600;
   cursor: pointer;
   border: none;
-  background: #527328;
-  color: #fff;
+  background: #537328;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.2s, color 0.2s;
-  width: 40%;
-  height: 120%;
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgb(82, 115, 40);
+  margin-right: -10px;
   &:hover {
-    border: 1px solid #527328;
-    background: #f6f6ee;
-    color: #527328;
+    background: white;
+    color: rgb(82, 115, 40);
+    border: 1px solid rgb(82, 115, 40);
   }
 `;
+
+const TeaCollection = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { toggleFavorite, isProductFavorited, user } = useAppContext();
+
+ const handleAddToCart = async (productId, color = "", size = "") => {
+  try {
+    // Lấy token từ localStorage và userId từ context
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+
+    // Nếu chưa đăng nhập hoặc chưa có userId, điều hướng về trang login
+    if (!token || !userId) {
+      toast.info('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
+      navigate('/login');
+      return;
+    }
+
+    // Chuẩn bị payload theo đúng spec của backend
+    const payload = {
+      userId: userId,
+      productId: productId,
+      quantity: 1,      // ở đây mình để mặc định 1; bạn có thể truyền vào tham số nếu muốn
+      color: color,     // truyền vào từ component hoặc để mặc định
+      size: size        // truyền vào từ component hoặc để mặc định
+    };
+
+    // Gọi API thêm vào giỏ
+    const response = await axios.post(
+      `${BACKEND_URL}/cart/add`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+  if (response.status === 200 && response.data && response.data._id) {
+      // Backend trả về obj cart mới (có _id) → coi như thành công
+      toast.success('Đã thêm vào giỏ hàng!');
+    } else {
+      console.log('Unexpected response from /cart/add:', response.data);
+      toast.error('Thêm vào giỏ hàng không thành công. Vui lòng thử lại.');
+    }
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    if (error.response?.status === 401) {
+      toast.error('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
+      navigate('/login');
+    } else if (error.response?.data?.message) {
+      // Hiển thị message lỗi do backend trả về (nếu có)
+      toast.error(error.response.data.message);
+    } else {
+      toast.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
+    }
+  }
+};
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(`${BACKEND_URL}/api/products`);
+        if (response.data && response.data.data) {
+          const filteredProducts = response.data.data
+            .filter(
+              (product) =>
+                !product.name.includes("matcha fuji 01") &&
+                (product.name.includes("Matcha Natsu") ||
+                  product.name.includes("Matcha Aki") ||
+                  product.name.includes("Matcha Haru") ||
+                  product.name.includes("Chổi Chasen") ||
+                  product.name.includes("Combo 2 Món Matcha") ||
+                  product.name.includes("Đế Sứ Cắm Chổi")
+                )
+            )
+            .slice(0, 6);
+          console.log("Filtered Products:", filteredProducts); // Debug log
+          setProducts(filteredProducts);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return (
+      <Section>
+        <SectionTitle>MATCHA CỦA CHÚNG TÔI</SectionTitle>
+        <div style={{ textAlign: "center" }}>Loading...</div>
+      </Section>
+    );
+  }
+
+  return (
+    <Section>
+      <SectionTitle>MATCHA CỦA CHÚNG TÔI</SectionTitle>
+      <ProductGrid>
+        {products.map((product) => (
+          <ProductCard key={product.slug}>
+          <Link to={`/products/${product.slug}`}>
+            <ProductImage>
+              <img
+                src={
+                  product.images && product.images.length > 0
+                    ? product.images[0].startsWith("http")
+                      ? product.images[0]
+                      : `${BACKEND_URL}${product.images[0]}`
+                    : "/placeholder.jpg"
+                }
+                alt={product.name}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/placeholder.jpg";
+                }}
+              />
+            </ProductImage>
+            <ProductInfo>
+              <ProductBottom>
+                <div style={{ width: "50%" }}>
+                  <ProductName>{product.name}</ProductName>
+                  <ProductShortDescription>{product.shortDescription}</ProductShortDescription>
+                  <ProductPrice>
+                    {product.price.toLocaleString("vi-VN")} đ
+                  </ProductPrice>
+                </div>
+                <Button
+                  className="add-to-cart"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleAddToCart(product._id);
+                  }}
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                    <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                  </svg>
+                </Button>
+              </ProductBottom>
+            </ProductInfo>
+          </Link>
+        </ProductCard>
+        ))}
+      </ProductGrid>
+    </Section>
+  );
+}
 
 const BlogSection = styled.section`
   background: #f6f6ee;
@@ -463,159 +633,6 @@ const BlogReadMore = styled(Link)`
     width: 100%;
   }
 `;
-
-const TeaCollection = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-
-  const handleAddToCart = async (productId, color = "", size = "") => {
-    try {
-      // Lấy token từ localStorage và userId từ context
-      const token = localStorage.getItem("token");
-      const userId = localStorage.getItem("userId");
-
-      // Nếu chưa đăng nhập hoặc chưa có userId, điều hướng về trang login
-      if (!token || !userId) {
-        toast.info("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
-        navigate("/login");
-        return;
-      }
-
-      // Chuẩn bị payload theo đúng spec của backend
-      const payload = {
-        userId: userId,
-        productId: productId,
-        quantity: 1, // ở đây mình để mặc định 1; bạn có thể truyền vào tham số nếu muốn
-        color: color, // truyền vào từ component hoặc để mặc định
-        size: size, // truyền vào từ component hoặc để mặc định
-      };
-
-      // Gọi API thêm vào giỏ
-      const response = await axios.post(`${BACKEND_URL}/cart/add`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.status === 200 && response.data && response.data._id) {
-        // Backend trả về obj cart mới (có _id) → coi như thành công
-        toast.success("Đã thêm vào giỏ hàng!");
-      } else {
-        console.log("Unexpected response from /cart/add:", response.data);
-        toast.error("Thêm vào giỏ hàng không thành công. Vui lòng thử lại.");
-      }
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      if (error.response?.status === 401) {
-        toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
-        navigate("/login");
-      } else if (error.response?.data?.message) {
-        // Hiển thị message lỗi do backend trả về (nếu có)
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Có lỗi xảy ra khi thêm vào giỏ hàng");
-      }
-    }
-  };
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get(`${BACKEND_URL}/api/products`);
-        if (response.data && response.data.data) {
-          const filteredProducts = response.data.data
-            .filter(
-              (product) =>
-                !product.name.includes("matcha fuji 01") &&
-                (product.name.includes("Matcha Natsu") ||
-                  product.name.includes("Matcha Aki") ||
-                  product.name.includes("Matcha Haru") ||
-                  product.name.includes("Chổi Chasen") ||
-                  product.name.includes("Combo 2 Món Matcha") ||
-                  product.name.includes("Đế Sứ Cắm Chổi"))
-            )
-            .slice(0, 6);
-          console.log("Filtered Products:", filteredProducts); // Debug log
-          setProducts(filteredProducts);
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
-  if (loading) {
-    return (
-      <Section>
-        <SectionTitle>MATCHA CỦA CHÚNG TÔI</SectionTitle>
-        <div style={{ textAlign: "center" }}>Loading...</div>
-      </Section>
-    );
-  }
-
-  return (
-    <Section>
-      <SectionTitle>MATCHA CỦA CHÚNG TÔI</SectionTitle>
-      <ProductGrid>
-        {products.map((product) => (
-          <ProductCard key={product._id}>
-            <Link to={`/products/${product.slug}`}>
-              <ProductImage>
-                <img
-                  src={
-                    product.images && product.images.length > 0
-                      ? product.images[0].startsWith("http")
-                        ? product.images[0]
-                        : `${BACKEND_URL}${product.images[0]}`
-                      : "/placeholder.jpg"
-                  }
-                  alt={product.name}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "/placeholder.jpg";
-                  }}
-                />
-              </ProductImage>
-              <ProductInfo>
-                <ProductName>{product.name}</ProductName>
-                <ProductBottom>
-                  <ProductPrice>
-                    {product.price.toLocaleString("vi-VN")}₫
-                  </ProductPrice>
-                  <Button
-                    className="add-to-cart"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleAddToCart(product._id);
-                    }}
-                  >
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                      <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
-                    </svg>
-                  </Button>
-                </ProductBottom>
-              </ProductInfo>
-            </Link>
-          </ProductCard>
-        ))}
-      </ProductGrid>
-    </Section>
-  );
-};
 
 function BlogList() {
   // Lấy 6 blog mới nhất, sắp xếp theo ngày tạo hoặc cập nhật mới nhất

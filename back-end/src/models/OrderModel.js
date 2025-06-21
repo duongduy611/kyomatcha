@@ -14,7 +14,12 @@ const orderSchema = new mongoose.Schema(
 					ref: 'Product',
 					required: true,
 				},
-				name: String,
+				// for “normal” products
+				name: { type: String },
+				color: { type: String },
+				size: { type: String },
+				// for combo items (variants)
+				title: { type: String },
 				quantity: { type: Number, required: true },
 				price: { type: Number, required: true },
 			},
@@ -22,7 +27,7 @@ const orderSchema = new mongoose.Schema(
 		total: { type: Number, required: true },
 		status: {
 			type: String,
-			enum: ['PENDING','CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED'],
+			enum: ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED'],
 			default: 'PENDING',
 		},
 		shippingInfo: {

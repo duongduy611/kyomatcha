@@ -13,6 +13,7 @@ import {
 } from 'react-bootstrap';
 import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
+import { resolveImageUrl } from '../utils';
 
 const MyCart = () => {
 	const [cart, setCart] = useState(null);
@@ -76,7 +77,6 @@ const MyCart = () => {
 
 	useEffect(() => {
 		const fetchCart = async () => {
-			
 			try {
 				const res = await axios.get(`${BACKEND_URL}/cart/${userId}`);
 				setCart(res.data);
@@ -89,14 +89,23 @@ const MyCart = () => {
 		fetchCart();
 	}, [userId]);
 
-	const handleDecrease = async (productId, color, size) => {
+	const handleDecrease = async (item) => {
 		try {
-			const res = await axios.post(`${BACKEND_URL}/cart/decrease`, {
-				userId,
-				productId,
-				color,
-				size,
-			});
+			// build payload tùy theo item là combo hay product
+			const payload = item.comboTitle
+				? {
+						userId,
+						comboId: item.productId,
+						matchaTitle: item.variant?.title || item.title,
+				  }
+				: {
+						userId,
+						productId: item.productId,
+						color: item.color,
+						size: item.size,
+				  };
+
+			const res = await axios.post(`${BACKEND_URL}/cart/decrease`, payload);
 			setCart(res.data);
 			toast.info('Đã giảm số lượng');
 		} catch {
@@ -104,14 +113,22 @@ const MyCart = () => {
 		}
 	};
 
-	const handleIncrease = async (productId, color, size) => {
+	const handleIncrease = async (item) => {
 		try {
-			const res = await axios.post(`${BACKEND_URL}/cart/increase`, {
-				userId,
-				productId,
-				color,
-				size,
-			});
+			const payload = item.comboTitle
+				? {
+						userId,
+						comboId: item.productId,
+						matchaTitle: item.variant?.title || item.title,
+				  }
+				: {
+						userId,
+						productId: item.productId,
+						color: item.color,
+						size: item.size,
+				  };
+
+			const res = await axios.post(`${BACKEND_URL}/cart/increase`, payload);
 			setCart(res.data);
 			toast.success('Đã tăng số lượng');
 		} catch {
@@ -119,14 +136,22 @@ const MyCart = () => {
 		}
 	};
 
-	const handleRemove = async (productId, color, size) => {
+	const handleRemove = async (item) => {
 		try {
-			const res = await axios.post(`${BACKEND_URL}/cart/remove`, {
-				userId,
-				productId,
-				color,
-				size,
-			});
+			const payload = item.comboTitle
+				? {
+						userId,
+						comboId: item.productId,
+						matchaTitle: item.variant?.title || item.title,
+				  }
+				: {
+						userId,
+						productId: item.productId,
+						color: item.color,
+						size: item.size,
+				  };
+
+			const res = await axios.post(`${BACKEND_URL}/cart/remove`, payload);
 			setCart(res.data);
 			toast.info('Đã xoá sản phẩm khỏi giỏ');
 		} catch {
@@ -134,85 +159,131 @@ const MyCart = () => {
 		}
 	};
 
-const handleCheckout = async () => {
-	if (
-		!receiverName ||
-		!phone ||
-		!address ||
-		!selectedProvince ||
-		!selectedDistrict ||
-		!selectedWard
-	) {
-		toast.warning('Vui lòng nhập đầy đủ thông tin giao hàng');
-		return;
-	}
+	const handleCheckout = async () => {
+		// 0️⃣ Validate thông tin giao hàng
+		if (
+			!receiverName ||
+			!phone ||
+			!address ||
+			!selectedProvince ||
+			!selectedDistrict ||
+			!selectedWard
+		) {
+			toast.warning('Vui lòng nhập đầy đủ thông tin giao hàng');
+			return;
+		}
 
-	const fullAddress = [
-		address?.trim(),
-		selectedWard?.label,
-		selectedDistrict?.label,
-		selectedProvince?.label,
-	]
-		.filter(Boolean)
-		.join(', ');
+		// 1️⃣ Xây dựng fullAddress
+		const fullAddress = [
+			address.trim(),
+			selectedWard.label,
+			selectedDistrict.label,
+			selectedProvince.label,
+		]
+			.filter(Boolean)
+			.join(', ');
 
-	try {
-		// Bước 1: Tạo đơn hàng trước
-		const orderRes = await axios.post(`${BACKEND_URL}/orders`, {
-			userId,
-			items: cart.items.map((item) => ({
+		// 2️⃣ Build mảng items đúng format
+		const orderItems = cart.items.map((item) => {
+			// Nếu là combo (đã enrich comboTitle và variant)
+			if (item.comboTitle) {
+				return {
+					comboId: item.productId,
+					matchaTitle: item.variant?.title || item.title,
+					price: item.price,
+					quantity: item.quantity,
+				};
+			}
+			// Ngược lại là product
+			return {
 				productId: item.productId,
 				name: item.name,
-				quantity: item.quantity,
+				color: item.color,
+				size: item.size,
 				price: item.price,
-			})),
-			total: totalPrice,
-			shippingInfo: {
-				address: fullAddress,
-				receiverName,
-				phone,
-			},
-			paymentInfo: { method: paymentMethod },
+				quantity: item.quantity,
+			};
 		});
 
-		const createdOrder = orderRes.data;
+		try {
+			// 3️⃣ Gọi POST tạo order
+			const orderRes = await axios.post(
+				`${BACKEND_URL}/orders`,
+				{
+					userId,
+					items: orderItems,
+					total: totalPrice,
+					shippingInfo: {
+						address: fullAddress,
+						receiverName,
+						phone,
+					},
+					paymentInfo: { method: paymentMethod },
+				},
+				{
+					headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+				}
+			);
 
-		if (paymentMethod === 'VietQR') {
-			// Bước 2: Gọi API VietQR để lấy mã QR
-			const qrRes = await axios.post(`${BACKEND_URL}/vietqr/create`, {
-				orderId: createdOrder._id,
-			});
-
-			// Bước 3: Điều hướng tới trang hiển thị mã QR (tạo mới nếu chưa có)
-			if (qrRes.data?.qrBase64) {
-				// lưu tạm orderId vào localStorage hoặc dùng redirect có query param
-				localStorage.setItem('qrCheckout', JSON.stringify(qrRes.data));
-				navigate('/qr-payment');
+			const createdOrder = orderRes.data;
+			console.log(createdOrder._id);
+			
+			// 4️⃣ Xử lý theo phương thức thanh toán
+			if (paymentMethod === 'VietQR') {
+				const qrRes = await axios.post(
+					`${BACKEND_URL}/vietqr/create`,
+					{ orderId: createdOrder._id },
+					{
+						headers: {
+							Authorization: `Bearer ${localStorage.getItem('token')}`,
+						},
+					}
+				);
+				if (qrRes.data?.qrBase64) {
+					localStorage.setItem('qrCheckout', JSON.stringify(qrRes.data));
+					navigate('/qr-payment');
+				} else {
+					toast.error('Không thể tạo mã QR thanh toán');
+				}
 			} else {
-				toast.error('Không thể tạo mã QR thanh toán');
+				// COD
+				await axios.delete(`${BACKEND_URL}/cart/clear/${userId}`);
+				setCart({ items: [] });
+				await axios.post(
+					`${BACKEND_URL}/orders/confirm-payment`,
+					{ orderId: createdOrder._id },
+					{
+						headers: {
+							Authorization: `Bearer ${localStorage.getItem('token')}`,
+						},
+					}
+				);
+				toast.success('Đặt hàng thành công!');
+				navigate('/thankyou');
 			}
-		} else {
-			// Xử lý COD như bình thường
-			await axios.delete(`${BACKEND_URL}/cart/clear/${userId}`);
-			setCart({ items: [] });
-			//gửi mail xác nhận đặt hàng thành công
-			await axios.post(`${BACKEND_URL}/orders/confirm-payment`,{
-				orderId: createdOrder._id
-			});
-			toast.success('Đặt hàng thành công!');
-			navigate('/thankyou'); 
+		} catch (err) {
+			console.error(err);
+			toast.error(err.response?.data?.message || 'Lỗi khi xử lý thanh toán');
 		}
-	} catch (err) {
-		console.error(err);
-		toast.error('Lỗi khi xử lý thanh toán');
-	}
-};
+	};
 
 	if (loading)
-		return <div className='pt-5 text-center' style={{ marginTop: '200px', marginBottom: '100px' }}>Đang tải giỏ hàng...</div>;
+		return (
+			<div
+				className='pt-5 text-center'
+				style={{ marginTop: '200px', marginBottom: '100px' }}>
+				Đang tải giỏ hàng...
+			</div>
+		);
 	if (error) return <div className='pt-5 text-center text-danger'>{error}</div>;
 	if (!cart || cart.items.length === 0)
-		return <div className='pt-5 text-center'  style={{ marginTop: '200px', marginBottom: '100px' }}>Giỏ hàng trống</div>;
+		return (
+			<div
+				className='pt-5 text-center'
+				style={{ marginTop: '200px', marginBottom: '100px' }}>
+				Giỏ hàng trống
+			</div>
+		);
 
 	const totalPrice = cart.items.reduce(
 		(total, item) => total + item.price * item.quantity,
@@ -221,9 +292,9 @@ const handleCheckout = async () => {
 	console.log(cart.items[0].image);
 
 	return (
-		<Container style={{ marginTop: '200px'}} className='pb-5'>
-			<h2 className='mb-3' style={{ color: '#33691e' , fontStyle: 'bold'}}>
-				 Thông tin giao hàng
+		<Container style={{ marginTop: '200px' }} className='pb-5'>
+			<h2 className='mb-3' style={{ color: '#33691e', fontStyle: 'bold' }}>
+				Thông tin giao hàng
 			</h2>
 			<Row>
 				<Col md={6}>
@@ -293,7 +364,7 @@ const handleCheckout = async () => {
 				</Col>
 			</Row>
 
-			<h2 className='mb-4' > Giỏ hàng của bạn</h2>
+			<h2 className='mb-4'> Giỏ hàng của bạn</h2>
 			<Row>
 				<Col md={8}>
 					<Card
@@ -307,38 +378,36 @@ const handleCheckout = async () => {
 									<Row className='align-items-center'>
 										<Col md={2}>
 											<Image
-												src={`${BACKEND_URL}${item.image}`}
+												src={resolveImageUrl(item.image)}
 												alt={item.name}
 												fluid
 												rounded
 												style={{ borderRadius: '10px' }}
 												onError={(e) => {
-													e.target.onerror = null;
-													e.target.src = '/images/placeholder.jpg'; // fallback local in public/images
+													e.currentTarget.onerror = null;
+													e.currentTarget.src = '/images/placeholder.jpg';
 												}}
 											/>
 										</Col>
 										<Col md={4}>
-											<h5 style={{ fontWeight: 600 }}>{item.name}</h5>
-
-											{item.color ? (
-												<p className='mb-1'>
-													Màu: <strong>{item.color}</strong>
-												</p>
+											{/* Nếu là combo, render comboTitle + variant, ngược lại render name */}
+											{item.comboTitle ? (
+												<>
+													<h5 style={{ fontWeight: 600 }}>{item.comboTitle}</h5>
+													{item.variant && (
+														<div
+															style={{
+																fontSize: '0.95rem',
+																marginTop: '4px',
+																color: '#555',
+															}}>
+															{item.variant.title} —{' '}
+															{item.variant.price.toLocaleString()}đ
+														</div>
+													)}
+												</>
 											) : (
-												<p className='mb-1 text-muted'>
-													<em>Không có màu</em>
-												</p>
-											)}
-
-											{item.size ? (
-												<p>
-													Kích cỡ: <strong>{item.size}</strong>
-												</p>
-											) : (
-												<p className='text-muted'>
-													<em>Không có kích cỡ</em>
-												</p>
+												<h5 style={{ fontWeight: 600 }}>{item.name}</h5>
 											)}
 										</Col>
 										<Col md={3}>
@@ -347,13 +416,7 @@ const handleCheckout = async () => {
 													variant='outline-success'
 													size='sm'
 													style={{ borderRadius: '8px' }}
-													onClick={() =>
-														handleDecrease(
-															item.productId,
-															item.color,
-															item.size
-														)
-													}>
+													onClick={() => handleDecrease(item)}>
 													−
 												</Button>
 												<span className='mx-2'>{item.quantity}</span>
@@ -361,13 +424,7 @@ const handleCheckout = async () => {
 													variant='outline-success'
 													size='sm'
 													style={{ borderRadius: '8px' }}
-													onClick={() =>
-														handleIncrease(
-															item.productId,
-															item.color,
-															item.size
-														)
-													}>
+													onClick={() => handleIncrease(item)}>
 													+
 												</Button>
 											</div>
@@ -386,9 +443,7 @@ const handleCheckout = async () => {
 													borderRadius: '8px',
 													padding: '5px 10px',
 												}}
-												onClick={() =>
-													handleRemove(item.productId, item.color, item.size)
-												}>
+												onClick={() => handleRemove(item)}>
 												Xóa
 											</Button>
 										</Col>
@@ -405,8 +460,10 @@ const handleCheckout = async () => {
 				<Col md={4}>
 					<Card style={{ backgroundColor: '#f9fbe7', borderRadius: '16px' }}>
 						<Card.Body>
-							<h5 className='mb-3' style={{ color: '#33691e', fontWeight: 'bold' }}>
-								 Tổng cộng
+							<h5
+								className='mb-3'
+								style={{ color: '#33691e', fontWeight: 'bold' }}>
+								Tổng cộng
 							</h5>
 							<p style={{ fontSize: '1.1rem' }}>
 								Tổng tiền:{' '}
@@ -437,11 +494,7 @@ const handleCheckout = async () => {
 											value='VietQR'
 											checked={paymentMethod === 'VietQR'}
 											onChange={(e) => setPaymentMethod(e.target.value)}
-											label={
-												<span>
-													Thanh toán qua VietQR
-												</span>
-											}
+											label={<span>Thanh toán qua VietQR</span>}
 										/>
 									</div>
 								</Form.Group>
@@ -473,7 +526,7 @@ const handleCheckout = async () => {
 							<Form>
 								<Form.Group controlId='couponCode'>
 									<Form.Label style={{ fontWeight: 500, fontStyle: 'bold' }}>
-										 Mã giảm giá
+										Mã giảm giá
 									</Form.Label>
 									<div className='d-flex'>
 										<Form.Control type='text' placeholder='Nhập mã...' />
