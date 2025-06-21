@@ -6,10 +6,11 @@ require('dotenv').config();
 exports.generateVietQR = async (req, res) => {
   try {
     const { orderId } = req.body;
-
+    console.log(orderId);
+    
     const order = await Order.findById(orderId);
     if (!order)
-      return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+      return res.status(400).json({ message: "Không tìm thấy đơn hàng" });
 
     const vietqr = new VietQR({
       clientID: process.env.VIETQR_CLIENT_ID,
@@ -27,7 +28,7 @@ exports.generateVietQR = async (req, res) => {
       accountNumber: process.env.VIETQR_ACCOUNT_NUMBER,
       amount: amount.toString(),
       memo: `Order #${order._id}`,
-      template: "qr_only", // Hoặc compact
+      template: "compact", // Hoặc compact
     });
 
     const { code, desc, data } = response.data;
