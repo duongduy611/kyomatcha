@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Card, Button, Spinner } from 'react-bootstrap';
+import { Container, Card, Button, Spinner, Row, Col } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
@@ -67,7 +67,32 @@ const QRPaymentPage = () => {
 							}}
 						/>
 						<p className='mt-3'>
-							<strong>Số tiền:</strong> {qrData.amount.toLocaleString()} VND
+							<Row>
+								<Col className='d-flex justify-content-end'>
+									<strong>Số tiền:</strong>{' '}
+								</Col>
+								<Col className='d-flex justify-content-start'>
+									<div>{qrData.amount.toLocaleString()} VND</div>{' '}
+								</Col>
+							</Row>
+
+							<Row>
+								<Col className='d-flex justify-content-end'>
+									<strong>Người nhận:</strong>{' '}
+								</Col>
+								<Col className='d-flex justify-content-start'>
+									<div>DUONG VIET DUY</div>{' '}
+								</Col>
+							</Row>
+
+							<Row>
+								<Col className='d-flex justify-content-end'>
+									<strong>Tài khoản nhận:</strong>{' '}
+								</Col>
+								<Col className='d-flex justify-content-start'>
+									<div>80001118546</div>{' '}
+								</Col>
+							</Row>
 						</p>
 						<Button
 							variant='success'
