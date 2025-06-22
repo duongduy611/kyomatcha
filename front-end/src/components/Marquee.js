@@ -17,8 +17,7 @@ const scrollLeft = keyframes`
 const MarqueeContainer = styled.div`
   width: 100%;
   overflow: hidden;
-  background-color: #FAF9F6;
-  padding: 20px 0;
+  padding: 40px 0;
   border-top: 1px solid #EAE0D1;
   border-bottom: 1px solid #EAE0D1;
   /* Tạm dừng animation khi hover */
@@ -35,11 +34,12 @@ const MarqueeContent = styled.div`
 `;
 
 const MarqueeText = styled.span`
-  font-family: 'Lora', sans-serif;
-  font-size: 3rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 4rem;
   color: #1a1a1a;
   text-transform: uppercase;
   padding-right: 80px;
+  font-weight: 600;
 
   @media (max-width: 768px) {
     font-size: 2.5rem;
