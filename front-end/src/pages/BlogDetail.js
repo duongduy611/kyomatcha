@@ -233,10 +233,8 @@ const RightColumn = styled.div`
 `;
 
 const SidebarSection = styled.div`
-  background: white;
   border-radius: 8px;
   padding: 25px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 `;
 
 const SidebarTitle = styled.h3`
@@ -300,7 +298,7 @@ const RelatedMeta = styled.div`
 
 const RelatedCategory = styled.div`
   font-size: 0.75rem;
-  color: #e74c3c;
+  color: #527328;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
