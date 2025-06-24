@@ -23,8 +23,9 @@
     "react-select": "^5.10.1",
     "react-slick": "^0.30.3",
     "react-toastify": "^11.0.5",
+    "recharts": "^3.0.0",
     "slick-carousel": "^1.8.1",
-    "styled-components": "^6.1.18",
+    "styled-components": "^6.1.19",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
