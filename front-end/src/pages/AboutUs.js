@@ -100,7 +100,7 @@ const SectionDesc = styled.p`
 const Quote = styled.blockquote`
   font-style: italic;
   color: #666;
-  border-left: 3px solid #4a7c59;
+  border-left: 3px solid #527328;
   margin: 1.5rem 0 1rem 0;
   padding-left: 1rem;
 `;
@@ -191,16 +191,16 @@ const ValueContent = styled.div`
 
 const coreValues = [
   {
-    title: "Đam mê với công việc",
-    desc: "Đam mê với công việc là sự hào hứng và thú vị với những gì bạn làm.",
+    title: "Giáo dục người tiêu dùng",
+    desc: "Giáo dục người tiêu dùng về toàn bộ lợi ích sức khỏe của matcha—từ sự minh mẫn tinh thần đến đặc tính chống lão hóa.",
   },
   {
-    title: "Đội ngũ thiết kế sáng tạo",
-    desc: "Đội ngũ thiết kế sáng tạo là đội ngũ thiết kế và thực hiện chiến dịch và khuyến khích.",
+    title: "Đơn giản hóa quy trình",
+    desc: "Cung cấp các bộ dụng cụ và công cụ pha matcha được tuyển chọn kỹ lưỡng, sẵn sàng sử dụng, phù hợp với mọi cấp độ kỹ năng.",
   },
   {
-    title: "Giải pháp sáng tạo",
-    desc: "Giải pháp sáng tạo là sử dụng các ý tưởng hoàn toàn mới hoặc tìm cách sử dụng lại các ý tưởng hiện có.",
+    title: "Khuyến khích sự chuyển đổi",
+    desc: "Từ việc tiêu dùng thụ động sang các nghi thức có chủ đích, chú trọng sức khỏe.",
   },
   {
     title: "Chất lượng sản phẩm",
@@ -318,9 +318,9 @@ const CTADesc = styled.p`
 `;
 
 const CTAButton = styled.a`
-  background: #4a7c59;
+  background: #527328;
   color: #fff;
-  border: 2px solid #4a7c59;
+  border: 2px solid #527328;
   padding: 14px 38px;
   font-size: 1rem;
   font-weight: 500;
@@ -343,9 +343,7 @@ const AboutUs = () => (
   <>
     <GlobalStyle />
     <Banner>
-      <BannerTitle>
-        VỀ KYOMATCHA
-      </BannerTitle>
+      <BannerTitle>VỀ KYO MATCHA</BannerTitle>
     </Banner>
     <ContentSection>
       <ContentWrapper>
@@ -357,7 +355,7 @@ const AboutUs = () => (
             Chúng tôi nỗ lực cung cấp cho khách hàng chất lượng cao nhất
           </SectionTitle>
           <SectionDesc>
-            KyoMatcha được thành lập vào năm 2025 bởi những tâm hồn yêu trà và
+            Kyo Matcha được thành lập vào năm 2025 bởi những tâm hồn yêu trà và
             tin vào giá trị sâu sắc mà matcha mang lại cho cuộc sống hiện đại.
             Với khả năng thanh lọc, giảm căng thẳng và nuôi dưỡng sự tĩnh tại,
             matcha không chỉ là một thức uống – mà là một lối sống, một nghi
@@ -372,7 +370,7 @@ const AboutUs = () => (
             <Avatar src={avatarImg} alt="Nguyen Thi Phuong Thao" />
             <AuthorInfo>
               <span>Nguyen Thi Phuong Thao</span>
-              <small>CEO & Co-founder @ KyoMatcha</small>
+              <small>CEO & Co-founder @ Kyo Matcha</small>
             </AuthorInfo>
           </Author>
         </RightContent>
@@ -405,12 +403,13 @@ const AboutUs = () => (
         <MissionLeft>
           <MissionTitle>Sứ mệnh của chúng tôi</MissionTitle>
           <MissionDesc>
-            Sứ mệnh của KyoMatcha là lan tỏa lối sống xanh và lành mạnh – bắt
-            đầu từ một tách matcha mỗi ngày. Chúng tôi cam kết mang đến cho
-            khách hàng những sản phẩm matcha chất lượng cao nhất, đi cùng kiến
-            thức, cảm hứng và sự đồng hành tận tâm, để mỗi người đều có thể tìm
-            thấy sự an yên và năng lượng tích cực trong từng khoảnh khắc thưởng
-            trà.
+            Kyo Matcha đang thực hiện sứ mệnh kết nối truyền thống với xu hướng
+            chăm sóc sức khỏe hiện đại bằng cách làm cho matcha dễ pha chế và dễ
+            hiểu hơn về những lợi ích thực sự của nó. Trong khi người tiêu dùng
+            ngày nay tràn ngập các loại nước tăng lực và đồ uống chứa nhiều
+            caffeine, ít ai biết rằng có một lựa chọn tốt hơn: một loại đồ uống
+            giúp tỉnh táo mà không gây kích thích quá mức, hỗ trợ trao đổi chất
+            và cung cấp nguồn dưỡng chất giàu chất chống oxy hóa.
           </MissionDesc>
           <MissionBullets>
             <MissionBullet>

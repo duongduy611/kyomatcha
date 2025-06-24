@@ -310,7 +310,7 @@ const Blog = () => {
       <BeautySection>
         <SectionHeader>
           <BeautyTitle>Làm đẹp</BeautyTitle>
-          <ReadButton href="/blogs/category/lam-dep">
+          <ReadButton href="/blogs">
             Tất cả bài viết
             <span style={{ display: "inline-block", marginLeft: 8 }}>
               <svg
@@ -353,7 +353,7 @@ const Blog = () => {
       <BeautySection>
         <SectionHeader>
           <BeautyTitle>Pha chế</BeautyTitle>
-          <ReadButton href="/blogs/category/pha-che">
+          <ReadButton href="/blogs">
             Tất cả bài viết
             <span style={{ display: "inline-block", marginLeft: 8 }}>
               <svg
@@ -396,7 +396,7 @@ const Blog = () => {
       <BeautySection>
         <SectionHeader>
           <BeautyTitle>Khám phá</BeautyTitle>
-          <ReadButton href="/blogs/category/kham-pha">
+          <ReadButton href="/blogs">
             Tất cả bài viết
             <span style={{ display: "inline-block", marginLeft: 8 }}>
               <svg
