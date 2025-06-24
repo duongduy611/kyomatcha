@@ -511,8 +511,8 @@ const TeaCollection = () => {
             <span>BÁN CHẠY</span>
           </HeaderHeading>
           <HeaderDescription>
-            Cocoon tự hào khi các sản phẩm mà chúng tôi tạo ra mang đến những
-            thay đổi tuyệt vời trên làn da, mái tóc của bạn.
+            Kyo Matcha tự hào khi các sản phẩm mà chúng tôi mang đến cho bạn là
+            những sản phẩm chất lượng, an toàn và đảm bảo sức khỏe cho bạn.
           </HeaderDescription>
         </Header>
         <ProductGrid>
@@ -840,7 +840,7 @@ function BrandPhilosophy() {
           Triết lý <span>THƯƠNG HIỆU</span>
         </PhilosophyTitle>
         <PhilosophyDescription>
-          KyoMatcha được thành lập vào năm 2025 bởi những tâm hồn yêu trà và tin
+          Kyo Matcha được thành lập vào năm 2025 bởi những tâm hồn yêu trà và tin
           vào giá trị sâu sắc mà matcha mang lại cho cuộc sống hiện đại. Với khả
           năng thanh lọc, giảm căng thẳng và nuôi dưỡng sự tĩnh tại, matcha
           không chỉ là một thức uống – mà là một lối sống, một nghi thức chăm
