@@ -904,9 +904,9 @@ const Home = () => {
           ))}
         </Slider>
       </CarouselContainer>
+      <TeaCollection />
       <BrandPhilosophy />
       <Marquee text={scrollingText} duration="30s" />
-      <TeaCollection />
       <BlogList />
     </>
   );
