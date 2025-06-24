@@ -417,7 +417,7 @@ export default function AdminOrders() {
 
               <OrderTotal>Tổng: {order.total.toLocaleString()}₫</OrderTotal>
               <Actions>
-                <DetailButton onClick={() => navigate(`/admin/order/${order._id}`)}>
+                <DetailButton onClick={() => navigate(`/admin/orders/${order._id}`)}>
                   Xem chi tiết
                 </DetailButton>
                 <DeleteButton onClick={() => handleDelete(order._id)}>
