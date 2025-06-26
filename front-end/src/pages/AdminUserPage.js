@@ -10,6 +10,23 @@ const BACKEND_URL =
   process.env.REACT_APP_BACKEND_URL || "http://localhost:9999";
 const USERS_API_URL = `${BACKEND_URL}/admin/users`;
 
+// --- Utility function cho debounce ---
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+
 // --- Styled Components (Nhiều component được tái sử dụng từ AdminProductPage) ---
 
 const AdminPageContainer = styled.div`
@@ -229,19 +246,22 @@ const ToggleSwitchSlider = styled.span`
 
 // --- COMPONENT CHÍNH CỦA TRANG QUẢN LÝ USER ---
 const AdminUserPage = () => {
-  const [users, setUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [pagination, setPagination] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const usersPerPage = 10;
 
-  const fetchUsers = useCallback(async (page) => {
+  // Debounce search term để tránh filter quá nhiều
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${USERS_API_URL}?page=${page}&limit=10`
-      );
-      setUsers(response.data.data || []);
-      setPagination(response.data.pagination || {});
+      // Lấy tất cả users (không phân trang ở API)
+      const response = await axios.get(`${USERS_API_URL}`);
+      setAllUsers(response.data.data || []);
     } catch (error) {
       toast.error("Không thể tải danh sách người dùng.");
     } finally {
@@ -249,9 +269,36 @@ const AdminUserPage = () => {
     }
   }, []);
 
+  // Filter users dựa trên search term
   useEffect(() => {
-    fetchUsers(currentPage);
-  }, [currentPage, fetchUsers]);
+    if (!debouncedSearchTerm.trim()) {
+      setFilteredUsers(allUsers);
+    } else {
+      const filtered = allUsers.filter(user => 
+        user.fullName?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+        user.email?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+        user.phone?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+        user.role?.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+    }
+    setCurrentPage(1); // Reset về trang 1 khi search
+  }, [allUsers, debouncedSearchTerm]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  // Tính toán phân trang
+  const totalUsers = filteredUsers.length;
+  const totalPages = Math.ceil(totalUsers / usersPerPage);
+  const startIndex = (currentPage - 1) * usersPerPage;
+  const endIndex = startIndex + usersPerPage;
+  const currentUsers = filteredUsers.slice(startIndex, endIndex);
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   const handleStatusToggle = async (userId, currentStatus) => {
     const newStatus = currentStatus === "ACTIVE" ? "INACTIVE" : "ACTIVE";
@@ -260,8 +307,13 @@ const AdminUserPage = () => {
         status: newStatus,
       });
       // Cập nhật lại state của user trên giao diện mà không cần gọi lại API
-      setUsers(
-        users.map((user) =>
+      setAllUsers(prevUsers =>
+        prevUsers.map((user) =>
+          user._id === userId ? { ...user, status: newStatus } : user
+        )
+      );
+      setFilteredUsers(prevUsers =>
+        prevUsers.map((user) =>
           user._id === userId ? { ...user, status: newStatus } : user
         )
       );
@@ -291,7 +343,7 @@ const AdminUserPage = () => {
             </tr>
           </TableHead>
           <tbody>
-            {users.map((user) => (
+            {currentUsers.map((user) => (
               <TableRow key={user._id}>
                 <TableCell>{user.fullName}</TableCell>
                 <TableCell>{user.email}</TableCell>
@@ -324,14 +376,12 @@ const AdminUserPage = () => {
             Trang trước
           </PaginationButton>
           <span>
-            Trang {pagination.currentPage} / {pagination.totalPages}
+            Trang {currentPage} / {totalPages} 
+            ({totalUsers} người dùng)
           </span>
           <PaginationButton
             onClick={() => setCurrentPage((prev) => prev + 1)}
-            disabled={
-              currentPage === pagination.totalPages ||
-              pagination.totalPages === 0
-            }
+            disabled={currentPage === totalPages}
           >
             Trang sau
           </PaginationButton>
@@ -357,7 +407,12 @@ const AdminUserPage = () => {
           <Header>
             <HeaderSearch>
               <FaSearch />
-              <input type="text" placeholder="Tìm kiếm người dùng..." />
+              <input
+                type="text"
+                placeholder="Tìm kiếm người dùng..."
+                value={searchTerm}
+                onChange={handleSearch}
+              />
             </HeaderSearch>
             <HeaderIcons>
               <FaBell />
