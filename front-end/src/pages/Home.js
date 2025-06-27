@@ -458,7 +458,6 @@ const TeaCollection = () => {
         toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
         navigate("/login");
       } else if (error.response?.data?.message) {
-        // Hiển thị message lỗi do backend trả về (nếu có)
         toast.error(error.response.data.message);
       } else {
         toast.error("Có lỗi xảy ra khi thêm vào giỏ hàng");
@@ -474,13 +473,13 @@ const TeaCollection = () => {
           const filteredProducts = response.data.data
             .filter(
               (product) =>
-                !product.name.includes("matcha fuji 01") &&
+                product.name.includes("Matcha") &&
                 (product.name.includes("Matcha Natsu") ||
                   product.name.includes("Matcha Aki") ||
                   product.name.includes("Matcha Haru"))
             )
-            .slice(0, 6);
-          console.log("Filtered Products:", filteredProducts); // Debug log
+            .slice(0, 3);
+          console.log("Filtered Matcha Products:", filteredProducts);
           setProducts(filteredProducts);
         }
         setLoading(false);
@@ -708,9 +707,8 @@ const BlogReadMore = styled(Link)`
 `;
 
 function BlogList() {
-  // Lấy 6 blog mới nhất, sắp xếp theo ngày tạo hoặc cập nhật mới nhất
   const latestBlogs = blogs
-    .slice() // copy mảng để không ảnh hưởng gốc
+    .slice()
     .sort(
       (a, b) =>
         new Date(b.updatedAt || b.createdAt) -
