@@ -410,26 +410,14 @@ exports.deleteProduct = async (req, res) => {
  */
 exports.getAllUsers = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
-
     const users = await User.find({ isDeleted: false })
-      .select("-password") // Loại bỏ trường password khỏi kết quả
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const totalUsers = await User.countDocuments({ isDeleted: false });
+      .select("-password")
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       message: "Users retrieved successfully",
       data: users,
-      pagination: {
-        currentPage: page,
-        totalPages: Math.ceil(totalUsers / limit),
-        totalUsers,
-      },
+      totalUsers: users.length
     });
   } catch (error) {
     console.error("Error fetching users:", error);
