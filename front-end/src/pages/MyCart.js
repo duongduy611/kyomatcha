@@ -1,3 +1,5 @@
+// src/pages/MyCart.js
+
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -19,10 +21,12 @@ const MyCart = () => {
 	const [cart, setCart] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+
 	const [paymentMethod, setPaymentMethod] = useState('');
 	const [receiverName, setReceiverName] = useState('');
 	const [phone, setPhone] = useState('');
 	const [address, setAddress] = useState('');
+
 	const [provinces, setProvinces] = useState([]);
 	const [districts, setDistricts] = useState([]);
 	const [wards, setWards] = useState([]);
@@ -35,52 +39,84 @@ const MyCart = () => {
 	const navigate = useNavigate();
 	const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
+	// Fetch provinces
 	useEffect(() => {
 		const fetchProvinces = async () => {
-			const res = await axios.get('https://provinces.open-api.vn/api/p/');
-			setProvinces(res.data.map((p) => ({ label: p.name, value: p.code })));
+			try {
+				const res = await axios.get('https://esgoo.net/api-tinhthanh/1/0.htm');
+				if (res.data.error === 0) {
+					setProvinces(
+						res.data.data.map((p) => ({ label: p.full_name, value: p.id }))
+					);
+				} else {
+					toast.error('Không thể tải danh sách tỉnh/thành');
+				}
+			} catch (err) {
+				console.error(err);
+				toast.error('Lỗi khi tải danh sách tỉnh/thành');
+			}
 		};
 		fetchProvinces();
 	}, []);
 
+	// Fetch districts when province changes
 	useEffect(() => {
-		if (selectedProvince) {
-			axios
-				.get(
-					`https://provinces.open-api.vn/api/p/${selectedProvince.value}?depth=2`
-				)
-				.then((res) => {
+		if (!selectedProvince) return;
+		const fetchDistricts = async () => {
+			try {
+				const res = await axios.get(
+					`https://esgoo.net/api-tinhthanh/2/${selectedProvince.value}.htm`
+				);
+				if (res.data.error === 0) {
 					setDistricts(
-						res.data.districts.map((d) => ({ label: d.name, value: d.code }))
+						res.data.data.map((d) => ({ label: d.full_name, value: d.id }))
 					);
 					setWards([]);
 					setSelectedDistrict(null);
 					setSelectedWard(null);
-				});
-		}
+				} else {
+					toast.error('Không thể tải danh sách quận/huyện');
+				}
+			} catch (err) {
+				console.error(err);
+				toast.error('Lỗi khi tải danh sách quận/huyện');
+			}
+		};
+		fetchDistricts();
 	}, [selectedProvince]);
 
+	// Fetch wards when district changes
 	useEffect(() => {
-		if (selectedDistrict) {
-			axios
-				.get(
-					`https://provinces.open-api.vn/api/d/${selectedDistrict.value}?depth=2`
-				)
-				.then((res) => {
+		if (!selectedDistrict) return;
+		const fetchWards = async () => {
+			try {
+				const res = await axios.get(
+					`https://esgoo.net/api-tinhthanh/3/${selectedDistrict.value}.htm`
+				);
+				if (res.data.error === 0) {
 					setWards(
-						res.data.wards.map((w) => ({ label: w.name, value: w.code }))
+						res.data.data.map((w) => ({ label: w.full_name, value: w.id }))
 					);
 					setSelectedWard(null);
-				});
-		}
+				} else {
+					toast.error('Không thể tải danh sách phường/xã');
+				}
+			} catch (err) {
+				console.error(err);
+				toast.error('Lỗi khi tải danh sách phường/xã');
+			}
+		};
+		fetchWards();
 	}, [selectedDistrict]);
 
+	// 4️⃣ Lấy giỏ hàng của user
 	useEffect(() => {
 		const fetchCart = async () => {
 			try {
 				const res = await axios.get(`${BACKEND_URL}/cart/${userId}`);
 				setCart(res.data);
-			} catch {
+			} catch (err) {
+				console.error(err);
 				setError('Lỗi khi tải giỏ hàng');
 			} finally {
 				setLoading(false);
@@ -91,7 +127,6 @@ const MyCart = () => {
 
 	const handleDecrease = async (item) => {
 		try {
-			// build payload tùy theo item là combo hay product
 			const payload = item.comboTitle
 				? {
 						userId,
@@ -104,7 +139,6 @@ const MyCart = () => {
 						color: item.color,
 						size: item.size,
 				  };
-
 			const res = await axios.post(`${BACKEND_URL}/cart/decrease`, payload);
 			setCart(res.data);
 			toast.info('Đã giảm số lượng');
@@ -127,7 +161,6 @@ const MyCart = () => {
 						color: item.color,
 						size: item.size,
 				  };
-
 			const res = await axios.post(`${BACKEND_URL}/cart/increase`, payload);
 			setCart(res.data);
 			toast.success('Đã tăng số lượng');
@@ -150,7 +183,6 @@ const MyCart = () => {
 						color: item.color,
 						size: item.size,
 				  };
-
 			const res = await axios.post(`${BACKEND_URL}/cart/remove`, payload);
 			setCart(res.data);
 			toast.info('Đã xoá sản phẩm khỏi giỏ');
@@ -160,7 +192,6 @@ const MyCart = () => {
 	};
 
 	const handleCheckout = async () => {
-		// 0️⃣ Validate thông tin giao hàng
 		if (
 			!receiverName ||
 			!phone ||
@@ -173,7 +204,6 @@ const MyCart = () => {
 			return;
 		}
 
-		// 1️⃣ Xây dựng fullAddress
 		const fullAddress = [
 			address.trim(),
 			selectedWard.label,
@@ -183,30 +213,30 @@ const MyCart = () => {
 			.filter(Boolean)
 			.join(', ');
 
-		// 2️⃣ Build mảng items đúng format
-		const orderItems = cart.items.map((item) => {
-			// Nếu là combo (đã enrich comboTitle và variant)
-			if (item.comboTitle) {
-				return {
-					comboId: item.productId,
-					matchaTitle: item.variant?.title || item.title,
-					price: item.price,
-					quantity: item.quantity,
-				};
-			}
-			// Ngược lại là product
-			return {
-				productId: item.productId,
-				name: item.name,
-				color: item.color,
-				size: item.size,
-				price: item.price,
-				quantity: item.quantity,
-			};
-		});
+		const totalPrice = cart.items.reduce(
+			(total, item) => total + item.price * item.quantity,
+			0
+		);
+
+		const orderItems = cart.items.map((item) =>
+			item.comboTitle
+				? {
+						comboId: item.productId,
+						matchaTitle: item.variant?.title || item.title,
+						price: item.price,
+						quantity: item.quantity,
+				  }
+				: {
+						productId: item.productId,
+						name: item.name,
+						color: item.color,
+						size: item.size,
+						price: item.price,
+						quantity: item.quantity,
+				  }
+		);
 
 		try {
-			// 3️⃣ Gọi POST tạo order
 			const orderRes = await axios.post(
 				`${BACKEND_URL}/orders`,
 				{
@@ -226,9 +256,7 @@ const MyCart = () => {
 			);
 
 			const createdOrder = orderRes.data;
-			console.log(createdOrder._id);
-			
-			// 4️⃣ Xử lý theo phương thức thanh toán
+
 			if (paymentMethod === 'VietQR') {
 				const qrRes = await axios.post(
 					`${BACKEND_URL}/vietqr/create`,
@@ -267,7 +295,7 @@ const MyCart = () => {
 		}
 	};
 
-	if (loading)
+	if (loading) {
 		return (
 			<div
 				className='pt-5 text-center'
@@ -275,8 +303,13 @@ const MyCart = () => {
 				Đang tải giỏ hàng...
 			</div>
 		);
-	if (error) return <div className='pt-5 text-center text-danger'>{error}</div>;
-	if (!cart || cart.items.length === 0)
+	}
+
+	if (error) {
+		return <div className='pt-5 text-center text-danger'>{error}</div>;
+	}
+
+	if (!cart || cart.items.length === 0) {
 		return (
 			<div
 				className='pt-5 text-center'
@@ -284,16 +317,16 @@ const MyCart = () => {
 				Giỏ hàng trống
 			</div>
 		);
+	}
 
 	const totalPrice = cart.items.reduce(
 		(total, item) => total + item.price * item.quantity,
 		0
 	);
-	console.log(cart.items[0].image);
 
 	return (
 		<Container style={{ marginTop: '200px' }} className='pb-5'>
-			<h2 className='mb-3' style={{ color: '#33691e', fontStyle: 'bold' }}>
+			<h2 className='mb-3' style={{ color: '#33691e', fontWeight: 'bold' }}>
 				Thông tin giao hàng
 			</h2>
 			<Row>
@@ -355,7 +388,6 @@ const MyCart = () => {
 						<Form.Label>Địa chỉ chi tiết</Form.Label>
 						<Form.Control
 							type='text'
-							rows={2}
 							value={address}
 							onChange={(e) => setAddress(e.target.value)}
 							placeholder='Nhập địa chỉ nhận hàng'
@@ -364,12 +396,12 @@ const MyCart = () => {
 				</Col>
 			</Row>
 
-			<h2 className='mb-4'> Giỏ hàng của bạn</h2>
+			<h2 className='mb-4'>Giỏ hàng của bạn</h2>
 			<Row>
 				<Col md={8}>
 					<Card
 						className='mb-4'
-						style={{ borderRadius: '16px', backgroundColor: '#ffffff' }}>
+						style={{ borderRadius: '16px', backgroundColor: '#fff' }}>
 						<ListGroup variant='flush'>
 							{cart.items.map((item) => (
 								<ListGroup.Item
@@ -390,7 +422,6 @@ const MyCart = () => {
 											/>
 										</Col>
 										<Col md={4}>
-											{/* Nếu là combo, render comboTitle + variant, ngược lại render name */}
 											{item.comboTitle ? (
 												<>
 													<h5 style={{ fontWeight: 600 }}>{item.comboTitle}</h5>
@@ -411,7 +442,7 @@ const MyCart = () => {
 											)}
 										</Col>
 										<Col md={3}>
-											<div className='d-flex align-items-center justify-content-start'>
+											<div className='d-flex align-items-center'>
 												<Button
 													variant='outline-success'
 													size='sm'
@@ -438,11 +469,7 @@ const MyCart = () => {
 											<Button
 												variant='outline-danger'
 												size='sm'
-												style={{
-													fontSize: '0.8rem',
-													borderRadius: '8px',
-													padding: '5px 10px',
-												}}
+												style={{ borderRadius: '8px', padding: '5px 10px' }}
 												onClick={() => handleRemove(item)}>
 												Xóa
 											</Button>
@@ -452,11 +479,11 @@ const MyCart = () => {
 							))}
 						</ListGroup>
 					</Card>
-
 					<Button href='/products' variant='success'>
 						← Tiếp tục mua sắm
 					</Button>
 				</Col>
+
 				<Col md={4}>
 					<Card style={{ backgroundColor: '#f9fbe7', borderRadius: '16px' }}>
 						<Card.Body>
@@ -474,7 +501,7 @@ const MyCart = () => {
 
 							<Form>
 								<Form.Group>
-									<Form.Label style={{ fontWeight: '500' }}>
+									<Form.Label style={{ fontWeight: 500 }}>
 										Phương thức thanh toán:
 									</Form.Label>
 									<div className='mb-3'>
@@ -491,10 +518,10 @@ const MyCart = () => {
 											type='radio'
 											id='VietQR'
 											name='paymentMethod'
+											label='Thanh toán qua VietQR'
 											value='VietQR'
 											checked={paymentMethod === 'VietQR'}
 											onChange={(e) => setPaymentMethod(e.target.value)}
-											label={<span>Thanh toán qua VietQR</span>}
 										/>
 									</div>
 								</Form.Group>
@@ -511,8 +538,8 @@ const MyCart = () => {
 										padding: '10px',
 										fontWeight: 'bold',
 									}}>
-									{paymentMethod === 'zalopay'
-										? 'Thanh toán với ZaloPay'
+									{paymentMethod === 'VietQR'
+										? 'Thanh toán qua VietQR'
 										: 'Xác nhận đặt hàng'}
 								</Button>
 							</Form>
@@ -525,7 +552,7 @@ const MyCart = () => {
 						<Card.Body>
 							<Form>
 								<Form.Group controlId='couponCode'>
-									<Form.Label style={{ fontWeight: 500, fontStyle: 'bold' }}>
+									<Form.Label style={{ fontWeight: 500 }}>
 										Mã giảm giá
 									</Form.Label>
 									<div className='d-flex'>
