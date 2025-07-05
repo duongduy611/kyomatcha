@@ -37,7 +37,7 @@ const MyCart = () => {
 
 	useEffect(() => {
 		const fetchProvinces = async () => {
-			const res = await axios.get('http://provinces.open-api.vn/api/p/');
+			const res = await axios.get('https://provinces.open-api.vn/api/p/');
 			setProvinces(res.data.map((p) => ({ label: p.name, value: p.code })));
 		};
 		fetchProvinces();
@@ -47,7 +47,7 @@ const MyCart = () => {
 		if (selectedProvince) {
 			axios
 				.get(
-					`http://provinces.open-api.vn/api/p/${selectedProvince.value}?depth=2`
+					`https://provinces.open-api.vn/api/p/${selectedProvince.value}?depth=2`
 				)
 				.then((res) => {
 					setDistricts(
@@ -64,7 +64,7 @@ const MyCart = () => {
 		if (selectedDistrict) {
 			axios
 				.get(
-					`http://provinces.open-api.vn/api/d/${selectedDistrict.value}?depth=2`
+					`https://provinces.open-api.vn/api/d/${selectedDistrict.value}?depth=2`
 				)
 				.then((res) => {
 					setWards(
