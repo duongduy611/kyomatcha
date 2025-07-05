@@ -39,38 +39,12 @@ export const AppProvider = ({ children }) => {
 		const token = localStorage.getItem('token');
 		if (token) {
 			// Nếu có token, mới gọi fetchUserData
-			fetchUserData(token);
 		} else {
 			// Nếu không có token, tức chưa login → set isLoadingUser = false
 			setIsLoadingUser(false);
 		}
 	}, []);
 
-	const fetchUserData = async (token) => {
-		try {
-			const response = await axios.get(`${BACKEND_URL}/api/user/profile`, {
-				headers: { Authorization: `Bearer ${token}` },
-			});
-			// Giả sử backend trả { data: { _id, name, email, role, ... } }
-			setUser(response.data.data);
-			// Sau khi fetch thành công user, có thể fetch Favorites
-			fetchFavorites();
-		} catch (error) {
-			console.error('Error fetching user data:', error);
-			if (error.response && error.response.status === 401) {
-				// Token hết hạn hoặc không hợp lệ → xóa token
-				console.warn('Token hết hạn hoặc không hợp lệ, xóa token.');
-				localStorage.removeItem('token');
-				setUser(null);
-			} else {
-				// Lỗi 404/500: chỉ log, không xóa token, user vẫn là null
-				console.warn('Lỗi khi fetch user nhưng không phải 401, giữ token.');
-			}
-		} finally {
-			// Dù thành công hay thất bại (trừ 401), vẫn coi là đã load xong user
-			setIsLoadingUser(false);
-		}
-	};
 
 	const fetchFavorites = async () => {
 		const token = localStorage.getItem('token');
@@ -121,7 +95,6 @@ export const AppProvider = ({ children }) => {
 
 	const login = async (token) => {
 		localStorage.setItem('token', token);
-		await fetchUserData(token);
 		await fetchFavorites();
 	};
 

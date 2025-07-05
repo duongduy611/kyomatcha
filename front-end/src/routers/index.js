@@ -18,6 +18,8 @@ import QRPaymentPage from '../pages/QRPayment';
 import ComboDetail from '../pages/ComboDetail';
 import AdminOrders from '../pages/AdminOrder';
 import AdminOrderDetail from '../pages/AdminOrderDetail';
+import AdminProductPage from '../pages/AdminProductPage';
+import AdminUserPage from '../pages/AdminUserPage';
 
 export const routes = [
 	{
@@ -138,6 +140,18 @@ export const routes = [
 	{
 		path: '/admin/orders/:orderId',
 		page: AdminOrderDetail,
+		isShowHeader: false, // tuỳ bạn có muốn header chung hay không
+		isShowFooter: false,
+	},
+	{
+		path: '/admin/products',
+		page: AdminProductPage,
+		isShowHeader: false, // tuỳ bạn có muốn header chung hay không
+		isShowFooter: false,
+	},
+	{
+		path: '/admin/users',
+		page: AdminUserPage,
 		isShowHeader: false, // tuỳ bạn có muốn header chung hay không
 		isShowFooter: false,
 	},

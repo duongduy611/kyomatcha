@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import styled from 'styled-components';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useMemo } from "react";
+import styled from "styled-components";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import {
   ResponsiveContainer,
   BarChart,
@@ -12,27 +12,126 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip
-} from 'recharts';
+  Tooltip,
+} from "recharts";
+import { FaSearch, FaBell, FaUserCircle } from "react-icons/fa"; // Thêm icons cho Header
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const STATUS_OPTIONS = ['ALL', 'PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
+const STATUS_OPTIONS = [
+  "ALL",
+  "PENDING",
+  "CONFIRMED",
+  "SHIPPED",
+  "DELIVERED",
+  "CANCELLED",
+];
 const SORT_OPTIONS = [
-  { label: 'Giá tăng dần', value: 'ASC' },
-  { label: 'Giá giảm dần', value: 'DESC' },
+  { label: "Giá tăng dần", value: "ASC" },
+  { label: "Giá giảm dần", value: "DESC" },
 ];
 
-// Styled components
-const Wrapper = styled.div`
+// START: STYLED COMPONENTS CHO LAYOUT ADMIN CHUNG
+const AdminPageContainer = styled.div`
+  display: flex;
   min-height: 100vh;
-  background: #fcf9f2;
-  padding: 120px 0 0;
+  background-color: #f7fafc;
+  font-family: "Poppins", sans-serif;
 `;
+const Sidebar = styled.div`
+  width: 250px;
+  background-color: #1a202c;
+  color: #a0aec0;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 0;
+  flex-shrink: 0;
+`;
+const SidebarLogo = styled.div`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  border-bottom: 1px solid #2d3748;
+  text-align: center;
+`;
+const NavMenu = styled.nav`
+  margin-top: 1.5rem;
+`;
+const NavLink = styled.a`
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  color: #a0aec0;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s;
+  font-weight: 500;
+  background-color: ${(props) => (props.active ? "#4a5568" : "transparent")};
+  color: ${(props) => (props.active ? "#ffffff" : "#a0aec0")};
+  &:hover {
+    background-color: #2d3748;
+    color: #ffffff;
+  }
+`;
+const MainContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+`;
+const Header = styled.header`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  height: 80px;
+  flex-shrink: 0;
+`;
+const HeaderSearch = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  input {
+    padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    width: 300px;
+    font-size: 0.9rem;
+    &:focus {
+      outline: none;
+      border-color: #4299e1;
+      box-shadow: 0 0 0 1px #4299e1;
+    }
+  }
+  svg {
+    position: absolute;
+    left: 1rem;
+    color: #718096;
+  }
+`;
+const HeaderIcons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  color: #4a5568;
+  svg {
+    cursor: pointer;
+    font-size: 1.25rem;
+  }
+`;
+const ContentWrapper = styled.div`
+  background: #fcf9f2; /* Di chuyển background từ Wrapper cũ vào đây */
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
+`;
+// END: STYLED COMPONENTS CHO LAYOUT ADMIN CHUNG
 
+// === CÁC STYLED COMPONENTS GỐC CỦA BẠN (GIỮ NGUYÊN) ===
 const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 48px 24px;
+  padding: 24px 0; /* Giảm padding top/bottom để vừa vặn hơn */
 `;
 
 const Title = styled.h1`
@@ -54,7 +153,7 @@ const StatCard = styled.div`
   background: #fff;
   padding: 16px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
 `;
 
@@ -84,7 +183,6 @@ const SearchInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
-  
 `;
 
 const FilterSelect = styled.select`
@@ -97,7 +195,7 @@ const FilterSelect = styled.select`
 const OrderCard = styled.div`
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 28px;
   padding: 24px 28px;
 `;
@@ -192,23 +290,28 @@ const DeleteButton = styled.button`
   cursor: pointer;
 `;
 
-// Helper to translate status
 function translateStatus(status) {
   switch (status) {
-    case 'PENDING': return 'Chờ xác nhận';
-    case 'CONFIRMED': return 'Đã xác nhận';
-    case 'SHIPPED': return 'Đang giao';
-    case 'DELIVERED': return 'Đã giao';
-    case 'CANCELLED': return 'Đã hủy';
-    default: return status;
+    case "PENDING":
+      return "Chờ xác nhận";
+    case "CONFIRMED":
+      return "Đã xác nhận";
+    case "SHIPPED":
+      return "Đang giao";
+    case "DELIVERED":
+      return "Đã giao";
+    case "CANCELLED":
+      return "Đã hủy";
+    default:
+      return status;
   }
 }
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('ALL');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("ALL");
   const [sortDir, setSortDir] = useState(null);
   const navigate = useNavigate();
 
@@ -218,56 +321,61 @@ export default function AdminOrders() {
 
   const fetchOrders = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const res = await axios.get(`${BACKEND_URL}/admin/orders`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       setOrders(res.data.orders);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Không thể tải đơn hàng');
+      toast.error(err.response?.data?.message || "Không thể tải đơn hàng");
     } finally {
       setLoading(false);
     }
   };
 
-  // Compute statistics
   const totalOrders = orders.length;
   const deliveredRevenue = orders
-    .filter(o => o.status === 'DELIVERED')
-    .reduce((sum, o) => sum + o.total, 0);
+    .filter((o) => o.status === "DELIVERED")
+    .reduce((sum, o) => sum + (o.total || 0), 0); // Thêm guard
   const estimatedRevenue = orders
-    .filter(o => o.status === 'CONFIRMED')
-    .reduce((sum, o) => sum + o.total, 0);
+    .filter((o) => o.status === "CONFIRMED")
+    .reduce((sum, o) => sum + (o.total || 0), 0); // Thêm guard
 
   const chartData = [
-    { name: 'Đã giao', revenue: deliveredRevenue },
-    { name: 'Đã xác nhận', revenue: estimatedRevenue }
+    { name: "Đã giao", revenue: deliveredRevenue },
+    { name: "Đã xác nhận", revenue: estimatedRevenue },
   ];
 
-  // Time series per day
   const timeSeriesData = useMemo(() => {
     const map = {};
-    orders.forEach(o => {
-      const date = new Date(o.createdAt).toLocaleDateString('en-GB');
+    orders.forEach((o) => {
+      if (!o.createdAt) return; // Thêm guard
+      const date = new Date(o.createdAt).toLocaleDateString("en-GB");
       if (!map[date]) map[date] = { date, delivered: 0, confirmed: 0 };
-      if (o.status === 'DELIVERED') map[date].delivered += o.total;
-      if (o.status === 'CONFIRMED') map[date].confirmed += o.total;
+      if (o.status === "DELIVERED") map[date].delivered += o.total || 0;
+      if (o.status === "CONFIRMED") map[date].confirmed += o.total || 0;
     });
-    return Object.values(map).sort((a, b) => new Date(a.date) - new Date(b.date));
+    return Object.values(map).sort((a, b) => {
+      const [dayA, monthA, yearA] = a.date.split("/");
+      const [dayB, monthB, yearB] = b.date.split("/");
+      return (
+        new Date(`${yearA}-${monthA}-${dayA}`) -
+        new Date(`${yearB}-${monthB}-${dayB}`)
+      );
+    });
   }, [orders]);
 
-  // Filtered and sorted orders
   const displayedOrders = useMemo(() => {
     let list = [...orders];
     if (searchTerm) {
-      list = list.filter(o => o._id.includes(searchTerm));
+      list = list.filter((o) => o._id.includes(searchTerm));
     }
-    if (filterStatus !== 'ALL') {
-      list = list.filter(o => o.status === filterStatus);
+    if (filterStatus !== "ALL") {
+      list = list.filter((o) => o.status === filterStatus);
     }
-    if (sortDir === 'ASC') {
+    if (sortDir === "ASC") {
       list.sort((a, b) => a.total - b.total);
-    } else if (sortDir === 'DESC') {
+    } else if (sortDir === "DESC") {
       list.sort((a, b) => b.total - a.total);
     }
     return list;
@@ -275,48 +383,47 @@ export default function AdminOrders() {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const res = await axios.patch(
         `${BACKEND_URL}/admin/orders/${orderId}/status`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setOrders(prev => prev.map(o => o._id === orderId ? res.data.order : o));
-      toast.success('Cập nhật trạng thái thành công');
+      setOrders((prev) =>
+        prev.map((o) => (o._id === orderId ? res.data.order : o))
+      );
+      toast.success("Cập nhật trạng thái thành công");
     } catch {
-      toast.error('Cập nhật thất bại');
+      toast.error("Cập nhật thất bại");
     }
   };
 
   const handleDelete = async (orderId) => {
-    if (!window.confirm('Bạn có chắc muốn xóa đơn hàng này?')) return;
+    if (!window.confirm("Bạn có chắc muốn xóa đơn hàng này?")) return;
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       await axios.delete(`${BACKEND_URL}/admin/orders/${orderId}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setOrders(prev => prev.filter(o => o._id !== orderId));
-      toast.success('Xóa đơn hàng thành công');
+      setOrders((prev) => prev.filter((o) => o._id !== orderId));
+      toast.success("Xóa đơn hàng thành công");
     } catch {
-      toast.error('Xóa thất bại');
+      toast.error("Xóa thất bại");
     }
   };
 
-  if (loading) {
-    return (
-      <Wrapper>
+  // Hàm render nội dung chính để tránh lặp code
+  const renderPageContent = () => {
+    if (loading) {
+      return (
         <Container>
           <Title>Đang tải...</Title>
         </Container>
-      </Wrapper>
-    );
-  }
-
-  return (
-    <Wrapper>
+      );
+    }
+    return (
       <Container>
         <Title>Quản lý Đơn hàng</Title>
-        {/* Statistics */}
         <StatsContainer>
           <StatCard>
             <StatNumber>{totalOrders}</StatNumber>
@@ -332,46 +439,73 @@ export default function AdminOrders() {
           </StatCard>
         </StatsContainer>
 
-        {/* Aggregated bar chart */}
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <BarChart
+            data={chartData}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis />
-            <Tooltip formatter={value => new Intl.NumberFormat('vi-VN').format(value) + '₫'} />
+            <Tooltip
+              formatter={(value) =>
+                new Intl.NumberFormat("vi-VN").format(value) + "₫"
+              }
+            />
             <Bar dataKey="revenue" fill="#527328" />
           </BarChart>
         </ResponsiveContainer>
 
-        {/* Time series line chart */}
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={timeSeriesData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <LineChart
+            data={timeSeriesData}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
             <YAxis />
-            <Tooltip formatter={value => new Intl.NumberFormat('vi-VN').format(value) + '₫'} />
-            <Line type="monotone" dataKey="delivered" name="Đã giao" stroke="#527328" />
-            <Line type="monotone" dataKey="confirmed" name="Đã xác nhận" stroke="#bfa76a" />
+            <Tooltip
+              formatter={(value) =>
+                new Intl.NumberFormat("vi-VN").format(value) + "₫"
+              }
+            />
+            <Line
+              type="monotone"
+              dataKey="delivered"
+              name="Đã giao"
+              stroke="#527328"
+            />
+            <Line
+              type="monotone"
+              dataKey="confirmed"
+              name="Đã xác nhận"
+              stroke="#bfa76a"
+            />
           </LineChart>
         </ResponsiveContainer>
 
-        {/* Controls */}
-        <Controls >
+        <Controls>
           <SearchInput
             placeholder="Tìm kiếm theo ID..."
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <FilterSelect value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
-            {STATUS_OPTIONS.map(st => (
+          <FilterSelect
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+          >
+            {STATUS_OPTIONS.map((st) => (
               <option key={st} value={st}>
-                {st === 'ALL' ? 'Tất cả' : translateStatus(st)}
+                {st === "ALL" ? "Tất cả" : translateStatus(st)}
               </option>
             ))}
           </FilterSelect>
-          <FilterSelect value={sortDir || ''} onChange={e => setSortDir(e.target.value || null)}>
+          <FilterSelect
+            value={sortDir || ""}
+            onChange={(e) => setSortDir(e.target.value || null)}
+          >
             <option value="">Mặc định</option>
-            {SORT_OPTIONS.map(opt => (
+            {SORT_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
               </option>
@@ -379,32 +513,36 @@ export default function AdminOrders() {
           </FilterSelect>
         </Controls>
 
-        {/* Orders list */}
         {displayedOrders.length === 0 ? (
-          <div style={{ color: '#bfa76a', fontStyle: 'italic' }}>Không có đơn hàng</div>
+          <div style={{ color: "#bfa76a", fontStyle: "italic" }}>
+            Không có đơn hàng
+          </div>
         ) : (
-          displayedOrders.map(order => (
+          displayedOrders.map((order) => (
             <OrderCard key={order._id}>
               <OrderHeader>
                 <OrderId>#{order._id.slice(-6).toUpperCase()}</OrderId>
-                <OrderDate>{new Date(order.createdAt).toLocaleString()}</OrderDate>
+                <OrderDate>
+                  {new Date(order.createdAt).toLocaleString()}
+                </OrderDate>
                 <StatusSelect
                   value={order.status}
-                  onChange={e => handleStatusChange(order._id, e.target.value)}
+                  onChange={(e) =>
+                    handleStatusChange(order._id, e.target.value)
+                  }
                 >
-                  {STATUS_OPTIONS.filter(s => s !== 'ALL').map(st => (
+                  {STATUS_OPTIONS.filter((s) => s !== "ALL").map((st) => (
                     <option key={st} value={st}>
                       {translateStatus(st)}
                     </option>
                   ))}
                 </StatusSelect>
               </OrderHeader>
-
               <OrderProducts>
                 {order.items.map((item, idx) => (
                   <ProductItem key={idx}>
                     <ProductImg
-                      src={item.images?.[0] || '/images/placeholder.jpg'}
+                      src={item.images?.[0] || "/images/placeholder.jpg"}
                       alt={item.name}
                     />
                     <div>
@@ -414,10 +552,11 @@ export default function AdminOrders() {
                   </ProductItem>
                 ))}
               </OrderProducts>
-
               <OrderTotal>Tổng: {order.total.toLocaleString()}₫</OrderTotal>
               <Actions>
-                <DetailButton onClick={() => navigate(`/admin/orders/${order._id}`)}>
+                <DetailButton
+                  onClick={() => navigate(`/admin/orders/${order._id}`)}
+                >
                   Xem chi tiết
                 </DetailButton>
                 <DeleteButton onClick={() => handleDelete(order._id)}>
@@ -428,6 +567,35 @@ export default function AdminOrders() {
           ))
         )}
       </Container>
-    </Wrapper>
+    );
+  };
+
+  // Cấu trúc trả về mới với layout admin chung
+  return (
+    <AdminPageContainer>
+      <Sidebar>
+        <SidebarLogo>ADMIN</SidebarLogo>
+        <NavMenu>
+          <NavLink href="/admin/products">Sản phẩm</NavLink>
+          <NavLink href="/admin/orders" active>
+            Đơn Hàng
+          </NavLink>
+          <NavLink href="/admin/users">Khách Hàng</NavLink>
+        </NavMenu>
+      </Sidebar>
+      <MainContent>
+        <Header>
+          <HeaderSearch>
+            <FaSearch />
+            <input type="text" placeholder="Tìm kiếm đơn hàng..." />
+          </HeaderSearch>
+          <HeaderIcons>
+            <FaBell />
+            <FaUserCircle />
+          </HeaderIcons>
+        </Header>
+        <ContentWrapper>{renderPageContent()}</ContentWrapper>
+      </MainContent>
+    </AdminPageContainer>
   );
 }

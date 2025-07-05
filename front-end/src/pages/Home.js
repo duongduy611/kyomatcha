@@ -12,6 +12,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FaChevronLeft, FaChevronRight, FaArrowRight } from "react-icons/fa";
 import { useAppContext } from "../context/AppContext";
+import bannerBg from "../assets/images/botmatcha.jpg";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -116,7 +117,7 @@ const SlideDescription = styled.p`
 
 const SlideButton = styled(Link)`
   font-family: "Montserrat", sans-serif;
-  background: #fdfdfb;
+  background: #eedecc;
   color: #333;
   border: 1px solid #f0f0f0;
   padding: 18px 24px;
@@ -133,8 +134,8 @@ const SlideButton = styled(Link)`
   align-items: center;
 
   &:hover {
-    background: #fff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background: #f6f6ee;
   }
 
   @media (max-width: 768px) {
@@ -211,23 +212,22 @@ const SectionTitle = styled.h2`
 `;
 
 const ProductGrid = styled.div`
+  flex: 1;
   display: grid;
-  grid-template-columns: repeat(3, 20%);
-  justify-content: center;
+  grid-template-columns: repeat(3, 1fr);
   gap: 32px;
-  padding: 0 32px;
+
   @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, 30%);
+    grid-template-columns: repeat(2, 1fr);
   }
+
   @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 40%);
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
-    padding: 0 20px;
   }
+
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
-    max-width: 300px;
-    margin: 0 auto;
   }
 `;
 
@@ -294,17 +294,22 @@ const ProductName = styled.h3`
   font-size: 0.9rem;
   font-weight: 600;
   color: #333;
-  margin: 0 0 10px 0;
-  line-height: 1.3;
-  white-space: nowrap;
-
-  text-overflow: ellipsis;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 `;
 
-const ProductShortDescription = styled.h3`
-  font-size: 0.6rem;
-  width: 155%;
-  color: #333;
+const ProductShortDescription = styled.p`
+  font-size: 0.75rem;
+  color: #666;
+  margin: 0 0 6px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 `;
 
 const ProductBottom = styled.div`
@@ -343,66 +348,122 @@ const Button = styled.button`
   }
 `;
 
+const SectionContainer = styled.div`
+  margin: 0 auto;
+  display: flex;
+  padding: 0 32px;
+  align-items: flex-start;
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
+`;
+
+const Header = styled.div`
+  flex: 0 0 28%;
+
+  @media (max-width: 1024px) {
+    flex: 0 0 auto;
+    text-align: center;
+  }
+`;
+
+const HeaderHeading = styled.h2`
+  font-family: "Vollkorn", serif;
+  line-height: 1;
+  margin: 0 0 24px 0;
+  color: #000;
+
+  span:first-child {
+    font-size: 4.2rem;
+    font-style: italic;
+    display: block;
+  }
+
+  span:last-child {
+    font-size: 2.8rem;
+    font-weight: 600;
+    display: block;
+    font-family: "Montserrat", sans-serif;
+  }
+
+  @media (max-width: 1024px) {
+    font-size: 2.6rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 2.2rem;
+  }
+`;
+
+const HeaderDescription = styled.p`
+  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
+  color: #333;
+  max-width: 280px;
+
+  @media (max-width: 1024px) {
+    max-width: 100%;
+  }
+`;
+
 const TeaCollection = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toggleFavorite, isProductFavorited, user } = useAppContext();
 
- const handleAddToCart = async (productId, color = "", size = "") => {
-  try {
-    // Lấy token từ localStorage và userId từ context
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
+  const handleAddToCart = async (productId, color = "", size = "") => {
+    try {
+      // Lấy token từ localStorage và userId từ context
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
 
-    // Nếu chưa đăng nhập hoặc chưa có userId, điều hướng về trang login
-    if (!token || !userId) {
-      toast.info('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
-      navigate('/login');
-      return;
-    }
+      // Nếu chưa đăng nhập hoặc chưa có userId, điều hướng về trang login
+      if (!token || !userId) {
+        toast.info("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
+        navigate("/login");
+        return;
+      }
 
-    // Chuẩn bị payload theo đúng spec của backend
-    const payload = {
-      userId: userId,
-      productId: productId,
-      quantity: 1,      // ở đây mình để mặc định 1; bạn có thể truyền vào tham số nếu muốn
-      color: color,     // truyền vào từ component hoặc để mặc định
-      size: size        // truyền vào từ component hoặc để mặc định
-    };
+      // Chuẩn bị payload theo đúng spec của backend
+      const payload = {
+        userId: userId,
+        productId: productId,
+        quantity: 1, // ở đây mình để mặc định 1; bạn có thể truyền vào tham số nếu muốn
+        color: color, // truyền vào từ component hoặc để mặc định
+        size: size, // truyền vào từ component hoặc để mặc định
+      };
 
-    // Gọi API thêm vào giỏ
-    const response = await axios.post(
-      `${BACKEND_URL}/cart/add`,
-      payload,
-      {
+      // Gọi API thêm vào giỏ
+      const response = await axios.post(`${BACKEND_URL}/cart/add`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+          "Content-Type": "application/json",
+        },
+      });
 
-  if (response.status === 200 && response.data && response.data._id) {
-      // Backend trả về obj cart mới (có _id) → coi như thành công
-      toast.success('Đã thêm vào giỏ hàng!');
-    } else {
-      console.log('Unexpected response from /cart/add:', response.data);
-      toast.error('Thêm vào giỏ hàng không thành công. Vui lòng thử lại.');
+      if (response.status === 200 && response.data && response.data._id) {
+        // Backend trả về obj cart mới (có _id) → coi như thành công
+        toast.success("Đã thêm vào giỏ hàng!");
+      } else {
+        console.log("Unexpected response from /cart/add:", response.data);
+        toast.error("Thêm vào giỏ hàng không thành công. Vui lòng thử lại.");
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      if (error.response?.status === 401) {
+        toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
+        navigate("/login");
+      } else if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Có lỗi xảy ra khi thêm vào giỏ hàng");
+      }
     }
-  } catch (error) {
-    console.error('Error adding to cart:', error);
-    if (error.response?.status === 401) {
-      toast.error('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
-      navigate('/login');
-    } else if (error.response?.data?.message) {
-      // Hiển thị message lỗi do backend trả về (nếu có)
-      toast.error(error.response.data.message);
-    } else {
-      toast.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
-    }
-  }
-};
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -412,17 +473,13 @@ const TeaCollection = () => {
           const filteredProducts = response.data.data
             .filter(
               (product) =>
-                !product.name.includes("matcha fuji 01") &&
+                product.name.includes("Matcha") &&
                 (product.name.includes("Matcha Natsu") ||
                   product.name.includes("Matcha Aki") ||
-                  product.name.includes("Matcha Haru") ||
-                  product.name.includes("Chổi Chasen") ||
-                  product.name.includes("Combo 2 Món Matcha") ||
-                  product.name.includes("Đế Sứ Cắm Chổi")
-                )
+                  product.name.includes("Matcha Haru"))
             )
-            .slice(0, 6);
-          console.log("Filtered Products:", filteredProducts); // Debug log
+            .slice(0, 3);
+          console.log("Filtered Matcha Products:", filteredProducts);
           setProducts(filteredProducts);
         }
         setLoading(false);
@@ -446,64 +503,79 @@ const TeaCollection = () => {
 
   return (
     <Section>
-      <SectionTitle>MATCHA CỦA CHÚNG TÔI</SectionTitle>
-      <ProductGrid>
-        {products.map((product) => (
-          <ProductCard key={product.slug}>
-          <Link to={`/products/${product.slug}`}>
-            <ProductImage>
-              <img
-                src={
-                  product.images && product.images.length > 0
-                    ? product.images[0].startsWith("http")
-                      ? product.images[0]
-                      : `${BACKEND_URL}${product.images[0]}`
-                    : "/placeholder.jpg"
-                }
-                alt={product.name}
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "/placeholder.jpg";
-                }}
-              />
-            </ProductImage>
-            <ProductInfo>
-              <ProductBottom>
-                <div style={{ width: "50%" }}>
-                  <ProductName>{product.name}</ProductName>
-                  <ProductShortDescription>{product.shortDescription}</ProductShortDescription>
-                  <ProductPrice>
-                    {product.price.toLocaleString("vi-VN")} đ
-                  </ProductPrice>
-                </div>
-                <Button
-                  className="add-to-cart"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleAddToCart(product._id);
-                  }}
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                    <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
-                  </svg>
-                </Button>
-              </ProductBottom>
-            </ProductInfo>
-          </Link>
-        </ProductCard>
-        ))}
-      </ProductGrid>
+      <SectionContainer>
+        <Header>
+          <HeaderHeading>
+            <span>Sản phẩm</span>
+            <span>BÁN CHẠY</span>
+          </HeaderHeading>
+          <HeaderDescription>
+            Kyo Matcha tự hào khi các sản phẩm mà chúng tôi mang đến cho bạn là
+            những sản phẩm chất lượng, an toàn và đảm bảo sức khỏe cho bạn.
+          </HeaderDescription>
+        </Header>
+        <ProductGrid>
+          {products.map((product) => (
+            <ProductCard key={product.slug}>
+              <Link to={`/products/${product.slug}`}>
+                <ProductImage>
+                  <img
+                    src={
+                      product.images && product.images.length > 0
+                        ? product.images[0].startsWith("http")
+                          ? product.images[0]
+                          : `${BACKEND_URL}${product.images[0]}`
+                        : "/placeholder.jpg"
+                    }
+                    alt={product.name}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "/placeholder.jpg";
+                    }}
+                  />
+                </ProductImage>
+                <ProductInfo>
+                  <ProductBottom>
+                    <div style={{ width: "60%" }}>
+                      <ProductName>{product.name}</ProductName>
+                      {product.shortDescription && (
+                        <ProductShortDescription>
+                          {product.shortDescription}
+                        </ProductShortDescription>
+                      )}
+                      <ProductPrice>
+                        {product.price.toLocaleString("vi-VN")} đ
+                      </ProductPrice>
+                    </div>
+                    <Button
+                      className="add-to-cart"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleAddToCart(product._id);
+                      }}
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                      </svg>
+                    </Button>
+                  </ProductBottom>
+                </ProductInfo>
+              </Link>
+            </ProductCard>
+          ))}
+        </ProductGrid>
+      </SectionContainer>
     </Section>
   );
-}
+};
 
 const BlogSection = styled.section`
   background: #f6f6ee;
@@ -635,9 +707,8 @@ const BlogReadMore = styled(Link)`
 `;
 
 function BlogList() {
-  // Lấy 6 blog mới nhất, sắp xếp theo ngày tạo hoặc cập nhật mới nhất
   const latestBlogs = blogs
-    .slice() // copy mảng để không ảnh hưởng gốc
+    .slice()
     .sort(
       (a, b) =>
         new Date(b.updatedAt || b.createdAt) -
@@ -665,6 +736,122 @@ function BlogList() {
   );
 }
 
+const PhilosophySection = styled.section`
+  background-image: url(${(props) => props.bg});
+  background-size: cover;
+  background-position: center;
+  padding: 120px 32px;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+`;
+
+const PhilosophyContent = styled.div`
+  background-color: #fffcef;
+  padding: 50px;
+  max-width: 650px;
+  text-align: center;
+  border-radius: 4px;
+  position: relative;
+  z-index: 1;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 40px 24px;
+  }
+`;
+
+const PhilosophyTitle = styled.h2`
+  font-family: "Vollkorn", serif;
+  font-style: italic;
+  font-size: 2.2rem;
+  margin-bottom: 24px;
+  color: #222;
+  font-weight: normal;
+
+  span {
+    font-style: normal;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 2.2rem;
+  }
+`;
+
+const PhilosophyDescription = styled.p`
+  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 40px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+const PhilosophyButton = styled(Link)`
+  font-family: "Montserrat", sans-serif;
+  background: #252525;
+  color: #fff;
+  padding: 18px 32px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  text-transform: uppercase;
+  width: 280px;
+
+  &:hover {
+    background: #000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  svg {
+    transition: transform 0.3s ease;
+  }
+
+  &:hover svg {
+    transform: translateX(5px);
+  }
+`;
+
+function BrandPhilosophy() {
+  return (
+    <PhilosophySection bg={bannerBg}>
+      <PhilosophyContent>
+        <PhilosophyTitle>
+          Triết lý <span>THƯƠNG HIỆU</span>
+        </PhilosophyTitle>
+        <PhilosophyDescription>
+          Kyo Matcha được thành lập vào năm 2025 bởi những tâm hồn yêu trà và tin
+          vào giá trị sâu sắc mà matcha mang lại cho cuộc sống hiện đại. Với khả
+          năng thanh lọc, giảm căng thẳng và nuôi dưỡng sự tĩnh tại, matcha
+          không chỉ là một thức uống – mà là một lối sống, một nghi thức chăm
+          sóc bản thân đầy ý nghĩa.
+        </PhilosophyDescription>
+        <PhilosophyButton to="/about-us">
+          Tìm hiểu thêm <FaArrowRight />
+        </PhilosophyButton>
+      </PhilosophyContent>
+    </PhilosophySection>
+  );
+}
+
 const Home = () => {
   const scrollingText = "Kyo Matcha - Matcha cho 1 ngày dài tỉnh táo";
 
@@ -683,7 +870,7 @@ const Home = () => {
   }));
 
   const settings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
@@ -715,8 +902,9 @@ const Home = () => {
           ))}
         </Slider>
       </CarouselContainer>
-      <Marquee text={scrollingText} duration="30s" />
       <TeaCollection />
+      <BrandPhilosophy />
+      <Marquee text={scrollingText} duration="30s" />
       <BlogList />
     </>
   );

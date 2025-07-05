@@ -17,8 +17,7 @@ const scrollLeft = keyframes`
 const MarqueeContainer = styled.div`
   width: 100%;
   overflow: hidden;
-  padding: 40px 0;
-  border-top: 1px solid #EAE0D1;
+  padding: 20px 0;
   border-bottom: 1px solid #EAE0D1;
   /* Tạm dừng animation khi hover */
   &:hover .marquee-content {
@@ -35,8 +34,8 @@ const MarqueeContent = styled.div`
 
 const MarqueeText = styled.span`
   font-family: 'Montserrat', sans-serif;
-  font-size: 4rem;
-  color: #1a1a1a;
+  font-size: 3rem;
+  color: #527328;
   text-transform: uppercase;
   padding-right: 80px;
   font-weight: 600;
