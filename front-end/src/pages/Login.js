@@ -208,7 +208,11 @@ function Login() {
         localStorage.setItem('role', data.role || '');
         localStorage.setItem('status', data.status || '');
         setMessage('Đăng nhập thành công!');
-        setTimeout(() => navigate('/'), 1000);
+        if (data.role === 'ADMIN') {
+          setTimeout(() => navigate('/admin/users'), 1000);
+        } else {
+          setTimeout(() => navigate('/'), 1000);
+        }
       } else {
         setMessage(data.message || 'Đăng nhập thất bại');
       }
@@ -243,7 +247,11 @@ function Login() {
         localStorage.setItem('role', data.user.role || '');
         localStorage.setItem('status', data.user.status || '');
         setMessage('Đăng nhập thành công!');
-        setTimeout(() => navigate('/'), 1000);
+        if (data.user.role === 'ADMIN') {
+          setTimeout(() => navigate('/admin/users'), 1000);
+        } else {
+          setTimeout(() => navigate('/'), 1000);
+        }
       } else {
         setMessage(data.message || 'Đăng nhập thất bại');
       }

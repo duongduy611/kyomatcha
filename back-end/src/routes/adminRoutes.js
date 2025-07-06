@@ -10,6 +10,7 @@ const {
     getAllUsers,
     updateUserStatus,
     getDashboardStats,
+    updateUserRole,
 } = require('../controllers/AdminController');
 // const auth = require('../middleware/auth');
 
@@ -36,5 +37,6 @@ router.delete('/products/:id' ,deleteProduct);
 // === USER MANAGEMENT ROUTES ===
 router.get('/users', getAllUsers);
 router.patch('/users/:id/status', updateUserStatus);
+router.patch('/users/:id/role', updateUserRole);
 
 module.exports = router;

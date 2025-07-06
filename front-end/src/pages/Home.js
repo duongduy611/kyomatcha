@@ -11,7 +11,6 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FaChevronLeft, FaChevronRight, FaArrowRight } from "react-icons/fa";
-import { useAppContext } from "../context/AppContext";
 import bannerBg from "../assets/images/botmatcha.jpg";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -192,23 +191,6 @@ const Section = styled.section`
   border-top: 1px solid #e5e5e5;
   background: #f6f6ee;
   padding: 40px 0 40px 0;
-`;
-
-const SectionTitle = styled.h2`
-  text-align: center;
-  font-size: 1.4rem;
-  letter-spacing: 3px;
-  color: #000;
-  font-weight: 500;
-  margin-bottom: 48px;
-  @media (max-width: 768px) {
-    font-size: 1.2rem;
-    margin-bottom: 32px;
-  }
-  @media (max-width: 480px) {
-    font-size: 1.1rem;
-    margin-bottom: 24px;
-  }
 `;
 
 const ProductGrid = styled.div`
@@ -413,7 +395,6 @@ const TeaCollection = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { toggleFavorite, isProductFavorited, user } = useAppContext();
 
   const handleAddToCart = async (productId, color = "", size = "") => {
     try {
@@ -491,15 +472,6 @@ const TeaCollection = () => {
 
     fetchProducts();
   }, []);
-
-  if (loading) {
-    return (
-      <Section>
-        <SectionTitle>MATCHA CỦA CHÚNG TÔI</SectionTitle>
-        <div style={{ textAlign: "center" }}>Loading...</div>
-      </Section>
-    );
-  }
 
   return (
     <Section>
@@ -838,9 +810,9 @@ function BrandPhilosophy() {
           Triết lý <span>THƯƠNG HIỆU</span>
         </PhilosophyTitle>
         <PhilosophyDescription>
-          Kyo Matcha được thành lập vào năm 2025 bởi những tâm hồn yêu trà và tin
-          vào giá trị sâu sắc mà matcha mang lại cho cuộc sống hiện đại. Với khả
-          năng thanh lọc, giảm căng thẳng và nuôi dưỡng sự tĩnh tại, matcha
+          Kyo Matcha được thành lập vào năm 2025 bởi những tâm hồn yêu trà và
+          tin vào giá trị sâu sắc mà matcha mang lại cho cuộc sống hiện đại. Với
+          khả năng thanh lọc, giảm căng thẳng và nuôi dưỡng sự tĩnh tại, matcha
           không chỉ là một thức uống – mà là một lối sống, một nghi thức chăm
           sóc bản thân đầy ý nghĩa.
         </PhilosophyDescription>
