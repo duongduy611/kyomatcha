@@ -15,6 +15,8 @@ import {
   Tooltip,
 } from "recharts";
 import { FaSearch, FaBell, FaUserCircle } from "react-icons/fa"; // Thêm icons cho Header
+import AdminSidebar from "../components/AdminSidebar";
+import AdminHeader from "../components/AdminHeader";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const STATUS_OPTIONS = [
@@ -35,89 +37,11 @@ const AdminPageContainer = styled.div`
   display: flex;
   min-height: 100vh;
   background-color: #f7fafc;
-  font-family: "Poppins", sans-serif;
-`;
-const Sidebar = styled.div`
-  width: 250px;
-  background-color: #1a202c;
-  color: #a0aec0;
-  display: flex;
-  flex-direction: column;
-  padding: 1.5rem 0;
-  flex-shrink: 0;
-`;
-const SidebarLogo = styled.div`
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #ffffff;
-  padding: 0 1.5rem 1.5rem 1.5rem;
-  border-bottom: 1px solid #2d3748;
-  text-align: center;
-`;
-const NavMenu = styled.nav`
-  margin-top: 1.5rem;
-`;
-const NavLink = styled.a`
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1.5rem;
-  color: #a0aec0;
-  text-decoration: none;
-  transition: background-color 0.2s, color 0.2s;
-  font-weight: 500;
-  background-color: ${(props) => (props.active ? "#4a5568" : "transparent")};
-  color: ${(props) => (props.active ? "#ffffff" : "#a0aec0")};
-  &:hover {
-    background-color: #2d3748;
-    color: #ffffff;
-  }
 `;
 const MainContent = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-`;
-const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
-  height: 80px;
-  flex-shrink: 0;
-`;
-const HeaderSearch = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  input {
-    padding: 0.5rem 0.75rem 0.5rem 2.5rem;
-    border: 1px solid #cbd5e0;
-    border-radius: 8px;
-    width: 300px;
-    font-size: 0.9rem;
-    &:focus {
-      outline: none;
-      border-color: #4299e1;
-      box-shadow: 0 0 0 1px #4299e1;
-    }
-  }
-  svg {
-    position: absolute;
-    left: 1rem;
-    color: #718096;
-  }
-`;
-const HeaderIcons = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  color: #4a5568;
-  svg {
-    cursor: pointer;
-    font-size: 1.25rem;
-  }
 `;
 const ContentWrapper = styled.div`
   background: #fcf9f2; /* Di chuyển background từ Wrapper cũ vào đây */
@@ -485,11 +409,6 @@ export default function AdminOrders() {
         </ResponsiveContainer>
 
         <Controls>
-          <SearchInput
-            placeholder="Tìm kiếm theo ID..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
           <FilterSelect
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
@@ -573,27 +492,13 @@ export default function AdminOrders() {
   // Cấu trúc trả về mới với layout admin chung
   return (
     <AdminPageContainer>
-      <Sidebar>
-        <SidebarLogo>ADMIN</SidebarLogo>
-        <NavMenu>
-          <NavLink href="/admin/products">Sản phẩm</NavLink>
-          <NavLink href="/admin/orders" active>
-            Đơn Hàng
-          </NavLink>
-          <NavLink href="/admin/users">Khách Hàng</NavLink>
-        </NavMenu>
-      </Sidebar>
+      <AdminSidebar activePage="orders" />
       <MainContent>
-        <Header>
-          <HeaderSearch>
-            <FaSearch />
-            <input type="text" placeholder="Tìm kiếm đơn hàng..." />
-          </HeaderSearch>
-          <HeaderIcons>
-            <FaBell />
-            <FaUserCircle />
-          </HeaderIcons>
-        </Header>
+        <AdminHeader
+          searchPlaceholder="Tìm kiếm đơn hàng theo ID..."
+          searchTerm={searchTerm}
+          onSearchChange={(e) => setSearchTerm(e.target.value)}
+        />
         <ContentWrapper>{renderPageContent()}</ContentWrapper>
       </MainContent>
     </AdminPageContainer>

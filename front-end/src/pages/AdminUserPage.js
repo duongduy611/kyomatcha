@@ -4,11 +4,30 @@ import axios from "axios";
 import { FaSearch, FaBell, FaUserCircle } from "react-icons/fa";
 import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AdminSidebar from "../components/AdminSidebar";
+import AdminHeader from "../components/AdminHeader";
 
 // --- Các hằng số API ---
 const BACKEND_URL =
   process.env.REACT_APP_BACKEND_URL || "http://localhost:9999";
 const USERS_API_URL = `${BACKEND_URL}/admin/users`;
+
+// --- Utility function cho debounce ---
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
 
 // --- Styled Components (Nhiều component được tái sử dụng từ AdminProductPage) ---
 
@@ -16,88 +35,11 @@ const AdminPageContainer = styled.div`
   display: flex;
   min-height: 100vh;
   background-color: #FBF9F2;
-  font-family: "Poppins", sans-serif;
-`;
-const Sidebar = styled.div`
-  width: 250px;
-  background-color: #1a202c;
-  color: #a0aec0;
-  display: flex;
-  flex-direction: column;
-  padding: 1.5rem 0;
-  flex-shrink: 0;
-`;
-const SidebarLogo = styled.div`
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #ffffff;
-  padding: 0 1.5rem 1.5rem 1.5rem;
-  border-bottom: 1px solid #2d3748;
-  text-align: center;
-`;
-const NavMenu = styled.nav`
-  margin-top: 1.5rem;
-`;
-const NavLink = styled.a`
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1.5rem;
-  color: #a0aec0;
-  text-decoration: none;
-  transition: background-color 0.2s, color 0.2s;
-  font-weight: 500;
-  background-color: ${(props) => (props.active ? "#4a5568" : "transparent")};
-  color: ${(props) => (props.active ? "#ffffff" : "#a0aec0")};
-  &:hover {
-    background-color: #2d3748;
-    color: #ffffff;
-  }
 `;
 const MainContent = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-`;
-const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
-  height: 80px;
-`;
-const HeaderSearch = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  input {
-    padding: 0.5rem 0.75rem 0.5rem 2.5rem;
-    border: 1px solid #cbd5e0;
-    border-radius: 8px;
-    width: 300px;
-    font-size: 0.9rem;
-    &:focus {
-      outline: none;
-      border-color: #4299e1;
-      box-shadow: 0 0 0 1px #4299e1;
-    }
-  }
-  svg {
-    position: absolute;
-    left: 1rem;
-    color: #718096;
-  }
-`;
-const HeaderIcons = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  color: #4a5568;
-  svg {
-    cursor: pointer;
-    font-size: 1.25rem;
-  }
 `;
 const ContentWrapper = styled.div`
   padding: 2rem;
@@ -117,13 +59,13 @@ const PageTitle = styled.h1`
 const UserTable = styled.table`
   width: 100%;
   border-collapse: collapse;
-  background-color: #ffffff;
+  background-color: #fffcef;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   border-radius: 8px;
   overflow: hidden;
 `;
 const TableHead = styled.thead`
-  background-color: #edf2f7;
+  background-color: #eedecc;
   th {
     padding: 0.75rem 1.5rem;
     text-align: left;
@@ -183,7 +125,20 @@ const StatusBadge = styled.span`
   font-weight: 700;
   text-transform: uppercase;
   color: white;
-  background-color: ${(props) => (props.isActive ? "#48bb78" : "#a0aec0")};
+  background-color: ${(props) => (props.isActive ? "#527328" : "#a0aec0")};
+`;
+
+const RoleSelect = styled.select`
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #cbd5e0;
+  font-size: 0.9rem;
+  cursor: pointer;
+  &:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 1px #4299e1;
+  }
 `;
 
 // --- Component cho nút gạt (Toggle Switch) ---
@@ -198,7 +153,7 @@ const ToggleSwitchInput = styled.input`
   width: 0;
   height: 0;
   &:checked + span {
-    background-color: #48bb78;
+    background-color: #527328;
   }
   &:checked + span:before {
     transform: translateX(22px);
@@ -230,13 +185,22 @@ const ToggleSwitchSlider = styled.span`
 // --- COMPONENT CHÍNH CỦA TRANG QUẢN LÝ USER ---
 const AdminUserPage = () => {
   const [allUsers, setAllUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const usersPerPage = 10;
+
+  // Debounce search term để tránh filter quá nhiều
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
       const response = await axios.get(`${USERS_API_URL}`);
-      setAllUsers(response.data.data || []);
+      const users = response.data.data || [];
+      setAllUsers(users);
+      setFilteredUsers(users);
     } catch (error) {
       toast.error("Không thể tải danh sách người dùng.");
     } finally {
@@ -244,9 +208,36 @@ const AdminUserPage = () => {
     }
   }, []);
 
+  // Filter users dựa trên search term
+  useEffect(() => {
+    if (!debouncedSearchTerm.trim()) {
+      setFilteredUsers(allUsers);
+    } else {
+      const filtered = allUsers.filter(user =>
+        user.fullName?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+        user.email?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+        user.phone?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+        user.role?.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+    }
+    setCurrentPage(1); // Reset về trang 1 khi search
+  }, [allUsers, debouncedSearchTerm]);
+
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
+
+  // Tính toán phân trang
+  const totalUsers = filteredUsers.length;
+  const totalPages = Math.ceil(totalUsers / usersPerPage);
+  const startIndex = (currentPage - 1) * usersPerPage;
+  const endIndex = startIndex + usersPerPage;
+  const currentUsers = filteredUsers.slice(startIndex, endIndex);
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   const handleStatusToggle = async (userId, currentStatus) => {
     const newStatus = currentStatus === "ACTIVE" ? "INACTIVE" : "ACTIVE";
@@ -254,14 +245,43 @@ const AdminUserPage = () => {
       await axios.patch(`${USERS_API_URL}/${userId}/status`, {
         status: newStatus,
       });
-      setAllUsers(
-        allUsers.map((user) =>
+      // Cập nhật lại state của user trên giao diện mà không cần gọi lại API
+      const updateUserState = (users) =>
+        users.map((user) =>
           user._id === userId ? { ...user, status: newStatus } : user
-        )
-      );
+        );
+      setAllUsers(updateUserState);
+      setFilteredUsers(updateUserState);
       toast.success(`Đã cập nhật trạng thái người dùng thành ${newStatus}.`);
     } catch (error) {
       toast.error("Lỗi khi cập nhật trạng thái người dùng.");
+    }
+  };
+
+  const handleRoleChange = async (userId, newRole) => {
+    // Lấy thông tin user đang đăng nhập từ localStorage
+    const currentUserId = localStorage.getItem("userId");
+    if (userId === currentUserId) {
+      toast.warn("Bạn không thể thay đổi vai trò của chính mình.");
+      return;
+    }
+
+    try {
+      await axios.patch(`${USERS_API_URL}/${userId}/role`, { role: newRole });
+
+      const updateLogic = (prevUsers) =>
+        prevUsers.map((user) =>
+          user._id === userId ? { ...user, role: newRole } : user
+        );
+
+      setAllUsers(updateLogic);
+      setFilteredUsers(updateLogic); // Cập nhật cả danh sách đã lọc
+
+      toast.success(`Đã cập nhật vai trò người dùng thành ${newRole}.`);
+    } catch (error) {
+      toast.error("Lỗi khi cập nhật vai trò người dùng.");
+      // Nếu có lỗi, gọi lại fetchUsers để đồng bộ lại dữ liệu chính xác từ server
+      fetchUsers();
     }
   };
 
@@ -285,12 +305,20 @@ const AdminUserPage = () => {
             </tr>
           </TableHead>
           <tbody>
-            {allUsers.map((user) => (
+            {currentUsers.map((user) => (
               <TableRow key={user._id}>
                 <TableCell>{user.fullName}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.phone || "N/A"}</TableCell>
-                <TableCell>{user.role}</TableCell>
+                <TableCell>
+                  <RoleSelect
+                    value={user.role}
+                    onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                  >
+                    <option value="CUSTOMER">CUSTOMER</option>
+                    <option value="ADMIN">ADMIN</option>
+                  </RoleSelect>
+                </TableCell>
                 <TableCell>
                   <StatusBadge isActive={user.status === "ACTIVE"}>
                     {user.status}
@@ -310,7 +338,24 @@ const AdminUserPage = () => {
             ))}
           </tbody>
         </UserTable>
-        <div style={{marginTop: 16, color: '#4a5568'}}>Tổng số người dùng: {allUsers.length}</div>
+        <PaginationContainer>
+          <PaginationButton
+            onClick={() => setCurrentPage((prev) => prev - 1)}
+            disabled={currentPage === 1}
+          >
+            Trang trước
+          </PaginationButton>
+          <span>
+            Trang {currentPage} / {totalPages || 1}
+            ({totalUsers} người dùng)
+          </span>
+          <PaginationButton
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+            disabled={currentPage === totalPages || totalPages === 0}
+          >
+            Trang sau
+          </PaginationButton>
+        </PaginationContainer>
       </>
     );
   };
@@ -318,27 +363,13 @@ const AdminUserPage = () => {
   return (
     <>
       <AdminPageContainer>
-        <Sidebar>
-          <SidebarLogo>ADMIN</SidebarLogo>
-          <NavMenu>
-            <NavLink href="/admin/products" >
-              Sản phẩm
-            </NavLink>
-            <NavLink href="/admin/orders">Đơn Hàng</NavLink>
-            <NavLink href="/admin/users" active>Khách Hàng</NavLink>
-          </NavMenu>
-        </Sidebar>
+        <AdminSidebar activePage="users" />
         <MainContent>
-          <Header>
-            <HeaderSearch>
-              <FaSearch />
-              <input type="text" placeholder="Tìm kiếm người dùng..." />
-            </HeaderSearch>
-            <HeaderIcons>
-              <FaBell />
-              <FaUserCircle />
-            </HeaderIcons>
-          </Header>
+          <AdminHeader
+            searchPlaceholder="Tìm kiếm người dùng..."
+            searchTerm={searchTerm}
+            onSearchChange={handleSearch}
+          />
           <ContentWrapper>
             <PageHeader>
               <PageTitle>Quản lý Khách hàng</PageTitle>

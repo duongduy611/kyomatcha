@@ -466,6 +466,52 @@ exports.updateUserStatus = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Update a user's role
+ * @route   PATCH /admin/users/:id/role
+ * @access  Admin
+ */
+exports.updateUserRole = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.body;
+
+    // 1. Validate the role
+    if (!role || !['CUSTOMER', 'ADMIN'].includes(role)) {
+      return res.status(400).json({ message: "Invalid or missing role" });
+    }
+
+    // 2. Prevent admin from changing their own role (optional but recommended)
+    // Note: This requires knowing the current admin's ID, which is usually
+    // available from the auth middleware (e.g., req.user.id).
+    // Since the auth middleware is commented out, this check is simplified.
+    // A full implementation would compare req.user.id === id.
+
+    // 3. Find user and update their role
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.role = role;
+    await user.save();
+
+    res.status(200).json({
+      message: "User role updated successfully",
+      user: {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating user role:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
 /**
  * @desc    Get dashboard statistics
