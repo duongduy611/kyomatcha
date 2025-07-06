@@ -274,7 +274,7 @@ const AdminUserPage = () => {
     if (!debouncedSearchTerm.trim()) {
       setFilteredUsers(allUsers);
     } else {
-      const filtered = allUsers.filter(user => 
+      const filtered = allUsers.filter(user =>
         user.fullName?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
         user.email?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
         user.phone?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
@@ -376,7 +376,7 @@ const AdminUserPage = () => {
             Trang trước
           </PaginationButton>
           <span>
-            Trang {currentPage} / {totalPages} 
+            Trang {currentPage} / {totalPages}
             ({totalUsers} người dùng)
           </span>
           <PaginationButton
