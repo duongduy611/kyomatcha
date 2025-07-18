@@ -81,7 +81,6 @@ const Container = styled.div`
 
 const Header = styled.div`
   padding-top: 2rem;
-  background-color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -429,7 +428,7 @@ const SliderWrapper = styled.div`
   /* Tùy chỉnh màu thanh cuộn mặc định cho WebKit (Chrome, Safari, Edge) */
   &::-webkit-scrollbar {
     height: 8px;
-    
+
     @media (max-width: 768px) {
       height: 4px;
     }
@@ -576,10 +575,10 @@ const ComboGrid = styled.div`
 const ComboCard = styled.div`
   padding: 0.75rem; /* Padding để tạo khoảng cách giữa viền và nội dung */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  
+
   /* BỎ HẾT CÁC THUỘC TÍNH WIDTH CỐ ĐỊNH */
   /* width: 100%; không cần thiết vì grid item sẽ tự dãn ra */
-  
+
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
@@ -589,7 +588,6 @@ const ComboCard = styled.div`
     background: #fcfcf9; /* Màu nền kem cho nội dung bên trong */
     text-decoration: none;
     color: inherit;
-    display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
@@ -612,7 +610,7 @@ const ComboCard = styled.div`
     padding: 1rem 1.5rem;
     gap: 1rem;
   }
-  
+
   .text-details {
     h3 {
       font-size: 1.25rem;
@@ -644,7 +642,7 @@ const ComboCard = styled.div`
     justify-content: center;
     cursor: pointer;
     flex-shrink: 0; /* Ngăn nút bị co lại */
-    
+
     /* Thêm icon giỏ hàng (SVG hoặc Font Awesome) vào đây */
     /* ví dụ: color: white; */
   }
