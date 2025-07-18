@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import GlobalStyle from "../components/GlobalStyle";
-import { FaFacebookF, FaTwitter, FaInstagram, FaPinterestP, FaYoutube } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaYoutube, FaTiktok } from "react-icons/fa";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -73,7 +73,7 @@ const Input = styled.input`
   font-size: 14px;
   outline: none;
   &:focus {
-    border-color: #4A7C59;
+    border-color: #527328;
   }
 `;
 
@@ -87,14 +87,14 @@ const TextArea = styled.textarea`
   resize: vertical;
   min-height: 120px;
   &:focus {
-    border-color: #4A7C59;
+    border-color: #527328;
   }
 `;
 
 const SubmitButton = styled.button`
-  background: #4A7C59;
+  background: #527328;
   color: #fff;
-  border: 2px solid #4A7C59;
+  border: 2px solid #527328;
   padding: 14px 38px;
   font-size: 1rem;
   font-weight: 500;
@@ -108,14 +108,14 @@ const SubmitButton = styled.button`
 
   &:hover {
     background: transparent;
-    color: #4A7C59;
-    border: 2px solid #4A7C59;
+    color: #527328;
+    border: 2px solid #527328;
   }
 `;
 
 const ContactInfo = styled.div`
-  background: #4A7C59;
-  color: white;
+  background: transparent;
+  border: 1px solid #527328;
   padding: 40px;
   border-radius: 8px;
 `;
@@ -126,7 +126,8 @@ const InfoSection = styled.div`
 
 const InfoTitle = styled.h3`
   font-size: 18px;
-  margin-bottom: 15px;
+  margin-top: 15px;
+  margin-bottom: 10px;
   font-weight: 500;
 `;
 
@@ -139,14 +140,14 @@ const InfoText = styled.p`
 const SocialLinks = styled.div`
   display: flex;
   gap: 15px;
-  margin-top: 20px;
+  margin-top: 10px;
 `;
 
 const SocialIcon = styled.a`
   width: 35px;
   height: 35px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+  background: #527328;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -154,7 +155,9 @@ const SocialIcon = styled.a`
   transition: all 0.3s ease;
 
   &:hover {
-    background: #4A7C59;
+    color: #527328;
+    border: 1px solid #527328;
+    background: transparent;
     transform: translateY(-3px);
   }
 `;
@@ -253,8 +256,8 @@ const Contact = () => {
 
               <InfoSection>
                 <InfoTitle>Liên hệ</InfoTitle>
-                <InfoText>Điện thoại: 0987 65 4321 – 0123 45 6789</InfoText>
-                <InfoText>Email: kyomatcha@gmail.com</InfoText>
+                <InfoText>Điện thoại: 0982826438</InfoText>
+                <InfoText>Email: info.kyomatcha@gmail.com</InfoText>
               </InfoSection>
 
               <InfoSection>
@@ -266,11 +269,10 @@ const Contact = () => {
               <InfoSection>
                 <InfoTitle>Kết nối với chúng tôi</InfoTitle>
                 <SocialLinks>
-                  <SocialIcon href="#" target="_blank"><FaFacebookF /></SocialIcon>
-                  <SocialIcon href="#" target="_blank"><FaTwitter /></SocialIcon>
-                  <SocialIcon href="#" target="_blank"><FaInstagram /></SocialIcon>
-                  <SocialIcon href="#" target="_blank"><FaPinterestP /></SocialIcon>
-                  <SocialIcon href="#" target="_blank"><FaYoutube /></SocialIcon>
+                  <SocialIcon href="https://www.facebook.com/kyomatchavn" target="_blank"><FaFacebookF /></SocialIcon>
+                  <SocialIcon href="https://www.instagram.com/kyomatcha" target="_blank"><FaInstagram /></SocialIcon>
+                  <SocialIcon href="https://www.tiktok.com/@kyomatcha.official" target="_blank"><FaTiktok /></SocialIcon>
+                  <SocialIcon href="https://www.youtube.com/@kyomatcha" target="_blank"><FaYoutube /></SocialIcon>
                 </SocialLinks>
               </InfoSection>
             </ContactInfo>
